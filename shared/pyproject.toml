@@ -1,0 +1,20 @@
+[project]
+name = "retail-common"
+version = "0.1.0"
+description = "Shared schemas, LLM client, DB session, and config used by all four agents"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "sqlalchemy>=2.0",
+    "psycopg2-binary>=2.9",
+    "python-dotenv>=1.0",
+    "anthropic>=0.34",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["retail_common*"]

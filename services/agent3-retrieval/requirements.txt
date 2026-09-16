@@ -1,0 +1,9 @@
+# TODO: add/remove packages as your implementation needs
+mcp[cli]>=1.2.0
+pydantic>=2.7
+pydantic-settings>=2.3
+python-dotenv>=1.0
+chromadb>=0.5
+rank-bm25>=0.2.2
+sentence-transformers>=3.0
+-e /shared

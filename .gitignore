@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Env - NEVER commit real secrets
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+frontend/dist/
+
+# Data
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Vector store / DB
+infra/postgres/data/
+chroma_db/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+
+
+
+

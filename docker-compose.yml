@@ -1,0 +1,96 @@
+# =========================================================
+# Brings up: Postgres + all 4 agents + frontend, together.
+# Run with:  docker-compose up --build
+# =========================================================
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: retail_postgres
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  agent1-intake:
+    build: ./services/agent1-intake
+    container_name: agent1_intake
+    env_file: .env
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./shared:/shared
+      - ./services/agent1-intake:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  agent2-rootcause:
+    build: ./services/agent2-rootcause
+    container_name: agent2_rootcause
+    env_file: .env
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./shared:/shared
+      - ./services/agent2-rootcause:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  agent3-retrieval:
+    build: ./services/agent3-retrieval
+    container_name: agent3_retrieval
+    env_file: .env
+    ports:
+      - "8003:8003"
+    volumes:
+      - ./shared:/shared
+      - ./services/agent3-retrieval:/app
+      - vector_store:/data/chroma_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  agent4-decision:
+    build: ./services/agent4-decision
+    container_name: agent4_decision
+    env_file: .env
+    ports:
+      - "8004:8004"
+    volumes:
+      - ./shared:/shared
+      - ./services/agent4-decision:/app
+    depends_on:
+      - agent1-intake
+      - agent2-rootcause
+      - agent3-retrieval
+
+  frontend:
+    build: ./frontend
+    container_name: retail_frontend
+    env_file: .env
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - agent4-decision
+
+volumes:
+  pgdata:
+  vector_store:

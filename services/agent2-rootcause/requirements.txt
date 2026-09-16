@@ -1,0 +1,9 @@
+# TODO: add/remove packages as your implementation needs
+mcp[cli]>=1.2.0
+pydantic>=2.7
+pydantic-settings>=2.3
+python-dotenv>=1.0
+scikit-learn>=1.5
+sqlalchemy>=2.0
+psycopg2-binary>=2.9
+-e /shared
