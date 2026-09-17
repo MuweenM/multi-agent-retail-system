@@ -14,6 +14,7 @@ venv/
 # Node
 node_modules/
 frontend/dist/
+*.tsbuildinfo
 
 # Data
 data/raw/*
@@ -26,7 +27,9 @@ infra/postgres/data/
 chroma_db/
 
 # IDE / OS
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 .idea/
 .DS_Store
 
