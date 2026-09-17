@@ -32,10 +32,8 @@ import {
   FileSearch,
   Copy,
   Check,
-  ExternalLink,
   MoreHorizontal,
   Sparkles,
-  Layers,
   CheckCircle,
   XCircle,
   HelpCircle,
@@ -395,15 +393,6 @@ export default function Dashboard() {
                   ⌘K
                 </kbd>
               </div>
-
-              {/* Link to Design Showcase */}
-              <a
-                href="#/design"
-                className="inline-flex items-center gap-1.5 text-xs text-neutral-600 hover:text-black border border-neutral-200 hover:border-neutral-300 rounded-full px-3 py-1.5 transition-colors"
-              >
-                <Layers className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Design System</span>
-              </a>
 
               {/* Refresh Button */}
               <UiTooltip>
@@ -1478,14 +1467,6 @@ export default function Dashboard() {
                 <span className="font-mono text-xs text-neutral-400">
                   ReturnIQ Cluster v2.1.0 · LLM Backend: GPT-4o
                 </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <a
-                  href="#/design"
-                  className="text-xs text-neutral-500 hover:text-black font-medium flex items-center gap-1"
-                >
-                  View Design System Showcase <ExternalLink className="w-3 h-3" />
-                </a>
               </div>
             </div>
           </div>
