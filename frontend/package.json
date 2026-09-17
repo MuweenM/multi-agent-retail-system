@@ -13,7 +13,7 @@
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{js,ts,jsx,tsx,css,md}\"",
     "lint": "eslint .",
-    "prepare": "husky"
+    "prepare": "cd .. && frontend/node_modules/.bin/husky .husky"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
