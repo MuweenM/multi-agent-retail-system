@@ -1,0 +1,36 @@
+# Retail Return Intelligence — Frontend Design System & Architecture Rules
+
+You are working on the Retail Return Intelligence system. Follow these rules strictly when generating, modifying, or refactoring frontend code.
+
+## 1. Mandatory Shadcn/UI Nova Component Usage (`@/components/ui/*`)
+- **NEVER use raw HTML interactive elements**:
+  - `<button>` is STRICTLY FORBIDDEN -> Use `<Button>` from `@/components/ui/button`.
+  - `<input>` is STRICTLY FORBIDDEN -> Use `<Input>` from `@/components/ui/input`.
+  - `<kbd>` is STRICTLY FORBIDDEN -> Use `<Kbd>` from `@/components/ui/kbd`.
+  - `<textarea>` is STRICTLY FORBIDDEN -> Use `<Textarea>` from `@/components/ui/textarea`.
+  - `<select>` is STRICTLY FORBIDDEN -> Use `<Select>` from `@/components/ui/select`.
+- **Avatars**:
+  - NEVER render user, customer, or agent initials or profiles with plain text/divs.
+  - ALWAYS use `<Avatar>`, `<AvatarFallback>`, and `<AvatarBadge>` from `@/components/ui/avatar`.
+- **Empty States**:
+  - When search results or lists have 0 items, use `<Empty>`, `<EmptyMedia>`, `<EmptyHeader>`, `<EmptyTitle>`, `<EmptyDescription>` from `@/components/ui/empty`.
+- **Loading Indicators**:
+  - Use `<Spinner>` from `@/components/ui/spinner`.
+- **Badges & Tags**:
+  - Use `<Badge>` from `@/components/ui/badge` with `variant="outline"` or `variant="secondary"`.
+- **Cards & Containers**:
+  - Use `<Card>`, `<CardHeader>`, `<CardTitle>`, `<CardDescription>`, `<CardContent>` from `@/components/ui/card`.
+- **Tabs**:
+  - Use `<Tabs>`, `<TabsList>`, `<TabsTrigger>`, `<TabsContent>` from `@/components/ui/tabs`.
+
+## 2. Visual Aesthetics & Tokens (`design.md`)
+- **Canvas**: Pure Paper White (`#ffffff`, `bg-white`).
+- **Hairline Borders**: `border border-neutral-200` (`#e5e5e5`).
+- **Secondary Surfaces**: `bg-neutral-50` or `bg-neutral-100`.
+- **Pill Geometry**: Outer search pills, top navigation tabs, status chips, and filter toggles must adhere to `rounded-full` or `rounded-xl` / `rounded-2xl` card containers.
+- **Typography**:
+  - Headings & Body: Inter / Sans (`font-sans`).
+  - IDs, Metrics, Timestamps, Keys, Labels: JetBrains Mono (`font-mono`, `uppercase`, `tracking-wider`).
+
+## 3. Enforcement
+These rules are enforced by ESLint rule `react/forbid-elements` in `frontend/eslint.config.js` and Husky pre-commit hooks. Any code with raw elements will fail linting and commit verification. Always run `npm run lint` and `npm run build` in `frontend/` before completing your work.
