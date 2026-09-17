@@ -14,7 +14,7 @@
   --paper-3: #e9edf2;
   --ink: #20242d;
   --ink-2: #505765;
-  --muted: #7d8592;
+  --legacy-muted: #7d8592;
   --rule: #e2e6eb;
   --rule-2: #cfd5dd;
   --accent: #3469d8;
@@ -97,7 +97,7 @@ button {
 .table-head,
 .sync-time,
 .mono-small {
-  color: var(--muted);
+  color: var(--legacy-muted);
   font: 500 10px var(--font-mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -165,7 +165,7 @@ button {
   padding: 0 clamp(20px, 4vw, 56px);
 }
 .breadcrumbs {
-  color: var(--muted);
+  color: var(--legacy-muted);
   display: flex;
   font-size: 12px;
   gap: 10px;
@@ -265,10 +265,10 @@ h1 span {
   letter-spacing: -0.03em;
 }
 .stat-label {
-  color: var(--muted);
+  color: var(--legacy-muted);
 }
 .stat-note {
-  color: var(--muted);
+  color: var(--legacy-muted);
   font-size: 11px;
 }
 .stat-note i {
@@ -335,7 +335,7 @@ h1 span {
   margin: 8px 0 0;
 }
 .field-label {
-  color: var(--muted);
+  color: var(--legacy-muted);
   display: block;
   font: 10px var(--font-mono);
   letter-spacing: 0.06em;
@@ -372,7 +372,7 @@ h1 span {
   padding-top: 18px;
 }
 .form-hint {
-  color: var(--muted);
+  color: var(--legacy-muted);
   font-size: 11px;
 }
 .primary-button,
@@ -440,7 +440,7 @@ h1 span {
   font-weight: 600;
 }
 .muted-cell {
-  color: var(--muted);
+  color: var(--legacy-muted);
   font-size: 11px;
 }
 + .ai-mark {
@@ -500,7 +500,7 @@ h1 span {
   margin-top: 8px;
 }
 .insight-meta span {
-  color: var(--muted);
+  color: var(--legacy-muted);
 }
 .recommendation {
   border-top: 1px solid var(--rule-2);
