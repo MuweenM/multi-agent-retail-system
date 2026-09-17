@@ -26,5 +26,49 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
     },
+  },
+  {
+    files: ['src/components/app/**/*.{ts,tsx}', 'src/App.tsx'],
+    rules: {
+      'react/forbid-elements': [
+        'error',
+        {
+          forbid: [
+            {
+              element: 'button',
+              message:
+                'Design system constraint: Use <Button> from @/components/ui/button instead of raw <button>.',
+            },
+            {
+              element: 'input',
+              message:
+                'Design system constraint: Use <Input> from @/components/ui/input instead of raw <input>.',
+            },
+            {
+              element: 'kbd',
+              message:
+                'Design system constraint: Use <Kbd> from @/components/ui/kbd instead of raw <kbd>.',
+            },
+            {
+              element: 'textarea',
+              message:
+                'Design system constraint: Use <Textarea> from @/components/ui/textarea instead of raw <textarea>.',
+            },
+            {
+              element: 'select',
+              message:
+                'Design system constraint: Use <Select> from @/components/ui/select instead of raw <select>.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+      'react-hooks/set-state-in-effect': 'off',
+    },
   }
 );

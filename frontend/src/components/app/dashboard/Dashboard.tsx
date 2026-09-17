@@ -37,6 +37,7 @@ import {
   CheckCircle,
   XCircle,
   HelpCircle,
+  SlidersHorizontal,
 } from 'lucide-react';
 
 // ── shadcn/ui Nova Components ────────────────────────────────────────────────
@@ -60,7 +61,18 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarBadge } from '@/components/ui/avatar';
+import { Input } from '@/components/ui/input';
+import { Kbd } from '@/components/ui/kbd';
+import { Spinner } from '@/components/ui/spinner';
+import {
+  Empty,
+  EmptyMedia,
+  EmptyHeader,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyContent,
+} from '@/components/ui/empty';
 import {
   Tooltip as UiTooltip,
   TooltipTrigger,
@@ -126,6 +138,7 @@ const recentReturns = [
     id: 'RET-9841',
     product: 'Nike Air Max 270 – Size 10',
     customer: 'Aiden Walsh',
+    initials: 'AW',
     cause: 'Size / Fit Issue',
     confidence: 94,
     status: 'approved',
@@ -135,6 +148,7 @@ const recentReturns = [
     id: 'RET-9840',
     product: 'Samsung Galaxy Tab S9',
     customer: 'Priya Mehta',
+    initials: 'PM',
     cause: 'Quality Defect',
     confidence: 88,
     status: 'escalated',
@@ -144,6 +158,7 @@ const recentReturns = [
     id: 'RET-9839',
     product: "Levi's 501 Jeans – W32",
     customer: 'Marcus Lee',
+    initials: 'ML',
     cause: 'Wrong Item Sent',
     confidence: 97,
     status: 'approved',
@@ -153,6 +168,7 @@ const recentReturns = [
     id: 'RET-9838',
     product: 'Dyson V15 Vacuum',
     customer: 'Sophie Turner',
+    initials: 'ST',
     cause: 'Damaged in Transit',
     confidence: 79,
     status: 'reviewing',
@@ -162,6 +178,7 @@ const recentReturns = [
     id: 'RET-9837',
     product: 'Apple AirPods Pro 2',
     customer: "James O'Brien",
+    initials: 'JO',
     cause: 'Changed Mind',
     confidence: 91,
     status: 'rejected',
@@ -171,6 +188,7 @@ const recentReturns = [
     id: 'RET-9836',
     product: 'Adidas UltraBoost 23',
     customer: 'Yuki Tanaka',
+    initials: 'YT',
     cause: 'Size / Fit Issue',
     confidence: 86,
     status: 'approved',
@@ -235,17 +253,21 @@ function CustomChartTooltip({
   if (!active || !payload?.length) return null;
   return (
     <div className="rounded-lg border border-neutral-200 bg-white p-2.5 text-xs text-neutral-900 shadow-sm">
-      <div className="font-mono text-[10px] text-neutral-500 mb-1.5 uppercase tracking-wider">
+      <div className="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
         {label}
       </div>
       {payload.map((p) => (
         <div key={p.name} className="flex items-center gap-2 py-0.5">
           <span
-            className="w-2 h-2 rounded-full inline-block shrink-0"
+            className="inline-block h-2 w-2 shrink-0 rounded-full"
             style={{ backgroundColor: p.color }}
           />
-          <span className="text-neutral-600 capitalize text-[11px]">{p.name}:</span>
-          <span className="font-mono font-medium ml-auto pl-2 text-neutral-950">{p.value}</span>
+          <span className="text-[11px] capitalize text-neutral-600">
+            {p.name}:
+          </span>
+          <span className="ml-auto pl-2 font-mono font-medium text-neutral-950">
+            {p.value}
+          </span>
         </div>
       ))}
     </div>
@@ -260,9 +282,9 @@ function ReturnStatusBadge({ status }: { status: string }) {
       return (
         <Badge
           variant="outline"
-          className="rounded-full bg-emerald-50/70 text-emerald-800 border-emerald-200 text-[10px] font-mono font-medium px-2.5 py-0.5"
+          className="rounded-full border-emerald-200 bg-emerald-50/70 px-2.5 py-0.5 font-mono text-[10px] font-medium text-emerald-800"
         >
-          <CheckCircle className="w-3 h-3 mr-1 text-emerald-600" />
+          <CheckCircle className="mr-1 h-3 w-3 text-emerald-600" />
           Approved
         </Badge>
       );
@@ -270,9 +292,9 @@ function ReturnStatusBadge({ status }: { status: string }) {
       return (
         <Badge
           variant="outline"
-          className="rounded-full bg-rose-50/70 text-rose-800 border-rose-200 text-[10px] font-mono font-medium px-2.5 py-0.5"
+          className="rounded-full border-rose-200 bg-rose-50/70 px-2.5 py-0.5 font-mono text-[10px] font-medium text-rose-800"
         >
-          <XCircle className="w-3 h-3 mr-1 text-rose-600" />
+          <XCircle className="mr-1 h-3 w-3 text-rose-600" />
           Rejected
         </Badge>
       );
@@ -280,9 +302,9 @@ function ReturnStatusBadge({ status }: { status: string }) {
       return (
         <Badge
           variant="outline"
-          className="rounded-full bg-amber-50/70 text-amber-800 border-amber-200 text-[10px] font-mono font-medium px-2.5 py-0.5"
+          className="rounded-full border-amber-200 bg-amber-50/70 px-2.5 py-0.5 font-mono text-[10px] font-medium text-amber-800"
         >
-          <AlertTriangle className="w-3 h-3 mr-1 text-amber-600" />
+          <AlertTriangle className="mr-1 h-3 w-3 text-amber-600" />
           Escalated
         </Badge>
       );
@@ -290,9 +312,9 @@ function ReturnStatusBadge({ status }: { status: string }) {
       return (
         <Badge
           variant="outline"
-          className="rounded-full bg-neutral-100 text-neutral-800 border-neutral-200 text-[10px] font-mono font-medium px-2.5 py-0.5"
+          className="rounded-full border-neutral-200 bg-neutral-100 px-2.5 py-0.5 font-mono text-[10px] font-medium text-neutral-800"
         >
-          <HelpCircle className="w-3 h-3 mr-1 text-neutral-500" />
+          <HelpCircle className="mr-1 h-3 w-3 text-neutral-500" />
           Reviewing
         </Badge>
       );
@@ -307,6 +329,7 @@ export default function Dashboard() {
   const [volumeFilter, setVolumeFilter] = useState<'7d' | '30d'>('7d');
   const [searchQuery, setSearchQuery] = useState('');
   const [policyApplied, setPolicyApplied] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   const commandSnippet = `curl -X POST http://localhost:8000/api/v1/returns/simulate -d '{"sku":"NKE-270"}'`;
 
@@ -314,6 +337,11 @@ export default function Dashboard() {
     navigator.clipboard.writeText(commandSnippet);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleSync = () => {
+    setIsSyncing(true);
+    setTimeout(() => setIsSyncing(false), 1200);
   };
 
   const filteredReturns = recentReturns.filter(
@@ -326,31 +354,34 @@ export default function Dashboard() {
 
   return (
     <TooltipProvider delayDuration={150}>
-      <div className="min-h-screen bg-white text-neutral-900 font-sans antialiased selection:bg-neutral-900 selection:text-white">
+      <div className="min-h-screen bg-white font-sans text-neutral-900 antialiased selection:bg-neutral-900 selection:text-white">
         {/* ── Top Navigation Bar (Paper-white canvas, hairline border) ── */}
         <header className="sticky top-0 z-40 w-full border-b border-neutral-200 bg-white/95 backdrop-blur-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
+          <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
             {/* Left: Brand Identity */}
             <div className="flex items-center gap-6">
-              <a href="#/" className="flex items-center gap-2.5 group">
-                <div className="w-6 h-6 rounded-md bg-black text-white flex items-center justify-center font-bold text-xs tracking-tight">
+              <a href="#/" className="group flex items-center gap-2.5">
+                <div className="flex h-6 w-6 items-center justify-center rounded-md bg-black text-xs font-bold tracking-tight text-white">
                   R
                 </div>
-                <span className="font-semibold text-sm tracking-tight text-neutral-950">
+                <span className="text-sm font-semibold tracking-tight text-neutral-950">
                   ReturnIQ
                 </span>
                 <Badge
                   variant="outline"
-                  className="rounded-full bg-neutral-100 text-neutral-600 border-neutral-200 text-[10px] font-mono px-2 py-0"
+                  className="rounded-full border-neutral-200 bg-neutral-100 px-2 py-0 font-mono text-[10px] text-neutral-600"
                 >
                   v2.1
                 </Badge>
               </a>
 
-              <Separator orientation="vertical" className="h-4 bg-neutral-200 hidden sm:block" />
+              <Separator
+                orientation="vertical"
+                className="hidden h-4 bg-neutral-200 sm:block"
+              />
 
-              {/* View Pill Tabs in Header */}
-              <nav className="hidden md:flex items-center gap-1">
+              {/* View Pill Tabs in Header using shadcn Button */}
+              <nav className="hidden items-center gap-1 md:flex">
                 {[
                   { id: 'overview', label: 'Overview', icon: BarChart2 },
                   { id: 'returns', label: 'Returns Queue', icon: Package },
@@ -360,18 +391,20 @@ export default function Dashboard() {
                   const Icon = item.icon;
                   const isActive = activeTab === item.id;
                   return (
-                    <button
+                    <Button
                       key={item.id}
+                      variant={isActive ? 'default' : 'ghost'}
+                      size="sm"
                       onClick={() => setActiveTab(item.id)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${
+                      className={`h-8 rounded-full px-3 text-xs font-medium shadow-none transition-all ${
                         isActive
-                          ? 'bg-black text-white'
-                          : 'text-neutral-600 hover:text-black hover:bg-neutral-100'
+                          ? 'bg-black text-white hover:bg-neutral-900'
+                          : 'text-neutral-600 hover:bg-neutral-100 hover:text-black'
                       }`}
                     >
-                      <Icon className="w-3.5 h-3.5" />
+                      <Icon className="mr-1.5 h-3.5 w-3.5" />
                       {item.label}
-                    </button>
+                    </Button>
                   );
                 })}
               </nav>
@@ -379,33 +412,38 @@ export default function Dashboard() {
 
             {/* Center / Right: Search & Actions */}
             <div className="flex items-center gap-3">
-              {/* Search Pill (design.md: search-pill) */}
-              <div className="relative hidden lg:flex items-center">
-                <Search className="w-3.5 h-3.5 absolute left-3 text-neutral-400 pointer-events-none" />
-                <input
+              {/* Search Pill (design.md: search-pill with shadcn Input & Kbd) */}
+              <div className="relative hidden items-center lg:flex">
+                <Search className="pointer-events-none absolute left-3 z-10 h-3.5 w-3.5 text-neutral-400" />
+                <Input
                   type="text"
                   placeholder="Search models, returns, batch IDs..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="rounded-full bg-neutral-100 hover:bg-neutral-150 focus:bg-white border border-transparent focus:border-neutral-900 focus:outline-none text-xs text-neutral-900 pl-8 pr-12 py-1.5 w-64 transition-all"
+                  className="hover:bg-neutral-150 h-8 w-64 rounded-full border-transparent bg-neutral-100 pl-8 pr-12 text-xs text-neutral-900 shadow-none transition-all focus:border-neutral-900 focus:bg-white md:w-80"
                 />
-                <kbd className="absolute right-2.5 text-[10px] font-mono text-neutral-400 bg-neutral-200/60 rounded px-1.5 py-0.5 pointer-events-none">
+                <Kbd className="pointer-events-none absolute right-2.5 text-[10px]">
                   ⌘K
-                </kbd>
+                </Kbd>
               </div>
 
-              {/* Refresh Button */}
+              {/* Refresh Button with shadcn Button and Spinner */}
               <UiTooltip>
                 <TooltipTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full w-8 h-8 text-neutral-500 hover:text-black"
+                    onClick={handleSync}
+                    className="h-8 w-8 rounded-full text-neutral-500 hover:text-black"
                   >
-                    <RefreshCw className="w-3.5 h-3.5" />
+                    {isSyncing ? (
+                      <Spinner className="h-3.5 w-3.5 text-neutral-900" />
+                    ) : (
+                      <RefreshCw className="h-3.5 w-3.5" />
+                    )}
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent className="rounded-full text-xs font-mono">
+                <TooltipContent className="rounded-full font-mono text-xs">
                   Sync agent stream
                 </TooltipContent>
               </UiTooltip>
@@ -416,13 +454,13 @@ export default function Dashboard() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full w-8 h-8 text-neutral-500 hover:text-black relative"
+                    className="relative h-8 w-8 rounded-full text-neutral-500 hover:text-black"
                   >
-                    <Bell className="w-3.5 h-3.5" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500 absolute top-1.5 right-1.5" />
+                    <Bell className="h-3.5 w-3.5" />
+                    <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-rose-500" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent className="rounded-full text-xs font-mono">
+                <TooltipContent className="rounded-full font-mono text-xs">
                   1 Degraded Agent Alert
                 </TooltipContent>
               </UiTooltip>
@@ -430,7 +468,7 @@ export default function Dashboard() {
               {/* Pure Black Primary CTA (design.md: button-primary) */}
               <Button
                 size="sm"
-                className="rounded-full bg-black text-white hover:bg-neutral-800 text-xs px-4 h-8 font-medium shadow-none"
+                className="h-8 rounded-full bg-black px-4 text-xs font-medium text-white shadow-none hover:bg-neutral-800"
                 onClick={() => {
                   setActiveTab('returns');
                   setSearchQuery('');
@@ -439,70 +477,76 @@ export default function Dashboard() {
                 + Ingest Return
               </Button>
 
-              {/* User Avatar */}
-              <Avatar className="w-7 h-7 rounded-full border border-neutral-200">
-                <AvatarFallback className="bg-neutral-100 text-neutral-800 text-[11px] font-medium">
+              {/* User Profile using shadcn Avatar, AvatarFallback, AvatarBadge */}
+              <Avatar size="sm" className="border border-neutral-200">
+                <AvatarFallback className="bg-neutral-100 font-mono text-[11px] font-semibold text-neutral-900">
                   LK
                 </AvatarFallback>
+                <AvatarBadge className="bg-emerald-500" />
               </Avatar>
             </div>
           </div>
         </header>
 
         {/* ── Page Main Wrap ── */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        <main className="mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
           {/* ── Hero / Header Area (design.md minimal documentation style) ── */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
+          <div className="flex flex-col justify-between gap-6 pb-2 md:flex-row md:items-end">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[11px] font-mono uppercase tracking-widest text-neutral-500">
+                <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
+                <span className="font-mono text-[11px] uppercase tracking-widest text-neutral-500">
                   Multi-Agent Orchestration · Active
                 </span>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-neutral-950">
+              <h1 className="text-3xl font-semibold tracking-tight text-neutral-950 sm:text-4xl">
                 Return & Root Cause Intelligence
               </h1>
-              <p className="text-sm text-neutral-500 max-w-2xl leading-relaxed">
-                Autonomous multi-agent orchestration across intake, root cause attribution, warranty
-                retrieval, and automated refund synthesis.
+              <p className="max-w-2xl text-sm leading-relaxed text-neutral-500">
+                Autonomous multi-agent orchestration across intake, root cause
+                attribution, warranty retrieval, and automated refund synthesis.
               </p>
             </div>
 
             {/* Install / CLI Snippet Pill (design.md: install-snippet) */}
             <div className="shrink-0">
-              <div className="rounded-full bg-neutral-100/80 border border-neutral-200 px-3.5 py-1.5 flex items-center gap-3">
-                <span className="text-[11px] font-mono text-neutral-400 select-none">$</span>
-                <code className="text-xs font-mono text-neutral-800 select-all max-w-[280px] sm:max-w-none truncate">
+              <div className="flex items-center gap-3 rounded-full border border-neutral-200 bg-neutral-100/80 px-3.5 py-1.5">
+                <span className="select-none font-mono text-[11px] text-neutral-400">
+                  $
+                </span>
+                <code className="max-w-[280px] select-all truncate font-mono text-xs text-neutral-800 sm:max-w-none">
                   ollama run returniq-cluster
                 </code>
-                <button
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={copyCommand}
-                  className="text-neutral-500 hover:text-black p-1 rounded-full hover:bg-neutral-200 transition-colors"
+                  className="h-6 w-6 rounded-full text-neutral-500 transition-colors hover:bg-neutral-200 hover:text-black"
                   title="Copy command"
                 >
                   {copied ? (
-                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                    <Check className="h-3.5 w-3.5 text-emerald-600" />
                   ) : (
-                    <Copy className="w-3.5 h-3.5" />
+                    <Copy className="h-3.5 w-3.5" />
                   )}
-                </button>
+                </Button>
               </div>
             </div>
           </div>
 
           {/* ── System Alert if Degraded ── */}
           <Alert className="rounded-xl border-amber-200 bg-amber-50/40 p-4 shadow-none">
-            <div className="flex items-center justify-between w-full">
+            <div className="flex w-full items-center justify-between">
               <div className="flex items-center gap-3">
-                <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
+                <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600" />
                 <div>
-                  <AlertTitle className="text-xs font-semibold text-amber-900 mb-0.5">
+                  <AlertTitle className="mb-0.5 text-xs font-semibold text-amber-900">
                     Degraded Subsystem: Retrieval Agent (A3)
                   </AlertTitle>
                   <AlertDescription className="text-xs text-amber-800">
-                    Vector index latency spiked to 1.24s (threshold: 800ms). Decision fallback agent
-                    is operating in conservative policy mode.
+                    Vector index latency spiked to 1.24s (threshold: 800ms).
+                    Decision fallback agent is operating in conservative policy
+                    mode.
                   </AlertDescription>
                 </div>
               </div>
@@ -510,7 +554,7 @@ export default function Dashboard() {
                 variant="outline"
                 size="sm"
                 onClick={() => setActiveTab('agents')}
-                className="rounded-full bg-white border-amber-300 text-amber-900 hover:bg-amber-100 text-xs h-7 px-3 ml-4 shrink-0 font-medium"
+                className="ml-4 h-7 shrink-0 rounded-full border-amber-300 bg-white px-3 text-xs font-medium text-amber-900 hover:bg-amber-100"
               >
                 Inspect Agent
               </Button>
@@ -518,161 +562,180 @@ export default function Dashboard() {
           </Alert>
 
           {/* ── KPI Metric Strip (design.md: hairline border cards, zero shadow) ── */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {/* Card 1: Avg Resolution Time */}
-            <Card className="rounded-xl border border-neutral-200 bg-white shadow-none hover:border-neutral-300 transition-colors">
-              <CardHeader className="p-5 pb-2 flex flex-row items-center justify-between space-y-0">
-                <span className="text-xs font-mono uppercase tracking-wider text-neutral-500">
+            <Card className="rounded-xl border border-neutral-200 bg-white shadow-none transition-colors hover:border-neutral-300">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 p-5 pb-2">
+                <span className="font-mono text-xs uppercase tracking-wider text-neutral-500">
                   Avg. Resolution Time
                 </span>
-                <div className="w-7 h-7 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-600">
-                  <Clock className="w-3.5 h-3.5" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-100 text-neutral-600">
+                  <Clock className="h-3.5 w-3.5" />
                 </div>
               </CardHeader>
               <CardContent className="p-5 pt-0">
-                <div className="text-2xl font-semibold tracking-tight text-neutral-950 font-mono">
+                <div className="font-mono text-2xl font-semibold tracking-tight text-neutral-950">
                   2m 18s
                 </div>
-                <div className="flex items-center gap-1.5 mt-2">
+                <div className="mt-2 flex items-center gap-1.5">
                   <Badge
                     variant="outline"
-                    className="rounded-full bg-emerald-50 text-emerald-700 border-emerald-200 text-[10px] font-mono px-2 py-0"
+                    className="rounded-full border-emerald-200 bg-emerald-50 px-2 py-0 font-mono text-[10px] text-emerald-700"
                   >
-                    <ArrowDownRight className="w-3 h-3 mr-0.5" />
+                    <ArrowDownRight className="mr-0.5 h-3 w-3" />
                     −34s
                   </Badge>
-                  <span className="text-[11px] text-neutral-400">vs. last week average</span>
+                  <span className="text-[11px] text-neutral-400">
+                    vs. last week average
+                  </span>
                 </div>
               </CardContent>
             </Card>
 
             {/* Card 2: AI Confidence Score */}
-            <Card className="rounded-xl border border-neutral-200 bg-white shadow-none hover:border-neutral-300 transition-colors">
-              <CardHeader className="p-5 pb-2 flex flex-row items-center justify-between space-y-0">
-                <span className="text-xs font-mono uppercase tracking-wider text-neutral-500">
+            <Card className="rounded-xl border border-neutral-200 bg-white shadow-none transition-colors hover:border-neutral-300">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 p-5 pb-2">
+                <span className="font-mono text-xs uppercase tracking-wider text-neutral-500">
                   AI Confidence Score
                 </span>
-                <div className="w-7 h-7 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-600">
-                  <Brain className="w-3.5 h-3.5" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-100 text-neutral-600">
+                  <Brain className="h-3.5 w-3.5" />
                 </div>
               </CardHeader>
               <CardContent className="p-5 pt-0">
-                <div className="text-2xl font-semibold tracking-tight text-neutral-950 font-mono">
+                <div className="font-mono text-2xl font-semibold tracking-tight text-neutral-950">
                   87.4%
                 </div>
-                <div className="flex items-center gap-1.5 mt-2">
+                <div className="mt-2 flex items-center gap-1.5">
                   <Badge
                     variant="outline"
-                    className="rounded-full bg-emerald-50 text-emerald-700 border-emerald-200 text-[10px] font-mono px-2 py-0"
+                    className="rounded-full border-emerald-200 bg-emerald-50 px-2 py-0 font-mono text-[10px] text-emerald-700"
                   >
-                    <ArrowUpRight className="w-3 h-3 mr-0.5" />
+                    <ArrowUpRight className="mr-0.5 h-3 w-3" />
                     +2.1 pts
                   </Badge>
-                  <span className="text-[11px] text-neutral-400">attribution certainty</span>
+                  <span className="text-[11px] text-neutral-400">
+                    attribution certainty
+                  </span>
                 </div>
               </CardContent>
             </Card>
 
             {/* Card 3: Auto-Approved Rate */}
-            <Card className="rounded-xl border border-neutral-200 bg-white shadow-none hover:border-neutral-300 transition-colors">
-              <CardHeader className="p-5 pb-2 flex flex-row items-center justify-between space-y-0">
-                <span className="text-xs font-mono uppercase tracking-wider text-neutral-500">
+            <Card className="rounded-xl border border-neutral-200 bg-white shadow-none transition-colors hover:border-neutral-300">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 p-5 pb-2">
+                <span className="font-mono text-xs uppercase tracking-wider text-neutral-500">
                   Auto-Approved Rate
                 </span>
-                <div className="w-7 h-7 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-600">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-100 text-neutral-600">
+                  <CheckCircle2 className="h-3.5 w-3.5" />
                 </div>
               </CardHeader>
               <CardContent className="p-5 pt-0">
-                <div className="text-2xl font-semibold tracking-tight text-neutral-950 font-mono">
+                <div className="font-mono text-2xl font-semibold tracking-tight text-neutral-950">
                   73.2%
                 </div>
-                <div className="flex items-center gap-1.5 mt-2">
+                <div className="mt-2 flex items-center gap-1.5">
                   <Badge
                     variant="outline"
-                    className="rounded-full bg-emerald-50 text-emerald-700 border-emerald-200 text-[10px] font-mono px-2 py-0"
+                    className="rounded-full border-emerald-200 bg-emerald-50 px-2 py-0 font-mono text-[10px] text-emerald-700"
                   >
-                    <ArrowUpRight className="w-3 h-3 mr-0.5" />
+                    <ArrowUpRight className="mr-0.5 h-3 w-3" />
                     +5.4%
                   </Badge>
-                  <span className="text-[11px] text-neutral-400">zero-touch resolutions</span>
+                  <span className="text-[11px] text-neutral-400">
+                    zero-touch resolutions
+                  </span>
                 </div>
               </CardContent>
             </Card>
 
             {/* Card 4: Anomalies Flagged (High Contrast Dark Inverted moment from design.md) */}
             <Card className="rounded-xl border border-neutral-800 bg-[#171717] text-white shadow-none">
-              <CardHeader className="p-5 pb-2 flex flex-row items-center justify-between space-y-0">
-                <span className="text-xs font-mono uppercase tracking-wider text-neutral-400">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 p-5 pb-2">
+                <span className="font-mono text-xs uppercase tracking-wider text-neutral-400">
                   Anomalies Flagged
                 </span>
-                <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-neutral-200">
-                  <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-neutral-200">
+                  <ShieldAlert className="h-3.5 w-3.5 text-amber-400" />
                 </div>
               </CardHeader>
               <CardContent className="p-5 pt-0">
-                <div className="text-2xl font-semibold tracking-tight text-white font-mono">
+                <div className="font-mono text-2xl font-semibold tracking-tight text-white">
                   48
                 </div>
-                <div className="flex items-center gap-1.5 mt-2">
+                <div className="mt-2 flex items-center gap-1.5">
                   <Badge
                     variant="outline"
-                    className="rounded-full bg-amber-500/20 text-amber-300 border-amber-500/30 text-[10px] font-mono px-2 py-0"
+                    className="rounded-full border-amber-500/30 bg-amber-500/20 px-2 py-0 font-mono text-[10px] text-amber-300"
                   >
                     +6 today
                   </Badge>
-                  <span className="text-[11px] text-neutral-400">mould batch variance</span>
+                  <span className="text-[11px] text-neutral-400">
+                    mould batch variance
+                  </span>
                 </div>
               </CardContent>
             </Card>
           </div>
 
           {/* ── Main View Switching Tabs ── */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="space-y-6"
+          >
             <div className="flex items-center justify-between border-b border-neutral-200 pb-3">
-              <TabsList className="bg-neutral-100 rounded-full p-1 border border-neutral-200 h-9">
+              <TabsList className="h-9 rounded-full border border-neutral-200 bg-neutral-100 p-1">
                 <TabsTrigger
                   value="overview"
-                  className="rounded-full px-4 text-xs font-medium data-[state=active]:bg-black data-[state=active]:text-white transition-all"
+                  className="rounded-full px-4 text-xs font-medium transition-all data-[state=active]:bg-black data-[state=active]:text-white"
                 >
                   Overview
                 </TabsTrigger>
                 <TabsTrigger
                   value="returns"
-                  className="rounded-full px-4 text-xs font-medium data-[state=active]:bg-black data-[state=active]:text-white transition-all"
+                  className="rounded-full px-4 text-xs font-medium transition-all data-[state=active]:bg-black data-[state=active]:text-white"
                 >
                   Returns Queue ({recentReturns.length})
                 </TabsTrigger>
                 <TabsTrigger
                   value="rootcause"
-                  className="rounded-full px-4 text-xs font-medium data-[state=active]:bg-black data-[state=active]:text-white transition-all"
+                  className="rounded-full px-4 text-xs font-medium transition-all data-[state=active]:bg-black data-[state=active]:text-white"
                 >
                   Root Cause Attribution
                 </TabsTrigger>
                 <TabsTrigger
                   value="agents"
-                  className="rounded-full px-4 text-xs font-medium data-[state=active]:bg-black data-[state=active]:text-white transition-all"
+                  className="rounded-full px-4 text-xs font-medium transition-all data-[state=active]:bg-black data-[state=active]:text-white"
                 >
                   Agent Diagnostics
                 </TabsTrigger>
               </TabsList>
 
-              <div className="hidden sm:flex items-center gap-2">
-                <span className="text-xs text-neutral-500">Live agent stream:</span>
+              <div className="hidden items-center gap-2 sm:flex">
+                <span className="text-xs text-neutral-500">
+                  Live agent stream:
+                </span>
                 <Badge
                   variant="outline"
-                  className="rounded-full bg-emerald-50 text-emerald-800 border-emerald-200 text-[10px] font-mono px-2 py-0.5"
+                  className="flex items-center gap-1 rounded-full border-emerald-200 bg-emerald-50 px-2 py-0.5 font-mono text-[10px] text-emerald-800"
                 >
-                  ● In Sync
+                  {isSyncing ? (
+                    <Spinner className="h-2.5 w-2.5 text-emerald-700" />
+                  ) : (
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+                  )}
+                  {isSyncing ? 'Syncing...' : 'In Sync'}
                 </Badge>
               </div>
             </div>
 
             {/* ══════════════ TAB 1: OVERVIEW ══════════════ */}
-            <TabsContent value="overview" className="space-y-8 mt-0">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <TabsContent value="overview" className="mt-0 space-y-8">
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
                 {/* ── Left Column (7 cols) ── */}
-                <div className="lg:col-span-7 space-y-6">
+                <div className="space-y-6 lg:col-span-7">
                   {/* Return Volume Chart Card */}
                   <Card className="rounded-xl border border-neutral-200 bg-white shadow-none">
                     <CardHeader className="p-5 pb-3">
@@ -681,46 +744,55 @@ export default function Dashboard() {
                           <CardTitle className="text-sm font-semibold tracking-tight text-neutral-950">
                             Return Volume & Resolution
                           </CardTitle>
-                          <CardDescription className="text-xs text-neutral-500 mt-0.5">
-                            7-day continuous ingest vs automated agent resolution
+                          <CardDescription className="mt-0.5 text-xs text-neutral-500">
+                            7-day continuous ingest vs automated agent
+                            resolution
                           </CardDescription>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <button
+                        <div className="flex items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-100 p-0.5">
+                          <Button
+                            variant={
+                              volumeFilter === '7d' ? 'default' : 'ghost'
+                            }
+                            size="sm"
                             onClick={() => setVolumeFilter('7d')}
-                            className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                            className={`h-6 rounded-full px-2.5 text-[11px] font-medium shadow-none ${
                               volumeFilter === '7d'
-                                ? 'bg-black text-white'
-                                : 'text-neutral-500 hover:text-black bg-neutral-100'
+                                ? 'bg-black text-white hover:bg-neutral-900'
+                                : 'text-neutral-600 hover:bg-neutral-200 hover:text-black'
                             }`}
                           >
                             7D
-                          </button>
-                          <button
+                          </Button>
+                          <Button
+                            variant={
+                              volumeFilter === '30d' ? 'default' : 'ghost'
+                            }
+                            size="sm"
                             onClick={() => setVolumeFilter('30d')}
-                            className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                            className={`h-6 rounded-full px-2.5 text-[11px] font-medium shadow-none ${
                               volumeFilter === '30d'
-                                ? 'bg-black text-white'
-                                : 'text-neutral-500 hover:text-black bg-neutral-100'
+                                ? 'bg-black text-white hover:bg-neutral-900'
+                                : 'text-neutral-600 hover:bg-neutral-200 hover:text-black'
                             }`}
                           >
                             30D
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </CardHeader>
                     <CardContent className="p-5 pt-2">
-                      <div className="flex items-center gap-4 text-xs text-neutral-500 mb-4 font-mono">
+                      <div className="mb-4 flex items-center gap-4 font-mono text-xs text-neutral-500">
                         <div className="flex items-center gap-1.5">
-                          <span className="w-2.5 h-2.5 rounded-full bg-neutral-900" />
+                          <span className="h-2.5 w-2.5 rounded-full bg-neutral-900" />
                           <span>Returns Ingested</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <span className="w-2.5 h-2.5 rounded-full bg-neutral-400" />
+                          <span className="h-2.5 w-2.5 rounded-full bg-neutral-400" />
                           <span>Resolved</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                          <span className="h-2.5 w-2.5 rounded-full bg-rose-500" />
                           <span>Flagged</span>
                         </div>
                       </div>
@@ -728,26 +800,67 @@ export default function Dashboard() {
                         <ResponsiveContainer width="100%" height="100%">
                           <AreaChart
                             data={returnVolumeData}
-                            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                            margin={{
+                              top: 10,
+                              right: 10,
+                              left: -20,
+                              bottom: 0,
+                            }}
                           >
                             <defs>
-                              <linearGradient id="gReturns" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#171717" stopOpacity={0.12} />
-                                <stop offset="95%" stopColor="#171717" stopOpacity={0.0} />
+                              <linearGradient
+                                id="gReturns"
+                                x1="0"
+                                y1="0"
+                                x2="0"
+                                y2="1"
+                              >
+                                <stop
+                                  offset="5%"
+                                  stopColor="#171717"
+                                  stopOpacity={0.12}
+                                />
+                                <stop
+                                  offset="95%"
+                                  stopColor="#171717"
+                                  stopOpacity={0.0}
+                                />
                               </linearGradient>
-                              <linearGradient id="gResolved" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#737373" stopOpacity={0.1} />
-                                <stop offset="95%" stopColor="#737373" stopOpacity={0.0} />
+                              <linearGradient
+                                id="gResolved"
+                                x1="0"
+                                y1="0"
+                                x2="0"
+                                y2="1"
+                              >
+                                <stop
+                                  offset="5%"
+                                  stopColor="#737373"
+                                  stopOpacity={0.1}
+                                />
+                                <stop
+                                  offset="95%"
+                                  stopColor="#737373"
+                                  stopOpacity={0.0}
+                                />
                               </linearGradient>
                             </defs>
                             <XAxis
                               dataKey="day"
-                              tick={{ fontSize: 11, fill: '#737373', fontFamily: 'monospace' }}
+                              tick={{
+                                fontSize: 11,
+                                fill: '#737373',
+                                fontFamily: 'monospace',
+                              }}
                               axisLine={false}
                               tickLine={false}
                             />
                             <YAxis
-                              tick={{ fontSize: 11, fill: '#737373', fontFamily: 'monospace' }}
+                              tick={{
+                                fontSize: 11,
+                                fill: '#737373',
+                                fontFamily: 'monospace',
+                              }}
                               axisLine={false}
                               tickLine={false}
                             />
@@ -783,7 +896,7 @@ export default function Dashboard() {
                     </CardContent>
                   </Card>
 
-                  {/* Live Returns Queue Table Card */}
+                  {/* Live Returns Queue Table Card with shadcn Avatar */}
                   <Card className="rounded-xl border border-neutral-200 bg-white shadow-none">
                     <CardHeader className="p-5 pb-3">
                       <div className="flex items-center justify-between">
@@ -791,15 +904,16 @@ export default function Dashboard() {
                           <CardTitle className="text-sm font-semibold tracking-tight text-neutral-950">
                             Live Returns Stream
                           </CardTitle>
-                          <CardDescription className="text-xs text-neutral-500 mt-0.5">
-                            Real-time pipeline across customer, cause attribution, and AI status
+                          <CardDescription className="mt-0.5 text-xs text-neutral-500">
+                            Real-time pipeline across customer, cause
+                            attribution, and AI status
                           </CardDescription>
                         </div>
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => setActiveTab('returns')}
-                          className="rounded-full text-xs h-7 px-3 border-neutral-200 font-medium"
+                          className="h-7 rounded-full border-neutral-200 px-3 text-xs font-medium shadow-none"
                         >
                           View Full Queue →
                         </Button>
@@ -809,11 +923,11 @@ export default function Dashboard() {
                       <Table>
                         <TableHeader>
                           <TableRow className="border-neutral-100 hover:bg-transparent">
-                            <TableHead className="font-mono text-[11px] text-neutral-500 pl-5">
+                            <TableHead className="pl-5 font-mono text-[11px] text-neutral-500">
                               ID
                             </TableHead>
                             <TableHead className="font-mono text-[11px] text-neutral-500">
-                              Product / Customer
+                              Customer & Product
                             </TableHead>
                             <TableHead className="font-mono text-[11px] text-neutral-500">
                               Root Cause
@@ -821,7 +935,7 @@ export default function Dashboard() {
                             <TableHead className="font-mono text-[11px] text-neutral-500">
                               Certainty
                             </TableHead>
-                            <TableHead className="font-mono text-[11px] text-neutral-500 pr-5">
+                            <TableHead className="pr-5 font-mono text-[11px] text-neutral-500">
                               Status
                             </TableHead>
                           </TableRow>
@@ -830,32 +944,47 @@ export default function Dashboard() {
                           {filteredReturns.slice(0, 5).map((ret) => (
                             <TableRow
                               key={ret.id}
-                              className="border-neutral-100 hover:bg-neutral-50/70 transition-colors"
+                              className="border-neutral-100 transition-colors hover:bg-neutral-50/70"
                             >
-                              <TableCell className="font-mono text-xs font-medium text-neutral-950 pl-5 py-3">
+                              <TableCell className="py-3 pl-5 font-mono text-xs font-medium text-neutral-950">
                                 {ret.id}
                               </TableCell>
                               <TableCell className="py-3">
-                                <div className="text-xs font-medium text-neutral-900">
-                                  {ret.product}
+                                <div className="flex items-center gap-2.5">
+                                  {/* shadcn Avatar for customer */}
+                                  <Avatar
+                                    size="sm"
+                                    className="shrink-0 border border-neutral-200"
+                                  >
+                                    <AvatarFallback className="bg-neutral-100 font-mono text-[10px] font-medium text-neutral-700">
+                                      {ret.initials}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                    <div className="text-xs font-medium leading-snug text-neutral-900">
+                                      {ret.product}
+                                    </div>
+                                    <div className="text-[11px] leading-snug text-neutral-400">
+                                      {ret.customer}
+                                    </div>
+                                  </div>
                                 </div>
-                                <div className="text-[11px] text-neutral-400">{ret.customer}</div>
                               </TableCell>
-                              <TableCell className="text-xs text-neutral-600 py-3">
+                              <TableCell className="py-3 text-xs text-neutral-600">
                                 {ret.cause}
                               </TableCell>
                               <TableCell className="py-3">
-                                <div className="flex items-center gap-2 max-w-[100px]">
+                                <div className="flex max-w-[100px] items-center gap-2">
                                   <Progress
                                     value={ret.confidence}
                                     className="h-1.5 rounded-full bg-neutral-100"
                                   />
-                                  <span className="font-mono text-[11px] text-neutral-500 min-w-[26px]">
+                                  <span className="min-w-[26px] font-mono text-[11px] text-neutral-500">
                                     {ret.confidence}%
                                   </span>
                                 </div>
                               </TableCell>
-                              <TableCell className="pr-5 py-3">
+                              <TableCell className="py-3 pr-5">
                                 <ReturnStatusBadge status={ret.status} />
                               </TableCell>
                             </TableRow>
@@ -873,9 +1002,9 @@ export default function Dashboard() {
                           <CardTitle className="text-sm font-semibold tracking-tight text-neutral-950">
                             Agent Activity & Throughput
                           </CardTitle>
-                          <CardDescription className="text-xs text-neutral-500 mt-0.5">
-                            Hourly throughput across intake, root cause, retrieval, and decision
-                            stages
+                          <CardDescription className="mt-0.5 text-xs text-neutral-500">
+                            Hourly throughput across intake, root cause,
+                            retrieval, and decision stages
                           </CardDescription>
                         </div>
                       </div>
@@ -885,25 +1014,54 @@ export default function Dashboard() {
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart
                             data={agentActivityData}
-                            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                            margin={{
+                              top: 10,
+                              right: 10,
+                              left: -20,
+                              bottom: 0,
+                            }}
                             barSize={6}
                           >
                             <XAxis
                               dataKey="time"
-                              tick={{ fontSize: 10, fill: '#737373', fontFamily: 'monospace' }}
+                              tick={{
+                                fontSize: 10,
+                                fill: '#737373',
+                                fontFamily: 'monospace',
+                              }}
                               axisLine={false}
                               tickLine={false}
                             />
                             <YAxis
-                              tick={{ fontSize: 10, fill: '#737373', fontFamily: 'monospace' }}
+                              tick={{
+                                fontSize: 10,
+                                fill: '#737373',
+                                fontFamily: 'monospace',
+                              }}
                               axisLine={false}
                               tickLine={false}
                             />
                             <Tooltip content={<CustomChartTooltip />} />
-                            <Bar dataKey="intake" fill="#171717" radius={[2, 2, 0, 0]} />
-                            <Bar dataKey="rootcause" fill="#525252" radius={[2, 2, 0, 0]} />
-                            <Bar dataKey="retrieval" fill="#a3a3a3" radius={[2, 2, 0, 0]} />
-                            <Bar dataKey="decision" fill="#d4d4d4" radius={[2, 2, 0, 0]} />
+                            <Bar
+                              dataKey="intake"
+                              fill="#171717"
+                              radius={[2, 2, 0, 0]}
+                            />
+                            <Bar
+                              dataKey="rootcause"
+                              fill="#525252"
+                              radius={[2, 2, 0, 0]}
+                            />
+                            <Bar
+                              dataKey="retrieval"
+                              fill="#a3a3a3"
+                              radius={[2, 2, 0, 0]}
+                            />
+                            <Bar
+                              dataKey="decision"
+                              fill="#d4d4d4"
+                              radius={[2, 2, 0, 0]}
+                            />
                           </BarChart>
                         </ResponsiveContainer>
                       </div>
@@ -912,65 +1070,68 @@ export default function Dashboard() {
                 </div>
 
                 {/* ── Right Column (5 cols) ── */}
-                <div className="lg:col-span-5 space-y-6">
+                <div className="space-y-6 lg:col-span-5">
                   {/* AI Root Cause Anomaly Cluster (Signature Inverted Dark Card per design.md) */}
-                  <Card className="rounded-xl border border-neutral-800 bg-[#171717] text-white shadow-none relative overflow-hidden">
-                    <div className="absolute -top-12 -right-12 w-36 h-36 rounded-full bg-white/5 pointer-events-none blur-xl" />
+                  <Card className="relative overflow-hidden rounded-xl border border-neutral-800 bg-[#171717] text-white shadow-none">
+                    <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full bg-white/5 blur-xl" />
                     <CardHeader className="p-6 pb-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <Sparkles className="w-4 h-4 text-amber-400" />
-                          <span className="text-[11px] font-mono uppercase tracking-widest text-neutral-400">
+                          <Sparkles className="h-4 w-4 text-amber-400" />
+                          <span className="font-mono text-[11px] uppercase tracking-widest text-neutral-400">
                             Root Cause AI · Cluster
                           </span>
                         </div>
                         <Badge
                           variant="outline"
-                          className="rounded-full bg-white/10 text-white border-white/20 text-[10px] font-mono"
+                          className="rounded-full border-white/20 bg-white/10 font-mono text-[10px] text-white"
                         >
                           87% Certainty
                         </Badge>
                       </div>
-                      <CardTitle className="text-lg font-semibold tracking-tight text-white mt-3">
+                      <CardTitle className="mt-3 text-lg font-semibold tracking-tight text-white">
                         Sizing Anomaly Cluster Detected
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="p-6 pt-0 space-y-4">
-                      <p className="text-xs text-neutral-300 leading-relaxed">
-                        A statistically significant cluster of size-related returns (↑34%) has been
-                        correlated to <strong>athletic footwear SKUs</strong> over the last 72
+                    <CardContent className="space-y-4 p-6 pt-0">
+                      <p className="text-xs leading-relaxed text-neutral-300">
+                        A statistically significant cluster of size-related
+                        returns (↑34%) has been correlated to{' '}
+                        <strong>athletic footwear SKUs</strong> over the last 72
                         hours. Root cause model traces this to{' '}
-                        <strong>supplier batch mould variance</strong> (batch IDs: NKE-270-BLK,
-                        NKE-270-WHT).
+                        <strong>supplier batch mould variance</strong> (batch
+                        IDs: NKE-270-BLK, NKE-270-WHT).
                       </p>
 
                       <div className="space-y-1.5">
-                        <div className="flex justify-between text-[11px] font-mono text-neutral-400">
+                        <div className="flex justify-between font-mono text-[11px] text-neutral-400">
                           <span>Model Confidence</span>
-                          <span className="text-white font-medium">87% · v2.3-fine</span>
+                          <span className="font-medium text-white">
+                            87% · v2.3-fine
+                          </span>
                         </div>
-                        <div className="w-full bg-neutral-800 rounded-full h-1.5 overflow-hidden">
+                        <div className="h-1.5 w-full overflow-hidden rounded-full bg-neutral-800">
                           <div
-                            className="bg-white h-full rounded-full transition-all duration-500"
+                            className="h-full rounded-full bg-white transition-all duration-500"
                             style={{ width: '87%' }}
                           />
                         </div>
                       </div>
 
-                      <div className="rounded-lg bg-white/5 border border-white/10 p-3 text-xs space-y-1">
+                      <div className="space-y-1 rounded-lg border border-white/10 bg-white/5 p-3 text-xs">
                         <div className="font-mono text-[10px] uppercase text-neutral-400">
                           Recommended Action
                         </div>
                         <div className="text-neutral-200">
-                          Auto-approve size returns for affected SKUs & file supplier batch notice
-                          within 24h.
+                          Auto-approve size returns for affected SKUs & file
+                          supplier batch notice within 24h.
                         </div>
                       </div>
 
                       {/* White Pill CTA on Dark Surface (design.md: button-pill-on-dark) */}
                       <div className="pt-1">
                         <Button
-                          className={`w-full rounded-full text-xs font-semibold h-9 shadow-none transition-all ${
+                          className={`h-9 w-full rounded-full text-xs font-semibold shadow-none transition-all ${
                             policyApplied
                               ? 'bg-emerald-500 text-white hover:bg-emerald-600'
                               : 'bg-white text-black hover:bg-neutral-100'
@@ -979,7 +1140,7 @@ export default function Dashboard() {
                         >
                           {policyApplied ? (
                             <>
-                              <Check className="w-3.5 h-3.5 mr-1.5" />
+                              <Check className="mr-1.5 h-3.5 w-3.5" />
                               Auto-Approval Policy Active
                             </>
                           ) : (
@@ -996,13 +1157,13 @@ export default function Dashboard() {
                       <CardTitle className="text-sm font-semibold tracking-tight text-neutral-950">
                         Root Cause Breakdown
                       </CardTitle>
-                      <CardDescription className="text-xs text-neutral-500 mt-0.5">
+                      <CardDescription className="mt-0.5 text-xs text-neutral-500">
                         Categorical attribution across 1,442 processed returns
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="p-5 pt-2">
                       <div className="flex items-center gap-4">
-                        <div className="w-[120px] h-[120px] shrink-0">
+                        <div className="h-[120px] w-[120px] shrink-0">
                           <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
                               <Pie
@@ -1015,7 +1176,10 @@ export default function Dashboard() {
                                 strokeWidth={0}
                               >
                                 {rootCauseData.map((entry, idx) => (
-                                  <Cell key={`cell-${idx}`} fill={entry.color} />
+                                  <Cell
+                                    key={`cell-${idx}`}
+                                    fill={entry.color}
+                                  />
                                 ))}
                               </Pie>
                             </PieChart>
@@ -1029,10 +1193,12 @@ export default function Dashboard() {
                             >
                               <div className="flex items-center gap-2">
                                 <span
-                                  className="w-2.5 h-2.5 rounded-full shrink-0"
+                                  className="h-2.5 w-2.5 shrink-0 rounded-full"
                                   style={{ backgroundColor: item.color }}
                                 />
-                                <span className="text-neutral-700 text-[11px]">{item.name}</span>
+                                <span className="text-[11px] text-neutral-700">
+                                  {item.name}
+                                </span>
                               </div>
                               <span className="font-mono text-[11px] font-medium text-neutral-950">
                                 {item.value}%
@@ -1052,13 +1218,13 @@ export default function Dashboard() {
                           <CardTitle className="text-sm font-semibold tracking-tight text-neutral-950">
                             Confidence Trajectory
                           </CardTitle>
-                          <CardDescription className="text-xs text-neutral-500 mt-0.5">
+                          <CardDescription className="mt-0.5 text-xs text-neutral-500">
                             8-week model attribution calibration
                           </CardDescription>
                         </div>
                         <Badge
                           variant="outline"
-                          className="rounded-full bg-emerald-50 text-emerald-800 border-emerald-200 text-[10px] font-mono px-2 py-0.5"
+                          className="rounded-full border-emerald-200 bg-emerald-50 px-2 py-0.5 font-mono text-[10px] text-emerald-800"
                         >
                           ↑ +18 pts
                         </Badge>
@@ -1069,17 +1235,30 @@ export default function Dashboard() {
                         <ResponsiveContainer width="100%" height="100%">
                           <LineChart
                             data={confidenceTrendData}
-                            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                            margin={{
+                              top: 10,
+                              right: 10,
+                              left: -20,
+                              bottom: 0,
+                            }}
                           >
                             <XAxis
                               dataKey="week"
-                              tick={{ fontSize: 10, fill: '#737373', fontFamily: 'monospace' }}
+                              tick={{
+                                fontSize: 10,
+                                fill: '#737373',
+                                fontFamily: 'monospace',
+                              }}
                               axisLine={false}
                               tickLine={false}
                             />
                             <YAxis
                               domain={[65, 95]}
-                              tick={{ fontSize: 10, fill: '#737373', fontFamily: 'monospace' }}
+                              tick={{
+                                fontSize: 10,
+                                fill: '#737373',
+                                fontFamily: 'monospace',
+                              }}
                               axisLine={false}
                               tickLine={false}
                             />
@@ -1097,79 +1276,79 @@ export default function Dashboard() {
                     </CardContent>
                   </Card>
 
-                  {/* Terminal Card (macOS Traffic Light Dots per design.md) */}
-                  <Card className="rounded-xl border border-neutral-200 bg-neutral-900 text-neutral-100 shadow-none overflow-hidden">
-                    <div className="p-3 bg-neutral-950/80 border-b border-neutral-800 flex items-center justify-between">
+                  {/* Terminal Card using shadcn Card primitives */}
+                  <Card className="overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900 text-neutral-100 shadow-none">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b border-neutral-800 bg-neutral-950/80 p-3">
                       {/* macOS traffic light dots */}
                       <div className="flex items-center gap-1.5">
-                        <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
-                        <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-                        <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
+                        <div className="h-3 w-3 rounded-full bg-[#ff5f56]" />
+                        <div className="h-3 w-3 rounded-full bg-[#ffbd2e]" />
+                        <div className="h-3 w-3 rounded-full bg-[#27c93f]" />
                       </div>
-                      <span className="text-[11px] font-mono text-neutral-400">
+                      <span className="font-mono text-[11px] text-neutral-400">
                         agent-orchestration.log
                       </span>
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    </div>
-                    <div className="p-4 font-mono text-[11px] text-neutral-300 space-y-1.5 leading-relaxed bg-neutral-900">
+                      <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
+                    </CardHeader>
+                    <CardContent className="space-y-1.5 bg-neutral-900 p-4 font-mono text-[11px] leading-relaxed text-neutral-300">
                       <div className="text-neutral-500">
                         # Multi-agent autonomous resolution trace
                       </div>
                       <div>
-                        <span className="text-emerald-400">[A1:Intake]</span> Ingesting RET-9841
-                        (Nike Air Max 270)
+                        <span className="text-emerald-400">[A1:Intake]</span>{' '}
+                        Ingesting RET-9841 (Nike Air Max 270)
                       </div>
                       <div>
-                        <span className="text-blue-400">[A2:RootCause]</span> Attribution: Size/Fit
-                        Variance (batch NKE-270)
+                        <span className="text-blue-400">[A2:RootCause]</span>{' '}
+                        Attribution: Size/Fit Variance (batch NKE-270)
                       </div>
                       <div>
-                        <span className="text-amber-400">[A3:Retrieval]</span> Policy: 30-day free
-                        size exchange (matched)
+                        <span className="text-amber-400">[A3:Retrieval]</span>{' '}
+                        Policy: 30-day free size exchange (matched)
                       </div>
                       <div>
-                        <span className="text-emerald-400">[A4:Decision]</span> Auto-approved refund
-                        #RF-48911 ($160.00)
+                        <span className="text-emerald-400">[A4:Decision]</span>{' '}
+                        Auto-approved refund #RF-48911 ($160.00)
                       </div>
-                      <div className="text-neutral-500 pt-1 flex items-center gap-1">
+                      <div className="flex items-center gap-1 pt-1 text-neutral-500">
                         <span className="animate-pulse">_</span>
                         <span>listening on ws://localhost:8000/events</span>
                       </div>
-                    </div>
+                    </CardContent>
                   </Card>
                 </div>
               </div>
             </TabsContent>
 
             {/* ══════════════ TAB 2: RETURNS QUEUE ══════════════ */}
-            <TabsContent value="returns" className="space-y-6 mt-0">
+            <TabsContent value="returns" className="mt-0 space-y-6">
               <Card className="rounded-xl border border-neutral-200 bg-white shadow-none">
                 <CardHeader className="p-5 pb-3">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                     <div>
                       <CardTitle className="text-base font-semibold tracking-tight text-neutral-950">
                         Complete Returns Inspection Queue
                       </CardTitle>
-                      <CardDescription className="text-xs text-neutral-500 mt-0.5">
-                        Live stream of customer return requests with AI reasoning and manual
-                        override options
+                      <CardDescription className="mt-0.5 text-xs text-neutral-500">
+                        Live stream of customer return requests with AI
+                        reasoning and manual override options
                       </CardDescription>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="relative">
-                        <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
-                        <input
+                        <Search className="absolute left-3 top-1/2 z-10 h-3.5 w-3.5 -translate-y-1/2 text-neutral-400" />
+                        <Input
                           type="text"
-                          placeholder="Filter queue..."
+                          placeholder="Filter queue by customer, SKU..."
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
-                          className="rounded-full bg-neutral-100 border border-transparent focus:border-neutral-900 focus:bg-white text-xs pl-8 pr-3 py-1.5 w-48 transition-all"
+                          className="h-8 w-56 rounded-full border-transparent bg-neutral-100 pl-8 pr-3 text-xs shadow-none transition-all focus:border-neutral-900 focus:bg-white"
                         />
                       </div>
                       <Button
                         variant="outline"
                         size="sm"
-                        className="rounded-full text-xs h-8 px-3 border-neutral-200 font-medium"
+                        className="h-8 rounded-full border-neutral-200 px-3 text-xs font-medium shadow-none"
                       >
                         Export CSV
                       </Button>
@@ -1177,119 +1356,162 @@ export default function Dashboard() {
                   </div>
                 </CardHeader>
                 <CardContent className="p-0">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="border-neutral-100 hover:bg-transparent">
-                        <TableHead className="font-mono text-[11px] text-neutral-500 pl-5">
-                          Return ID
-                        </TableHead>
-                        <TableHead className="font-mono text-[11px] text-neutral-500">
-                          Product
-                        </TableHead>
-                        <TableHead className="font-mono text-[11px] text-neutral-500">
-                          Customer
-                        </TableHead>
-                        <TableHead className="font-mono text-[11px] text-neutral-500">
-                          Root Cause
-                        </TableHead>
-                        <TableHead className="font-mono text-[11px] text-neutral-500">
-                          Certainty
-                        </TableHead>
-                        <TableHead className="font-mono text-[11px] text-neutral-500">
-                          Time Elapsed
-                        </TableHead>
-                        <TableHead className="font-mono text-[11px] text-neutral-500">
-                          Status
-                        </TableHead>
-                        <TableHead className="font-mono text-[11px] text-neutral-500 pr-5 text-right">
-                          Actions
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredReturns.map((ret) => (
-                        <TableRow
-                          key={ret.id}
-                          className="border-neutral-100 hover:bg-neutral-50/70 transition-colors"
+                  {filteredReturns.length === 0 ? (
+                    <Empty className="py-12">
+                      <EmptyMedia variant="icon">
+                        <Package className="h-5 w-5 text-neutral-400" />
+                      </EmptyMedia>
+                      <EmptyHeader>
+                        <EmptyTitle className="text-sm font-semibold text-neutral-900">
+                          No matching returns found
+                        </EmptyTitle>
+                        <EmptyDescription className="text-xs text-neutral-500">
+                          No return requests match &ldquo;{searchQuery}&rdquo;.
+                          Try another SKU or clear the filter.
+                        </EmptyDescription>
+                      </EmptyHeader>
+                      <EmptyContent>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setSearchQuery('')}
+                          className="h-7 rounded-full border-neutral-200 px-3 text-xs font-medium"
                         >
-                          <TableCell className="font-mono text-xs font-semibold text-neutral-950 pl-5 py-3.5">
-                            {ret.id}
-                          </TableCell>
-                          <TableCell className="text-xs font-medium text-neutral-900 py-3.5">
-                            {ret.product}
-                          </TableCell>
-                          <TableCell className="text-xs text-neutral-500 py-3.5">
-                            {ret.customer}
-                          </TableCell>
-                          <TableCell className="text-xs text-neutral-600 py-3.5">
-                            {ret.cause}
-                          </TableCell>
-                          <TableCell className="py-3.5">
-                            <div className="flex items-center gap-2 max-w-[120px]">
-                              <Progress
-                                value={ret.confidence}
-                                className="h-1.5 rounded-full bg-neutral-100"
-                              />
-                              <span className="font-mono text-[11px] text-neutral-500">
-                                {ret.confidence}%
-                              </span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="font-mono text-xs text-neutral-400 py-3.5">
-                            {ret.elapsed}
-                          </TableCell>
-                          <TableCell className="py-3.5">
-                            <ReturnStatusBadge status={ret.status} />
-                          </TableCell>
-                          <TableCell className="pr-5 py-3.5 text-right">
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="w-7 h-7 rounded-full text-neutral-400 hover:text-black"
-                                >
-                                  <MoreHorizontal className="w-3.5 h-3.5" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end" className="rounded-xl w-44">
-                                <DropdownMenuLabel className="text-[11px] font-mono uppercase text-neutral-400">
-                                  Manual Override
-                                </DropdownMenuLabel>
-                                <DropdownMenuItem className="text-xs cursor-pointer">
-                                  Force Auto-Approve
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className="text-xs cursor-pointer">
-                                  Escalate to Human Agent
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className="text-xs cursor-pointer text-rose-600">
-                                  Reject Return
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem className="text-xs cursor-pointer">
-                                  Inspect Agent Trace
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
+                          Clear Search
+                        </Button>
+                      </EmptyContent>
+                    </Empty>
+                  ) : (
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="border-neutral-100 hover:bg-transparent">
+                          <TableHead className="pl-5 font-mono text-[11px] text-neutral-500">
+                            Return ID
+                          </TableHead>
+                          <TableHead className="font-mono text-[11px] text-neutral-500">
+                            Customer & Product
+                          </TableHead>
+                          <TableHead className="font-mono text-[11px] text-neutral-500">
+                            Root Cause
+                          </TableHead>
+                          <TableHead className="font-mono text-[11px] text-neutral-500">
+                            Certainty
+                          </TableHead>
+                          <TableHead className="font-mono text-[11px] text-neutral-500">
+                            Time Elapsed
+                          </TableHead>
+                          <TableHead className="font-mono text-[11px] text-neutral-500">
+                            Status
+                          </TableHead>
+                          <TableHead className="pr-5 text-right font-mono text-[11px] text-neutral-500">
+                            Actions
+                          </TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredReturns.map((ret) => (
+                          <TableRow
+                            key={ret.id}
+                            className="border-neutral-100 transition-colors hover:bg-neutral-50/70"
+                          >
+                            <TableCell className="py-3.5 pl-5 font-mono text-xs font-semibold text-neutral-950">
+                              {ret.id}
+                            </TableCell>
+                            <TableCell className="py-3.5">
+                              <div className="flex items-center gap-2.5">
+                                {/* Customer Avatar */}
+                                <Avatar
+                                  size="sm"
+                                  className="shrink-0 border border-neutral-200"
+                                >
+                                  <AvatarFallback className="bg-neutral-100 font-mono text-[10px] font-medium text-neutral-700">
+                                    {ret.initials}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <div className="text-xs font-medium leading-snug text-neutral-900">
+                                    {ret.product}
+                                  </div>
+                                  <div className="text-[11px] leading-snug text-neutral-400">
+                                    {ret.customer}
+                                  </div>
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell className="py-3.5 text-xs text-neutral-600">
+                              {ret.cause}
+                            </TableCell>
+                            <TableCell className="py-3.5">
+                              <div className="flex max-w-[120px] items-center gap-2">
+                                <Progress
+                                  value={ret.confidence}
+                                  className="h-1.5 rounded-full bg-neutral-100"
+                                />
+                                <span className="font-mono text-[11px] text-neutral-500">
+                                  {ret.confidence}%
+                                </span>
+                              </div>
+                            </TableCell>
+                            <TableCell className="py-3.5 font-mono text-xs text-neutral-400">
+                              {ret.elapsed}
+                            </TableCell>
+                            <TableCell className="py-3.5">
+                              <ReturnStatusBadge status={ret.status} />
+                            </TableCell>
+                            <TableCell className="py-3.5 pr-5 text-right">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7 rounded-full text-neutral-400 hover:text-black"
+                                  >
+                                    <MoreHorizontal className="h-3.5 w-3.5" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                  align="end"
+                                  className="w-44 rounded-xl"
+                                >
+                                  <DropdownMenuLabel className="font-mono text-[11px] uppercase text-neutral-400">
+                                    Manual Override
+                                  </DropdownMenuLabel>
+                                  <DropdownMenuItem className="cursor-pointer text-xs">
+                                    Force Auto-Approve
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem className="cursor-pointer text-xs">
+                                    Escalate to Human Agent
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem className="cursor-pointer text-xs text-rose-600">
+                                    Reject Return
+                                  </DropdownMenuItem>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem className="cursor-pointer text-xs">
+                                    Inspect Agent Trace
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
 
             {/* ══════════════ TAB 3: ROOT CAUSE ATTRIBUTION ══════════════ */}
-            <TabsContent value="rootcause" className="space-y-6 mt-0">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <TabsContent value="rootcause" className="mt-0 space-y-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <Card className="rounded-xl border border-neutral-200 bg-white shadow-none">
                   <CardHeader className="p-5 pb-3">
                     <CardTitle className="text-sm font-semibold tracking-tight text-neutral-950">
                       Root Cause Distribution
                     </CardTitle>
                     <CardDescription className="text-xs text-neutral-500">
-                      Automated classification across sizing, defect, transit, and customer regret
+                      Automated classification across sizing, defect, transit,
+                      and customer regret
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="p-5">
@@ -1297,8 +1519,12 @@ export default function Dashboard() {
                       {rootCauseData.map((item) => (
                         <div key={item.name} className="space-y-1.5">
                           <div className="flex justify-between text-xs">
-                            <span className="font-medium text-neutral-800">{item.name}</span>
-                            <span className="font-mono text-neutral-500">{item.value}%</span>
+                            <span className="font-medium text-neutral-800">
+                              {item.name}
+                            </span>
+                            <span className="font-mono text-neutral-500">
+                              {item.value}%
+                            </span>
                           </div>
                           <Progress
                             value={item.value}
@@ -1319,40 +1545,42 @@ export default function Dashboard() {
                       AI identified supplier and logistics patterns
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="p-5 space-y-4">
-                    <div className="p-3.5 rounded-lg bg-white/5 border border-white/10 space-y-1.5">
+                  <CardContent className="space-y-4 p-5">
+                    <div className="space-y-1.5 rounded-lg border border-white/10 bg-white/5 p-3.5">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold text-white">
                           Footwear Mould Discrepancy
                         </span>
                         <Badge
                           variant="outline"
-                          className="rounded-full bg-amber-500/20 text-amber-300 border-amber-500/30 text-[10px] font-mono"
+                          className="rounded-full border-amber-500/30 bg-amber-500/20 font-mono text-[10px] text-amber-300"
                         >
                           High Impact
                         </Badge>
                       </div>
                       <p className="text-xs text-neutral-300">
-                        Mould tool #4 at OEM facility running 0.5 size smaller than standard
-                        grading. Affects SKUs NKE-270-BLK and NKE-270-WHT.
+                        Mould tool #4 at OEM facility running 0.5 size smaller
+                        than standard grading. Affects SKUs NKE-270-BLK and
+                        NKE-270-WHT.
                       </p>
                     </div>
 
-                    <div className="p-3.5 rounded-lg bg-white/5 border border-white/10 space-y-1.5">
+                    <div className="space-y-1.5 rounded-lg border border-white/10 bg-white/5 p-3.5">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold text-white">
                           Logistics Transit Shock
                         </span>
                         <Badge
                           variant="outline"
-                          className="rounded-full bg-neutral-500/20 text-neutral-300 border-neutral-500/30 text-[10px] font-mono"
+                          className="rounded-full border-neutral-500/30 bg-neutral-500/20 font-mono text-[10px] text-neutral-300"
                         >
                           Medium Impact
                         </Badge>
                       </div>
                       <p className="text-xs text-neutral-300">
-                        14% damage rate on Dyson vacuums shipped via Regional Route 4 (Midwest Hub).
-                        Packaging reinforcement recommended.
+                        14% damage rate on Dyson vacuums shipped via Regional
+                        Route 4 (Midwest Hub). Packaging reinforcement
+                        recommended.
                       </p>
                     </div>
                   </CardContent>
@@ -1361,8 +1589,8 @@ export default function Dashboard() {
             </TabsContent>
 
             {/* ══════════════ TAB 4: AGENT DIAGNOSTICS ══════════════ */}
-            <TabsContent value="agents" className="space-y-6 mt-0">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <TabsContent value="agents" className="mt-0 space-y-6">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {agentHealthData.map((agent) => {
                   const Icon = agent.icon;
                   const isDegraded = agent.status === 'degraded';
@@ -1377,69 +1605,84 @@ export default function Dashboard() {
                     >
                       <CardHeader className="p-5 pb-3">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <div
-                              className={`w-7 h-7 rounded-md flex items-center justify-center ${
-                                isDegraded
-                                  ? 'bg-amber-100 text-amber-800'
-                                  : 'bg-neutral-100 text-neutral-800'
-                              }`}
+                          <div className="flex items-center gap-2.5">
+                            {/* Agent Avatar with status badge */}
+                            <Avatar
+                              size="default"
+                              className="shrink-0 border border-neutral-200"
                             >
-                              <Icon className="w-3.5 h-3.5" />
-                            </div>
+                              <AvatarFallback
+                                className={
+                                  isDegraded
+                                    ? 'bg-amber-100 text-amber-900'
+                                    : 'bg-neutral-100 text-neutral-900'
+                                }
+                              >
+                                <Icon className="h-3.5 w-3.5" />
+                              </AvatarFallback>
+                              <AvatarBadge
+                                className={
+                                  isDegraded ? 'bg-amber-500' : 'bg-emerald-500'
+                                }
+                              />
+                            </Avatar>
                             <div>
                               <div className="text-xs font-semibold text-neutral-950">
                                 {agent.name}
                               </div>
-                              <div className="text-[10px] font-mono text-neutral-400">
+                              <div className="font-mono text-[10px] text-neutral-400">
                                 Agent {agent.id}
                               </div>
                             </div>
                           </div>
                           <Badge
                             variant="outline"
-                            className={`rounded-full text-[10px] font-mono font-medium px-2 py-0.5 ${
+                            className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-medium ${
                               isDegraded
-                                ? 'bg-amber-100 text-amber-900 border-amber-300'
-                                : 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                                ? 'border-amber-300 bg-amber-100 text-amber-900'
+                                : 'border-emerald-200 bg-emerald-50 text-emerald-800'
                             }`}
                           >
                             {isDegraded ? '⚠ Degraded' : '● Healthy'}
                           </Badge>
                         </div>
                       </CardHeader>
-                      <CardContent className="p-5 pt-0 space-y-3">
-                        <p className="text-[11px] text-neutral-500 leading-normal min-h-[32px]">
+                      <CardContent className="space-y-3 p-5 pt-0">
+                        <p className="min-h-[32px] text-[11px] leading-normal text-neutral-500">
                           {agent.description}
                         </p>
                         <Separator className="bg-neutral-100" />
-                        <div className="grid grid-cols-3 gap-2 font-mono text-center pt-1">
+                        <div className="grid grid-cols-3 gap-2 pt-1 text-center font-mono">
                           <div>
-                            <div className="text-[9px] uppercase text-neutral-400 mb-0.5">
+                            <div className="mb-0.5 text-[9px] uppercase text-neutral-400">
                               Latency
                             </div>
                             <div
                               className={`text-xs font-medium ${
-                                isDegraded ? 'text-amber-700' : 'text-neutral-900'
+                                isDegraded
+                                  ? 'text-amber-700'
+                                  : 'text-neutral-900'
                               }`}
                             >
                               {agent.latency}
                             </div>
                           </div>
                           <div>
-                            <div className="text-[9px] uppercase text-neutral-400 mb-0.5">
+                            <div className="mb-0.5 text-[9px] uppercase text-neutral-400">
                               Errors
                             </div>
                             <div
                               className={`text-xs font-medium ${
-                                isDegraded ? 'text-amber-700' : 'text-neutral-900'
+                                isDegraded
+                                  ? 'text-amber-700'
+                                  : 'text-neutral-900'
                               }`}
                             >
                               {agent.errorRate}
                             </div>
                           </div>
                           <div>
-                            <div className="text-[9px] uppercase text-neutral-400 mb-0.5">
+                            <div className="mb-0.5 text-[9px] uppercase text-neutral-400">
                               Uptime
                             </div>
                             <div className="text-xs font-medium text-neutral-900">
@@ -1456,10 +1699,10 @@ export default function Dashboard() {
           </Tabs>
 
           {/* ── Agent Health Strip (Bottom Persistent) ── */}
-          <div className="pt-4 border-t border-neutral-200">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="border-t border-neutral-200 pt-4">
+            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div className="flex items-center gap-3">
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                <div className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
                 <span className="text-xs font-medium text-neutral-800">
                   Cluster Status: 3 Operational · 1 Degraded
                 </span>
@@ -1467,6 +1710,15 @@ export default function Dashboard() {
                 <span className="font-mono text-xs text-neutral-400">
                   ReturnIQ Cluster v2.1.0 · LLM Backend: GPT-4o
                 </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge
+                  variant="outline"
+                  className="rounded-full border-neutral-200 bg-neutral-100 px-2.5 py-0.5 font-mono text-[10px] text-neutral-600"
+                >
+                  <SlidersHorizontal className="mr-1 h-3 w-3 text-neutral-400" />
+                  Policy Autonomy: L3 Supervised
+                </Badge>
               </div>
             </div>
           </div>
