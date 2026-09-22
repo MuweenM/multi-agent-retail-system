@@ -25,6 +25,7 @@ RULES = [
             "malfunctioning",
             "poor assembly",
             "broken on arrival",
+            "cracked",
             "manufacturing issue",
             "faulty product",
             "defective product",
