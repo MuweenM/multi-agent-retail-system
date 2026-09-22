@@ -2,6 +2,7 @@ import pytest
 
 from retail_common.schemas.rootcause import RootCauseOutput
 from app.rootcause_classifier import analyze_issue
+from app.tools import rootcause
 
 
 @pytest.mark.parametrize(
@@ -81,3 +82,37 @@ def test_valid_rootcause_output_fields_for_unknown_case():
     assert result.top_candidate == "unknown"
     assert result.candidates[0].label == "unknown"
     assert result.confidence == 0.0
+
+
+@pytest.mark.parametrize("product", ["", "   "])
+def test_public_tool_rejects_empty_product(product):
+    with pytest.raises(ValueError, match="product must not be empty or whitespace-only"):
+        rootcause.analyze_root_cause(product, "stopped working")
+
+
+@pytest.mark.parametrize("issue", ["", "   "])
+def test_public_tool_rejects_empty_issue(issue):
+    with pytest.raises(ValueError, match="issue must not be empty or whitespace-only"):
+        rootcause.analyze_root_cause("wireless earbuds", issue)
+
+
+def test_public_tool_delegates_and_returns_rootcause_output(monkeypatch):
+    expected = RootCauseOutput(
+        product="wireless earbuds",
+        issue="stopped working",
+        candidates=[],
+        top_candidate="manufacturing defect",
+        confidence=0.9,
+    )
+    calls = []
+
+    def fake_analyze_issue(product, issue):
+        calls.append((product, issue))
+        return expected
+
+    monkeypatch.setattr(rootcause, "analyze_issue", fake_analyze_issue)
+
+    result = rootcause.analyze_root_cause("wireless earbuds", "stopped working")
+
+    assert result is expected
+    assert calls == [("wireless earbuds", "stopped working")]
