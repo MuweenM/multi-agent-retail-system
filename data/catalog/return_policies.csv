@@ -1,0 +1,5 @@
+category,window_days,non_returnable_unless_defective
+electronics,14,false
+fashion,14,false
+home,7,false
+grocery,2,true

@@ -1,21 +1,18 @@
 import re
 
 from retail_common.schemas.rootcause import RootCauseCandidate, RootCauseOutput
+from retail_common.taxonomy import ROOT_CAUSES
 
-LABELS = [
-    "manufacturing defect",
-    "shipping or packaging damage",
-    "wrong item fulfilled",
-    "size or fit issue",
-    "quality or material issue",
-    "missing parts or accessories",
-    "customer preference",
-    "unknown",
-]
+LABELS = list(ROOT_CAUSES)
+
+
+def assert_valid_label(label: str) -> None:
+    if label not in ROOT_CAUSES:
+        raise ValueError(f"invalid root-cause label: {label}")
 
 RULES = [
     (
-        "manufacturing defect",
+        "manufacturing_defect",
         [
             "stopped working",
             "not working",
@@ -32,7 +29,7 @@ RULES = [
         ],
     ),
     (
-        "shipping or packaging damage",
+        "damaged_in_transit",
         [
             "damaged in transit",
             "shipping damage",
@@ -46,7 +43,7 @@ RULES = [
         ],
     ),
     (
-        "wrong item fulfilled",
+        "wrong_item_shipped",
         [
             "wrong item",
             "wrong product",
@@ -60,7 +57,7 @@ RULES = [
         ],
     ),
     (
-        "size or fit issue",
+        "size_fit_issue",
         [
             "too small",
             "too large",
@@ -73,7 +70,7 @@ RULES = [
         ],
     ),
     (
-        "quality or material issue",
+        "quality_durability",
         [
             "poor quality",
             "low quality",
@@ -86,7 +83,7 @@ RULES = [
         ],
     ),
     (
-        "missing parts or accessories",
+        "not_as_described",
         [
             "missing parts",
             "missing accessories",
@@ -98,7 +95,7 @@ RULES = [
         ],
     ),
     (
-        "customer preference",
+        "change_of_mind",
         [
             "changed their mind",
             "changed my mind",
@@ -123,7 +120,9 @@ def _normalize_text(value: str) -> str:
 
 
 def _score_label(label: str, issue_text: str) -> float:
+    assert_valid_label(label)
     for rule_label, keywords in RULES:
+        assert_valid_label(rule_label)
         if rule_label != label:
             continue
 
@@ -148,6 +147,7 @@ def analyze_issue(product: str, issue: str) -> RootCauseOutput:
     combined_text = " ".join(part for part in [product_text, issue_text] if part).strip()
 
     if not combined_text:
+        assert_valid_label("unknown")
         unknown_candidate = RootCauseCandidate(
             label="unknown",
             score=0.0,
@@ -163,6 +163,7 @@ def analyze_issue(product: str, issue: str) -> RootCauseOutput:
 
     candidate_scores = []
     for label in LABELS:
+        assert_valid_label(label)
         score = _score_label(label, combined_text)
         candidate_scores.append(
             RootCauseCandidate(
@@ -175,6 +176,7 @@ def analyze_issue(product: str, issue: str) -> RootCauseOutput:
     candidate_scores.sort(key=lambda item: (-item.score, item.label))
 
     top_candidate = candidate_scores[0].label if candidate_scores else "unknown"
+    assert_valid_label(top_candidate)
     top_score = candidate_scores[0].score if candidate_scores else 0.0
 
     if top_score == 0.0:
@@ -185,6 +187,7 @@ def analyze_issue(product: str, issue: str) -> RootCauseOutput:
                 candidate.supporting_return_count = 0
                 break
         top_candidate = "unknown"
+        assert_valid_label(top_candidate)
         top_score = 0.0
 
     return RootCauseOutput(

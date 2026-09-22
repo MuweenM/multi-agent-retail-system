@@ -1,24 +1,25 @@
 import pytest
 
 from retail_common.schemas.rootcause import RootCauseOutput
-from app.rootcause_classifier import analyze_issue
+from retail_common.taxonomy import ROOT_CAUSES
+from app.rootcause_classifier import analyze_issue, assert_valid_label
 from app.tools import rootcause
 
 
 @pytest.mark.parametrize(
     ("product", "issue", "expected_label"),
     [
-        ("wireless earbuds", "one earbud stopped working after two days", "manufacturing defect"),
+        ("wireless earbuds", "one earbud stopped working after two days", "manufacturing_defect"),
         (
             "ceramic coffee mug set",
             "box arrived crushed and the mug was chipped in transit",
-            "shipping or packaging damage",
+            "damaged_in_transit",
         ),
-        ("running shoes", "received the wrong pair and not the model I ordered", "wrong item fulfilled"),
-        ("jeans", "too small around the waist and does not fit", "size or fit issue"),
-        ("cotton shirt", "fabric feels flimsy and poor quality after first wash", "quality or material issue"),
-        ("tablet", "missing charger and case from the package", "missing parts or accessories"),
-        ("lamp", "customer changed their mind and prefers a different color", "customer preference"),
+        ("running shoes", "received the wrong pair and not the model I ordered", "wrong_item_shipped"),
+        ("jeans", "too small around the waist and does not fit", "size_fit_issue"),
+        ("cotton shirt", "fabric feels flimsy and poor quality after first wash", "quality_durability"),
+        ("tablet", "missing charger and case from the package", "not_as_described"),
+        ("lamp", "customer changed their mind and prefers a different color", "change_of_mind"),
     ],
 )
 def test_known_issue_classifications(product, issue, expected_label):
@@ -44,7 +45,7 @@ def test_unknown_fallback_when_no_rule_matches():
 def test_whitespace_normalization():
     result = analyze_issue("  wireless earbuds  ", "   one   earbud   stopped   working   after   two   days   ")
 
-    assert result.top_candidate == "manufacturing defect"
+    assert result.top_candidate == "manufacturing_defect"
     assert result.product == "  wireless earbuds  "
     assert result.issue == "   one   earbud   stopped   working   after   two   days   "
 
@@ -52,7 +53,7 @@ def test_whitespace_normalization():
 def test_case_insensitive_matching():
     result = analyze_issue("tablet", "MISSING CHARGER AND CASE FROM THE PACKAGE")
 
-    assert result.top_candidate == "missing parts or accessories"
+    assert result.top_candidate == "not_as_described"
 
 
 def test_deterministic_candidate_ordering():
@@ -67,7 +68,21 @@ def test_confidence_range_and_output_shape():
     result = analyze_issue("lamp", "the product arrived damaged in transit")
 
     assert isinstance(result, RootCauseOutput)
-    assert set(type(result).model_fields.keys()) == {"product", "issue", "candidates", "top_candidate", "confidence"}
+    assert set(type(result).model_fields.keys()) == {
+        "product",
+        "issue",
+        "candidates",
+        "top_candidate",
+        "confidence",
+        "product_id",
+        "supplier_id",
+        "model_name",
+        "model_version",
+        "is_emerging_spike",
+        "abuse_risk",
+        "notes",
+    }
+    assert all(candidate.label in ROOT_CAUSES for candidate in result.candidates)
     assert all(0.0 <= candidate.score <= 1.0 for candidate in result.candidates)
     assert all(candidate.supporting_return_count >= 0 for candidate in result.candidates)
     assert 0.0 <= result.confidence <= 1.0
@@ -101,7 +116,7 @@ def test_public_tool_delegates_and_returns_rootcause_output(monkeypatch):
         product="wireless earbuds",
         issue="stopped working",
         candidates=[],
-        top_candidate="manufacturing defect",
+        top_candidate="manufacturing_defect",
         confidence=0.9,
     )
     calls = []
@@ -116,3 +131,13 @@ def test_public_tool_delegates_and_returns_rootcause_output(monkeypatch):
 
     assert result is expected
     assert calls == [("wireless earbuds", "stopped working")]
+
+
+def test_assert_valid_label_accepts_shared_taxonomy_values():
+    for label in ROOT_CAUSES:
+        assert_valid_label(label)
+
+
+def test_assert_valid_label_rejects_unrecognized_values():
+    with pytest.raises(ValueError, match="invalid root-cause label"):
+        assert_valid_label("manufacturing defect")
