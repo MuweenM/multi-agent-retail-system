@@ -1,0 +1,9 @@
+supplier_id,name,country,quality_tier
+S-01,Lanka Electronics Components,Sri Lanka,Tier-1
+S-02,Shenzhen Techway Industrial,China,Tier-2
+S-03,Southern Power Cell Co,China,Tier-3
+S-04,Colombo Apparel Mills,Sri Lanka,Tier-1
+S-05,Kandy Garments & Textile,Sri Lanka,Tier-2
+S-06,Ceylon Living & Ceramics,Sri Lanka,Tier-1
+S-07,Apex Home Essentials,India,Tier-2
+S-08,Island Agro Packaged Goods,Sri Lanka,Tier-1
