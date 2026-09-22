@@ -1,13 +1,11 @@
 from pydantic import BaseModel, Field
 
-
 class AgentStep(BaseModel):
     agent: str
     tool: str
     ok: bool
     latency_ms: int
     note: str = ""
-
 
 class DecisionOutput(BaseModel):
     root_cause: str

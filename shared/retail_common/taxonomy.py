@@ -1,3 +1,8 @@
+"""
+Shared taxonomy tuples for the retail return intelligence system.
+Values represent the standard vocabulary across all agents and contracts.
+"""
+
 ROOT_CAUSES = (
     "manufacturing_defect", "damaged_in_transit", "wrong_item_shipped",
     "size_fit_issue", "not_as_described", "quality_durability",

@@ -1,4 +1,8 @@
-from .bulk import (
+from shared.retail_common.schemas.intake import Entity, IntakeOutput
+from shared.retail_common.schemas.rootcause import RootCauseCandidate, RootCauseOutput
+from shared.retail_common.schemas.evidence import EvidenceItem, EvidenceOutput
+from shared.retail_common.schemas.decision import AgentStep, DecisionOutput
+from shared.retail_common.schemas.bulk import (
     BulkJob,
     BulkRow,
     BulkSummary,
@@ -7,10 +11,6 @@ from .bulk import (
     ProductRootCauseReport,
     RowError,
 )
-from .decision import AgentStep, DecisionOutput
-from .evidence import EvidenceItem, EvidenceOutput
-from .intake import Entity, IntakeOutput
-from .rootcause import RootCauseCandidate, RootCauseOutput
 
 __all__ = [
     "Entity",

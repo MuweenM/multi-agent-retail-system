@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Field
 
-
 class EvidenceItem(BaseModel):
     source_type: str                # see SOURCE_TYPES
     source_id: str
@@ -13,7 +12,6 @@ class EvidenceItem(BaseModel):
     zone: str = ""                  # title | body | supplier_notes
     label_hint: str | None = None   # root-cause label this passage supports, if known
     metadata: dict[str, str] = Field(default_factory=dict)
-
 
 class EvidenceOutput(BaseModel):
     query: str

@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Field
 
-
 class BulkRow(BaseModel):
     return_id: str = ""
     text: str
@@ -13,12 +12,10 @@ class BulkRow(BaseModel):
     store_id: str | None = None
     courier: str | None = None
 
-
 class RowError(BaseModel):
     row: int
     field: str
     reason: str
-
 
 class BulkJob(BaseModel):
     job_id: str
@@ -27,7 +24,6 @@ class BulkJob(BaseModel):
     processed: int = 0
     failed: int = 0
     errors: list[RowError] = Field(default_factory=list)
-
 
 class Finding(BaseModel):
     kind: str                       # root_cause | product | supplier | batch | cluster | spike
@@ -40,14 +36,12 @@ class Finding(BaseModel):
     supplier_id: str | None = None
     batch_id: str | None = None
 
-
 class IssueCluster(BaseModel):
     cluster_id: int
     size: int
     top_terms: list[str]
     dominant_root_cause: str
     growth_vs_prev: float | None = None
-
 
 class BulkSummary(BaseModel):
     job_id: str
@@ -59,7 +53,6 @@ class BulkSummary(BaseModel):
     needs_review: int = 0
     est_value_at_risk_lkr: float = 0.0
     executive_summary: str = ""
-
 
 class ProductRootCauseReport(BaseModel):
     product_id: str

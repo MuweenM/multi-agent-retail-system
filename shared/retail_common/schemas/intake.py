@@ -1,12 +1,10 @@
 from pydantic import BaseModel, Field
 
-
 class Entity(BaseModel):
     type: str                       # PRODUCT | BRAND | ORDER_ID | SKU | SIZE | COLOR | AMOUNT | DATE
     text: str
     start: int | None = None
     end: int | None = None
-
 
 class IntakeOutput(BaseModel):
     raw_text: str                   # v1.0. Agent 1 returns "" here; Agent 4 keeps the original encrypted
@@ -14,7 +12,7 @@ class IntakeOutput(BaseModel):
     issue: str
     intent: str
     sentiment: str
-    confidence: float = 0.0
+    confidence: float
     # v1.1 additions
     return_id: str = ""
     tenant_id: str = "demo"

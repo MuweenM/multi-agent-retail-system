@@ -1,12 +1,10 @@
 from pydantic import BaseModel, Field
 
-
 class RootCauseCandidate(BaseModel):
     label: str
     score: float
     supporting_return_count: int = 0
     top_terms: list[str] = Field(default_factory=list)   # words that pushed this label up
-
 
 class RootCauseOutput(BaseModel):
     product: str

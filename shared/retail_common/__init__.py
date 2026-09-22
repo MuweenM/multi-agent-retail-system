@@ -1,6 +1,5 @@
 """
-Shared retail_common package.
+Shared package for multi-agent retail system.
 """
-CONTRACT_VERSION = "1.1"
 
-__all__ = ["CONTRACT_VERSION"]
+CONTRACT_VERSION = "1.1"
