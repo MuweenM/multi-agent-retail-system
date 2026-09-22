@@ -1,15 +1,11 @@
-"""
-Agent 2 (Root Cause Analysis) output contract.
-
-TODO (Agent 2 owner): confirm/adjust fields to match your clustering logic.
-"""
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class RootCauseCandidate(BaseModel):
-    label: str              # TODO: e.g. "manufacturing defect"
+    label: str
     score: float
     supporting_return_count: int = 0
+    top_terms: list[str] = Field(default_factory=list)   # words that pushed this label up
 
 
 class RootCauseOutput(BaseModel):
@@ -18,3 +14,11 @@ class RootCauseOutput(BaseModel):
     candidates: list[RootCauseCandidate]
     top_candidate: str
     confidence: float
+    # v1.1 additions
+    product_id: str | None = None
+    supplier_id: str | None = None
+    model_name: str = ""            # e.g. tfidf_logreg_v3, or llm_fallback
+    model_version: str = ""
+    is_emerging_spike: bool = False
+    abuse_risk: float = 0.0         # 0..1, behavioural features only
+    notes: list[str] = Field(default_factory=list)
