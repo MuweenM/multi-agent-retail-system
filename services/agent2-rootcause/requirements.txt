@@ -1,5 +1,5 @@
 # TODO: add/remove packages as your implementation needs
-mcp[cli]>=1.2.0
+mcp>=1.30,<2
 pydantic>=2.7
 pydantic-settings>=2.3
 python-dotenv>=1.0
