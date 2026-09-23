@@ -1,0 +1,41 @@
+product_id,name,brand,category,price_lkr,supplier_id,return_window_days
+P-001,Ceylon BOPF Pure Black Tea 500g,Ceylon Crown,grocery,1450.0,S-08,2
+P-002,Roasted & Ground Coffee 250g,Hillside Roast,grocery,1850.0,S-08,2
+P-003,Pure Bee Honey 350g,WildNectar,grocery,2100.0,S-08,2
+P-004,Traditional Kithul Treacle 750ml,GreenHills,grocery,1950.0,S-08,2
+P-005,Organic Virgin Coconut Oil 500ml,LankaPure,grocery,1650.0,S-08,2
+P-006,Sri Lankan Cinnamon Sticks 100g,SpiceLanka,grocery,950.0,S-08,2
+P-007,Sweet Mango Chutney 350g,TropicalTable,grocery,750.0,S-08,2
+P-008,Toasted Cashew Nuts Salted 200g,IslandHarvest,grocery,2200.0,S-08,2
+P-009,True Wireless Stereo Earbuds,SoundWave,electronics,7900.0,S-02,14
+P-010,Bluetooth Sport Neckband Earphones,SoundWave,electronics,4200.0,S-02,14
+P-011,4G Android Smartphone 64GB,Spark,electronics,38500.0,S-01,14
+P-012,5G Android Smartphone 128GB,Spark,electronics,62000.0,S-01,14
+P-013,Fast USB-C Wall Charger 30W,VoltMaster,electronics,2800.0,S-02,14
+P-014,20000 mAh Fast Charge Power Bank,PowerPulse,electronics,7500.0,S-03,14
+P-015,10000 mAh Slim Power Bank,PowerPulse,electronics,4900.0,S-02,14
+P-016,Braided USB-C to Lightning Cable,VoltMaster,electronics,1600.0,S-02,14
+P-017,Multi-Port USB Desktop Charger,VoltMaster,electronics,3900.0,S-02,14
+P-018,Wireless Desktop Charging Pad 15W,VoltMaster,electronics,3400.0,S-02,14
+P-019,Men's Casual Linen Shirt,IslandWeave,fashion,4500.0,S-04,14
+P-020,Women's Floral Summer Dress,CeylonGrace,fashion,6200.0,S-04,14
+P-021,Unisex Crewneck Cotton T-Shirt,IslandWeave,fashion,2200.0,S-04,14
+P-022,Men's Regular Fit Denim Jeans,RuggedBlue,fashion,5800.0,S-04,14
+P-023,Women's High-Rise Denim Jeans,RuggedBlue,fashion,5900.0,S-04,14
+P-024,Formal Office Trousers,ExecutiveCut,fashion,4800.0,S-05,14
+P-025,Women's Formal Work Blouse,ExecutiveCut,fashion,3600.0,S-05,14
+P-026,Lightweight Zip Hoodie,UrbanPulse,fashion,5200.0,S-04,14
+P-027,Slim-Fit Formal Cotton Shirt,ExecutiveCut,fashion,4200.0,S-05,14
+P-028,Men's Chino Shorts,IslandWeave,fashion,3100.0,S-05,14
+P-029,Cotton Batik Sarong,HeritageLanka,fashion,2900.0,S-04,14
+P-030,Pack of 3 Cotton Ankle Socks,DailyWear,fashion,1200.0,S-05,14
+P-031,Stainless Steel Electric Kettle 1.8L,Ceylinco Home,home,4600.0,S-07,7
+P-032,Non-Stick Induction Frying Pan 26cm,Apex Chef,home,3800.0,S-07,7
+P-033,Ceramic Dinner Set 16-Piece,Ceylon Living,home,14500.0,S-06,7
+P-034,Memory Foam Pillow Ergonomic,ComfortRest,home,3900.0,S-06,7
+P-035,Cotton Double Bed Sheet Set,ComfortRest,home,4800.0,S-06,7
+P-036,Wall Mounted Kitchen Spice Rack,Apex Home,home,2400.0,S-07,7
+P-037,Rechargeable LED Emergency Lamp,Ceylinco Home,home,3200.0,S-01,7
+P-038,Handheld Garment Steamer 1000W,Ceylinco Home,home,7200.0,S-07,7
+P-039,Microfiber Floor Mop with Bucket,CleanPro,home,3500.0,S-07,7
+P-040,Thermal Insulated Water Bottle 1L,PeakGear,home,2800.0,S-07,7
