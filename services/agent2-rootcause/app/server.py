@@ -7,6 +7,7 @@ from retail_common.schemas.rootcause import RootCauseCandidate, RootCauseOutput
 from retail_common.taxonomy import ROOT_CAUSES
 
 from app.tools.analyze_root_cause import analyze_root_cause as classify_root_cause
+from app.tools.product_report import analyze_product_root_cause as generate_product_report
 
 
 server = FastMCP(
@@ -76,7 +77,7 @@ def analyze_product_root_cause(
     window_days: int = 90,
     tenant_id: str = "demo",
 ) -> ProductRootCauseReport:
-    """Return a schema-valid Phase 1 product root-cause report stub."""
+    """Perform per-product root-cause investigation."""
     validation_error = _validate_text(product_id, "product_id") or _validate_tenant(tenant_id)
     if not isinstance(window_days, int) or isinstance(window_days, bool) or window_days <= 0:
         validation_error = validation_error or "window_days must be a positive integer"
@@ -94,15 +95,10 @@ def analyze_product_root_cause(
         )
 
     try:
-        return ProductRootCauseReport(
+        return generate_product_report(
             product_id=product_id,
             window_days=window_days,
-            total_returns=0,
-            label_distribution={label: 0 for label in ROOT_CAUSES},
-            weekly_trend=[],
-            suppliers=[],
-            headline=f"Phase 1 report stub for {product_id}",
-            recommended_actions=[],
+            tenant_id=tenant_id,
         )
     except Exception as exc:
         return ProductRootCauseReport(
