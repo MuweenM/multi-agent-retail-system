@@ -1,3 +1,8 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
+
 import time
 import json
 import asyncio
@@ -23,7 +28,7 @@ async def call_agent(url: str, tool: str, arguments: dict[str, Any], agent_name:
         try:
             headers = {"X-Service-Secret": settings.service_secret}
             async with streamable_http_client(url, headers=headers) as streams:
-                async with ClientSession(*streams) as session:
+                async with ClientSession(streams[0], streams[1]) as session:
                     await session.initialize()
                     
                     result = await asyncio.wait_for(

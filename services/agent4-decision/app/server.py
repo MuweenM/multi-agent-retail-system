@@ -1,3 +1,8 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
+
 from contextlib import asynccontextmanager
 from typing import Optional, Dict, Any
 from fastapi import FastAPI, Depends, HTTPException, Request
@@ -155,3 +160,9 @@ async def process_return(
     log_audit_event(tenant_id, user_id, "process_return", result.return_id, result.decision, models_used)
     
     return result
+
+if __name__ == "__main__":
+    import uvicorn
+    import os
+    port = int(os.getenv("AGENT4_PORT", "8004"))
+    uvicorn.run("app.server:app", host="0.0.0.0", port=port)

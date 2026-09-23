@@ -34,7 +34,12 @@ from shared.retail_common.schemas.intake import IntakeOutput, Entity
 from shared.retail_common.schemas.bulk import BulkRow, RowError
 
 # Initialize FastMCP Server
-mcp = FastMCP("Agent1-Intake")
+mcp = FastMCP(
+    "Agent1-Intake",
+    host="0.0.0.0",
+    port=8001,
+    streamable_http_path="/mcp",
+)
 
 
 @mcp.tool()
