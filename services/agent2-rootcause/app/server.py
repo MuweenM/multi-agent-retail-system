@@ -6,7 +6,7 @@ from retail_common.schemas.bulk import BulkSummary, ProductRootCauseReport
 from retail_common.schemas.rootcause import RootCauseCandidate, RootCauseOutput
 from retail_common.taxonomy import ROOT_CAUSES
 
-from app.tools.rootcause import analyze_root_cause as classify_root_cause
+from app.tools.analyze_root_cause import analyze_root_cause as classify_root_cause
 
 
 server = FastMCP(
@@ -47,21 +47,24 @@ def analyze_root_cause(
     customer_ref: str | None = None,
     tenant_id: str = "demo",
 ) -> RootCauseOutput:
-    """Classify one return with taxonomy-backed Phase 1 root-cause output."""
-    del customer_ref
+    """Classify one return using the trained ML pipeline with LLM fallback."""
     validation_error = _validate_text(product, "product") or _validate_text(issue, "issue")
     validation_error = validation_error or _validate_tenant(tenant_id)
     if validation_error:
         return _error_root_cause(product, issue, validation_error)
 
     try:
-        result = classify_root_cause(product, issue)
+        result = classify_root_cause(
+            product=product,
+            issue=issue,
+            product_id=product_id,
+            customer_ref=customer_ref,
+            tenant_id=tenant_id,
+        )
+        # Ensure only valid taxonomy labels pass through and limit to 3 candidates
         result.candidates = [
             candidate for candidate in result.candidates if candidate.label in ROOT_CAUSES
         ][:3]
-        result.product_id = product_id
-        result.model_name = "phase1_stub"
-        result.notes = [f"tenant_id={tenant_id}"]
         return result
     except Exception as exc:
         return _error_root_cause(product, issue, f"root-cause analysis failed: {exc}")
