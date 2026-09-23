@@ -1,9 +1,12 @@
 # TODO: add/remove packages as your implementation needs
-mcp[cli]>=1.2.0
+mcp>=1.30,<2
 pydantic>=2.7
 pydantic-settings>=2.3
 python-dotenv>=1.0
 scikit-learn>=1.5
+imbalanced-learn>=0.12
+matplotlib>=3.8
+joblib>=1.3
 sqlalchemy>=2.0
 psycopg2-binary>=2.9
--e /shared
+-e ./shared
