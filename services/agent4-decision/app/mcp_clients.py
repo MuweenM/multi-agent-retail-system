@@ -6,6 +6,7 @@ from mcp.client.session import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 from shared.retail_common.schemas import AgentStep
 from shared.retail_common.logging_config import get_logger
+from shared.retail_common.config import settings
 
 logger = get_logger("mcp_clients")
 
@@ -20,7 +21,8 @@ async def call_agent(url: str, tool: str, arguments: dict[str, Any], agent_name:
     
     for attempt in range(retries + 1):
         try:
-            async with streamable_http_client(url) as streams:
+            headers = {"X-Service-Secret": settings.service_secret}
+            async with streamable_http_client(url, headers=headers) as streams:
                 async with ClientSession(*streams) as session:
                     await session.initialize()
                     

@@ -32,6 +32,12 @@ class Settings(BaseSettings):
     # Security
     jwt_secret: str
     jwt_algorithm: str
+    service_secret: str = "demo-service-secret"
+    encryption_key: str = "TfOxgZfL1F_6hXmEIt8xM3F2A0rXN1CqF_XQG-yV6y4=" # Default Fernet key for demo
+
+    # System Policies & Thresholds
+    high_value_lkr: float = 100000.0
+    human_review_min_confidence: float = 0.75
 
     # Misc
     env: str

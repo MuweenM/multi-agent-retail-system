@@ -100,9 +100,30 @@ def extract_return_info_batch(
         }
 
 
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from contextlib import asynccontextmanager
+import uvicorn
+from shared.retail_common.config import settings
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    _ = mcp.streamable_http_app()
+    async with mcp.session_manager.run():
+        yield
+        
+app = FastAPI(title="Agent 1 Intake", lifespan=lifespan)
+
+@app.middleware("http")
+async def verify_service_secret(request: Request, call_next):
+    if request.url.path.startswith("/"):
+        secret = request.headers.get("X-Service-Secret")
+        if secret != settings.service_secret:
+            return JSONResponse(status_code=403, content={"detail": "Invalid service secret"})
+    return await call_next(request)
+    
+app.mount("/mcp", mcp.streamable_http_app())
+
 if __name__ == "__main__":
     port = int(os.getenv("AGENT1_PORT", "8001"))
-    try:
-        mcp.run(transport="streamable-http", host="0.0.0.0", port=port)
-    except TypeError:
-        mcp.run(transport="streamable-http")
+    uvicorn.run(app, host="0.0.0.0", port=port)
