@@ -8,6 +8,7 @@ from retail_common.taxonomy import ROOT_CAUSES
 
 from app.tools.analyze_root_cause import analyze_root_cause as classify_root_cause
 from app.tools.product_report import analyze_product_root_cause as generate_product_report
+from app.tools.bulk_patterns import analyze_bulk_patterns as generate_bulk_summary
 
 
 server = FastMCP(
@@ -115,7 +116,7 @@ def analyze_product_root_cause(
 
 @server.tool()
 def analyze_bulk_patterns(job_id: str, tenant_id: str = "demo") -> BulkSummary:
-    """Return a schema-valid Phase 1 bulk-pattern summary stub."""
+    """Perform bulk pattern analysis, issue clustering, and impact ranking."""
     validation_error = _validate_text(job_id, "job_id") or _validate_tenant(tenant_id)
     if validation_error:
         return BulkSummary(
@@ -124,9 +125,9 @@ def analyze_bulk_patterns(job_id: str, tenant_id: str = "demo") -> BulkSummary:
         )
 
     try:
-        return BulkSummary(
+        return generate_bulk_summary(
             job_id=job_id,
-            executive_summary=f"Phase 1 bulk-pattern summary stub for tenant {tenant_id}",
+            tenant_id=tenant_id,
         )
     except Exception as exc:
         return BulkSummary(
