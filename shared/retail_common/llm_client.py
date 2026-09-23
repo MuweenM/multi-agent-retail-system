@@ -15,7 +15,12 @@ logger = get_logger(__name__)
 _client = Anthropic(api_key=settings.llm_api_key) if settings.llm_api_key else None
 
 
-def call_llm(prompt: str, system: str | None = None, max_tokens: int = 1000) -> str:
+def call_llm(
+    prompt: str,
+    system: str | None = None,
+    max_tokens: int = 1000,
+    temperature: float = 0.0,
+) -> str:
     """
     Shared LLM call. Every agent should go through this function
     rather than instantiating its own client.
@@ -27,6 +32,7 @@ def call_llm(prompt: str, system: str | None = None, max_tokens: int = 1000) -> 
     response = _client.messages.create(
         model=settings.llm_model,
         max_tokens=max_tokens,
+        temperature=temperature,
         system=system or "",
         messages=[{"role": "user", "content": prompt}],
     )
