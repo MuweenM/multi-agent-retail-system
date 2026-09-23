@@ -1,3 +1,29 @@
+/**
+ * Shared Multi-Agent Retail System TypeScript Contracts
+ * Conforming strictly to `shared/retail_common/schemas/` & `shared/retail_common/taxonomy.py`
+ */
+
+export const CONTRACT_VERSION = "1.1";
+
+// ── Taxonomy Reference ────────────────────────────────────────────────────────
+export type RootCause =
+  | "manufacturing_defect"
+  | "damaged_in_transit"
+  | "wrong_item_shipped"
+  | "size_fit_issue"
+  | "not_as_described"
+  | "quality_durability"
+  | "late_delivery"
+  | "change_of_mind"
+  | "policy_abuse_suspected"
+  | "unknown";
+
+export type Decision = "approve" | "reject" | "escalate" | "request_info";
+
+export type Intent = "return" | "exchange" | "refund" | "complaint" | "unknown";
+
+export type Sentiment = "positive" | "neutral" | "negative";
+
 export interface Entity {
   type: string;
   text: string;
@@ -24,11 +50,12 @@ export interface IntakeOutput {
   flags: string[];
 }
 
+// ── Agent 2 - Root Cause MCP Schemas ───────────────────────────────────────────
 export interface RootCauseCandidate {
   label: string;
   score: number;
-  supporting_return_count: number;
-  top_terms: string[];
+  supporting_return_count?: number;
+  top_terms?: string[];
 }
 
 export interface RootCauseOutput {
@@ -39,11 +66,11 @@ export interface RootCauseOutput {
   confidence: number;
   product_id?: string | null;
   supplier_id?: string | null;
-  model_name: string;
-  model_version: string;
-  is_emerging_spike: boolean;
-  abuse_risk: number;
-  notes: string[];
+  model_name?: string;
+  model_version?: string;
+  is_emerging_spike?: boolean;
+  abuse_risk?: number;
+  notes?: string[];
 }
 
 export interface EvidenceItem {
@@ -92,4 +119,116 @@ export interface DecisionOutput {
   agent_trace: AgentStep[];
   evidence_support: number;
   disclaimer: string;
+}
+
+// ── Bulk Processing Schemas (`shared/retail_common/schemas/bulk.py`) ───────────
+export interface BulkRow {
+  return_id: string;
+  text: string;
+  order_id?: string | null;
+  product_id?: string | null;
+  customer_ref?: string | null;
+  order_value_lkr?: number | null;
+  purchase_date?: string | null;
+  return_date?: string | null;
+  store_id?: string | null;
+  courier?: string | null;
+}
+
+export interface RowError {
+  row: number;
+  field: string;
+  reason: string;
+}
+
+export interface BulkJob {
+  job_id: string;
+  name?: string;
+  created_at?: string;
+  status: "queued" | "running" | "done" | "failed";
+  total: number;
+  processed: number;
+  failed: number;
+  errors: RowError[];
+}
+
+export interface Finding {
+  kind: "root_cause" | "product" | "supplier" | "batch" | "cluster" | "spike" | string;
+  title: string;
+  detail: string;
+  return_count: number;
+  value_at_risk_lkr: number;
+  p_value?: number | null;
+  product_id?: string | null;
+  supplier_id?: string | null;
+  batch_id?: string | null;
+}
+
+export interface IssueCluster {
+  cluster_id: number;
+  size: number;
+  top_terms: string[];
+  dominant_root_cause: string;
+  growth_vs_prev?: number | null;
+}
+
+export interface BulkSummary {
+  job_id: string;
+  total: number;
+  decisions: Record<string, number>;
+  by_root_cause: Record<string, number>;
+  findings: Finding[];
+  clusters: IssueCluster[];
+  needs_review: number;
+  est_value_at_risk_lkr: number;
+  executive_summary: string;
+}
+
+export interface ProductImpactItem {
+  product_id: string;
+  product_name: string;
+  category: string;
+  return_count: number;
+  avg_order_value_lkr: number;
+  value_at_risk_lkr: number;
+  top_root_cause: string;
+  top_root_cause_share: number;
+  is_emerging_spike: boolean;
+}
+
+export interface WeeklyTrendPoint {
+  week: string;
+  counts: Record<string, number>;
+  total?: number;
+}
+
+export interface BatchInvestigationItem {
+  batch_id: string;
+  supplier_id: string;
+  supplier_name: string;
+  mfg_date: string;
+  units_shipped: number;
+  units_returned: number;
+  defect_rate: number;
+  p_value: number;
+  is_suspicious: boolean;
+  primary_cause: string;
+  notes: string;
+}
+
+export interface ProductRootCauseReport {
+  product_id: string;
+  product_name: string;
+  category: string;
+  avg_order_value_lkr: number;
+  window_days: number;
+  total_returns: number;
+  total_units_sold: number;
+  overall_return_rate: number;
+  label_distribution: Record<string, number>;
+  weekly_trend: WeeklyTrendPoint[];
+  suppliers: Finding[];
+  batches: BatchInvestigationItem[];
+  headline: string;
+  recommended_actions: string[];
 }
