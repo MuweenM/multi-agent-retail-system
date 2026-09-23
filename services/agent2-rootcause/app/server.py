@@ -1,10 +1,15 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
+
 from mcp.server.fastmcp import FastMCP
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
-from retail_common.schemas.bulk import BulkSummary, ProductRootCauseReport
-from retail_common.schemas.rootcause import RootCauseCandidate, RootCauseOutput
-from retail_common.taxonomy import ROOT_CAUSES
+from shared.retail_common.schemas.bulk import BulkSummary, ProductRootCauseReport
+from shared.retail_common.schemas.rootcause import RootCauseCandidate, RootCauseOutput
+from shared.retail_common.taxonomy import ROOT_CAUSES
 
 from app.tools.analyze_root_cause import analyze_root_cause as classify_root_cause
 from app.tools.product_report import analyze_product_root_cause as generate_product_report

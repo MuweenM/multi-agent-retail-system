@@ -1,3 +1,8 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
+
 from contextlib import asynccontextmanager
 from typing import Optional
 from fastapi import FastAPI
@@ -59,3 +64,9 @@ class ReturnRequest(BaseModel):
 @app.post("/api/v1/returns", response_model=DecisionOutput)
 async def process_return(req: ReturnRequest):
     return await run_orchestrator(return_text=req.text, tenant_id=req.tenant_id, order_id=req.order_id)
+
+if __name__ == "__main__":
+    import uvicorn
+    import os
+    port = int(os.getenv("AGENT4_PORT", "8004"))
+    uvicorn.run("app.server:app", host="0.0.0.0", port=port)
