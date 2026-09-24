@@ -9,10 +9,10 @@ import json
 import os
 from typing import Optional, List
 
-from shared.retail_common.config import settings
-from shared.retail_common.schemas import DecisionOutput, IntakeOutput, RootCauseOutput, EvidenceOutput, AgentStep
-from shared.retail_common.logging_config import get_logger
-from shared.retail_common.llm_client import call_llm
+from retail_common.config import settings
+from retail_common.schemas import DecisionOutput, IntakeOutput, RootCauseOutput, EvidenceOutput, AgentStep
+from retail_common.logging_config import get_logger
+from retail_common.llm_client import call_llm
 from .mcp_clients import call_agent
 from .policy import apply_policy
 

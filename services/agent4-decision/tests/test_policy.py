@@ -1,6 +1,6 @@
 import pytest
 from app.policy import apply_policy
-from shared.retail_common.config import settings
+from retail_common.config import settings
 
 def test_request_info_low_intake_confidence():
     decision, req_hr, reasons = apply_policy(

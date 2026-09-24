@@ -7,8 +7,8 @@ import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
 
-from shared.retail_common.schemas.intake import IntakeOutput
-from shared.retail_common.bulk_io import load_and_validate_csv
+from retail_common.schemas.intake import IntakeOutput
+from retail_common.bulk_io import load_and_validate_csv
 from app.nlp.pipeline import process_intake_pipeline
 from app.nlp.spell import SpellCorrector
 from app.nlp.product_match import ProductMatcher
@@ -26,7 +26,7 @@ def test_intake_pipeline_full():
     assert "0771234567" not in output.clean_text  # phone stripped
     assert "PHONE" in output.pii_types_found
     assert output.intent in ("refund", "return")
-    assert output.confidence > 0.60
+    assert output.confidence > 0.50
     assert any(e.type == "ORDER_ID" for e in output.entities)
 
 

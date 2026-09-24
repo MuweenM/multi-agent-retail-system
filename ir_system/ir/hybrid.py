@@ -4,8 +4,8 @@ import heapq
 from dataclasses import dataclass, field
 from typing import Any, Iterable
 
-from app.ir.bm25 import BM25Ranker
-from app.ir.dense import DenseRanker
+from ir_system.ir.bm25 import BM25Ranker
+from ir_system.ir.dense import DenseRanker
 from shared.retail_common.schemas.evidence import EvidenceItem
 
 

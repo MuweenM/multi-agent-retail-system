@@ -1,10 +1,10 @@
 import pytest
 from fastapi.testclient import TestClient
-from shared.retail_common.security.auth import create_access_token
+from retail_common.security.auth import create_access_token
 from app.server import app
 
 import io
-from shared.retail_common.db import SessionLocal
+from retail_common.db import SessionLocal
 from sqlalchemy import text
 
 client = TestClient(app)

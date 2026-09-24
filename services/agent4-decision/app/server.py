@@ -15,18 +15,18 @@ import io
 import csv
 import json
 
-from shared.retail_common.schemas import DecisionOutput
-from shared.retail_common.logging_config import get_logger
-from shared.retail_common.db import SessionLocal
+from retail_common.schemas import DecisionOutput
+from retail_common.logging_config import get_logger
+from retail_common.db import SessionLocal
 from sqlalchemy import text
 
-from shared.retail_common.security.auth import verify_password, create_access_token, get_current_user
-from shared.retail_common.security.rbac import RequireRole
-from shared.retail_common.security.ratelimit import check_rate_limit, verify_content_length
-from shared.retail_common.security.audit import log_audit_event
-from shared.retail_common.security.encryption import encrypt_text
-from shared.retail_common.metering import track_usage, write_usage_event, get_usage_for_month, get_tenant_tier, TIERS
-from shared.retail_common.bulk_io import load_and_validate_csv, sanitize_csv_cell
+from retail_common.security.auth import verify_password, create_access_token, get_current_user
+from retail_common.security.rbac import RequireRole
+from retail_common.security.ratelimit import check_rate_limit, verify_content_length
+from retail_common.security.audit import log_audit_event
+from retail_common.security.encryption import encrypt_text
+from retail_common.metering import track_usage, write_usage_event, get_usage_for_month, get_tenant_tier, TIERS
+from retail_common.bulk_io import load_and_validate_csv, sanitize_csv_cell
 from datetime import datetime
 
 from .orchestrator import run_orchestrator

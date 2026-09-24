@@ -10,11 +10,11 @@ from typing import Optional
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 
-from shared.retail_common.security.sanitize import sanitize_text
-from shared.retail_common.security.pii import redact_pii
-from shared.retail_common.text.normalize import normalize_text
-from shared.retail_common.schemas.intake import IntakeOutput, Entity
-from shared.retail_common.llm import call_llm
+from retail_common.security.sanitize import sanitize_text
+from retail_common.security.pii import redact_pii
+from retail_common.text.normalize import normalize_text
+from retail_common.schemas.intake import IntakeOutput, Entity
+from retail_common.llm import call_llm
 from app.nlp.spell import SpellCorrector
 from app.nlp.product_match import ProductMatcher
 from app.nlp.ner import extract_entities

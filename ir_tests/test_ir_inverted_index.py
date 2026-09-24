@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from app.ir.inverted_index import InvertedIndex
+from ir_system.ir.inverted_index import InvertedIndex
 
 
 def _make_corpus() -> list[dict[str, str]]:

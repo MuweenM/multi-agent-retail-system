@@ -1,5 +1,5 @@
 from typing import List, Tuple
-from shared.retail_common.config import settings
+from retail_common.config import settings
 
 def apply_policy(
     intake_confidence: float,

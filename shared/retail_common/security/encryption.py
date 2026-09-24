@@ -1,5 +1,5 @@
 from cryptography.fernet import Fernet
-from shared.retail_common.config import settings
+from retail_common.config import settings
 
 def get_cipher() -> Fernet:
     return Fernet(settings.encryption_key.encode())

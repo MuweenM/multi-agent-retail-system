@@ -3,7 +3,7 @@ from typing import Optional, Any, Callable
 from functools import wraps
 from datetime import datetime
 from fastapi import Request, HTTPException
-from shared.retail_common.db import SessionLocal
+from retail_common.db import SessionLocal
 from sqlalchemy import text
 
 TIERS = {

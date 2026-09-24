@@ -2,8 +2,8 @@ import math
 
 import pytest
 
-from app.ir.bm25 import BM25Ranker
-from app.ir.tfidf_ranker import TFIDFRanker
+from ir_system.ir.bm25 import BM25Ranker
+from ir_system.ir.tfidf_ranker import TFIDFRanker
 
 
 @pytest.fixture

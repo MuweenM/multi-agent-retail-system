@@ -1,6 +1,6 @@
 """Tool wrapper for single return info extraction."""
 
-from shared.retail_common.schemas.intake import IntakeOutput
+from retail_common.schemas.intake import IntakeOutput
 from app.nlp.pipeline import process_intake_pipeline
 
 

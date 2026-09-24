@@ -7,8 +7,8 @@ import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
 
-from shared.retail_common.schemas.intake import IntakeOutput
-from shared.retail_common.schemas.bulk import BulkRow
+from retail_common.schemas.intake import IntakeOutput
+from retail_common.schemas.bulk import BulkRow
 from app.server import extract_return_info, extract_return_info_batch
 
 

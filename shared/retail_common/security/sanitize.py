@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 import re
-from shared.retail_common.text.normalize import normalize_text
+from retail_common.text.normalize import normalize_text
 
 
 @dataclass

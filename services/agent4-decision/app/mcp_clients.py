@@ -9,9 +9,9 @@ import asyncio
 from typing import Any
 from mcp.client.session import ClientSession
 from mcp.client.streamable_http import streamable_http_client
-from shared.retail_common.schemas import AgentStep
-from shared.retail_common.logging_config import get_logger
-from shared.retail_common.config import settings
+from retail_common.schemas import AgentStep
+from retail_common.logging_config import get_logger
+from retail_common.config import settings
 
 logger = get_logger("mcp_clients")
 

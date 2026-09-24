@@ -1,14 +1,16 @@
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch, MagicMock
-from shared.retail_common.security.auth import create_access_token
-from shared.retail_common.config import settings
+from retail_common.security.auth import create_access_token
+from retail_common.config import settings
 
 from app.server import app as agent4_app
 
+import os
 import importlib.util
 import sys
-spec = importlib.util.spec_from_file_location("agent1_server", "services/agent1-intake/app/server.py")
+agent1_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../services/agent1-intake/app/server.py"))
+spec = importlib.util.spec_from_file_location("agent1_server", agent1_path)
 agent1_server = importlib.util.module_from_spec(spec)
 sys.modules["agent1_server"] = agent1_server
 spec.loader.exec_module(agent1_server)
@@ -59,7 +61,7 @@ def test_service_secret_rejection():
 @patch("app.server.run_orchestrator")
 @patch("app.server.SessionLocal")
 def test_injection_text_escalated(mock_session, mock_run):
-    from shared.retail_common.schemas import DecisionOutput
+    from retail_common.schemas import DecisionOutput
     mock_run.return_value = DecisionOutput(
         return_id="RET-123",
         root_cause="unknown",

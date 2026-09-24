@@ -1,6 +1,6 @@
 import json
 from sqlalchemy import text
-from shared.retail_common.db import SessionLocal
+from retail_common.db import SessionLocal
 from typing import List
 
 def log_audit_event(

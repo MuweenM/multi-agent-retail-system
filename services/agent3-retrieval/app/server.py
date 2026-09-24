@@ -8,9 +8,9 @@ from mcp.server.fastmcp import FastMCP
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
-from shared.retail_common.config import settings
-from shared.retail_common.schemas.evidence import EvidenceItem, EvidenceOutput
-from shared.retail_common.taxonomy import ROOT_CAUSES
+from retail_common.config import settings
+from retail_common.schemas.evidence import EvidenceItem, EvidenceOutput
+from retail_common.taxonomy import ROOT_CAUSES
 
 
 def _agent3_port() -> int:
@@ -153,7 +153,7 @@ if __name__ == "__main__":
     from fastapi import FastAPI, Request
     from fastapi.responses import JSONResponse
     from contextlib import asynccontextmanager
-    from shared.retail_common.config import settings
+    from retail_common.config import settings
     
     port = _agent3_port()
     

@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from app.orchestrator import run_orchestrator
-from shared.retail_common.schemas import AgentStep
+from retail_common.schemas import AgentStep
 
 @pytest.mark.asyncio
 @patch("app.orchestrator.call_agent")

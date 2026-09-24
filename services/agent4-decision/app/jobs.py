@@ -3,13 +3,13 @@ import json
 import os
 import uuid
 from typing import List
-from shared.retail_common.schemas.bulk import BulkRow
-from shared.retail_common.db import SessionLocal
-from shared.retail_common.logging_config import get_logger
+from retail_common.schemas.bulk import BulkRow
+from retail_common.db import SessionLocal
+from retail_common.logging_config import get_logger
 from sqlalchemy import text
 from app.orchestrator import run_orchestrator
-from shared.retail_common.security.encryption import encrypt_text
-from shared.retail_common.metering import write_usage_event
+from retail_common.security.encryption import encrypt_text
+from retail_common.metering import write_usage_event
 from app.mcp_clients import call_agent
 
 logger = get_logger("jobs")

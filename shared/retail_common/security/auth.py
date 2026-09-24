@@ -1,11 +1,10 @@
 import jwt
 from datetime import datetime, timedelta, timezone
-from passlib.context import CryptContext
 from fastapi import HTTPException, Security, Header
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Dict, Any, Optional
 
-from shared.retail_common.config import settings
+from retail_common.config import settings
 
 import bcrypt
 

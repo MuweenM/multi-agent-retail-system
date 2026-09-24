@@ -30,8 +30,8 @@ except (ImportError, ModuleNotFoundError):
                 return decorator
             def run(self, *args, **kwargs): pass
 
-from shared.retail_common.schemas.intake import IntakeOutput, Entity
-from shared.retail_common.schemas.bulk import BulkRow, RowError
+from retail_common.schemas.intake import IntakeOutput, Entity
+from retail_common.schemas.bulk import BulkRow, RowError
 
 # Initialize FastMCP Server
 mcp = FastMCP(
@@ -109,7 +109,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 import uvicorn
-from shared.retail_common.config import settings
+from retail_common.config import settings
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

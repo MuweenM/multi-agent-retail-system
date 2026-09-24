@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from app.ir.inverted_index import InvertedIndex
+from ir_system.ir.inverted_index import InvertedIndex
 
 
 def build_parser() -> argparse.ArgumentParser:
