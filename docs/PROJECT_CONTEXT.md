@@ -2,7 +2,7 @@ You are helping me build one agent of a four-agent retail returns system for the
 
 Before writing any code, read: README.md, AGENTS.md (or CLAUDE.md / .cursorrules), design.md (frontend work only), docs/api-contracts.md, docs/PROJECT_CONTEXT.md, shared/retail_common/schemas/*.py, shared/retail_common/taxonomy.py, infra/postgres/init.sql, .env.example and data/PLANTED.md.
 
-I am Member 4. I own only services/agent4-decision/, the shared files assigned to my lane in the blueprint, and the frontend pages named in my lane. Do not edit anything else. If shared/ or another lane must change, stop and write the change as a short note I can post in team chat.
+I do agent 3. I own only services/agent3-retrieval/, the shared files assigned to my lane in the blueprint, and the frontend pages named in my lane. Do not edit anything else. If shared/ or another lane must change, stop and write the change as a short note I can post in team chat.
 
 Facts you must respect:
 1. Agents talk MCP over Streamable HTTP. Pin mcp>=1.30,<2 in requirements.txt (mcp 2.x renamed FastMCP to MCPServer and changed the client API). Ports: Agent 1 8001, Agent 2 8002, Agent 3 8003, Agent 4 8004. The browser (port 5173) talks only to Agent 4's REST API.
