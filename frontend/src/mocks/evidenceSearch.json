@@ -1,0 +1,76 @@
+{
+  "query": "battrry swlling on power bank",
+  "corrected_query": "battery swelling on power bank",
+  "expanded_terms": ["battery", "swelling", "power bank"],
+  "total_results": 5,
+  "latency_ms": 42,
+  "method": "hybrid",
+  "evidence": [
+    {
+      "source_type": "review",
+      "source_id": "rev-00428",
+      "snippet": "The power bank battery swelled after charging overnight and became unsafe to use.",
+      "relevance_score": 0.97,
+      "title": "Battery swelling after overnight charge",
+      "method": "hybrid",
+      "matched_terms": ["battery", "swelled", "charging"],
+      "zone": "body",
+      "label_hint": "manufacturing_defect",
+      "metadata": {"product_id": "P-014", "supplier_id": "S-03", "batch_id": "B-2026-07"}
+    },
+    {
+      "source_type": "supplier_note",
+      "source_id": "sup-S03-072",
+      "snippet": "QA isolated a swelling battery pattern in batch B-2026-07 for the P-014 power bank.",
+      "relevance_score": 0.91,
+      "title": "QA batch anomaly: B-2026-07",
+      "method": "hybrid",
+      "matched_terms": ["swelling", "batch", "P-014"],
+      "zone": "supplier_notes",
+      "label_hint": "manufacturing_defect",
+      "metadata": {"product_id": "P-014", "supplier_id": "S-03", "batch_id": "B-2026-07"}
+    },
+    {
+      "source_type": "return_history",
+      "source_id": "hist-RET-00018",
+      "snippet": "Customer reported the battery pack bulging and overheating during the second charge cycle.",
+      "relevance_score": 0.86,
+      "title": "Return history: overheating and bulging",
+      "method": "hybrid",
+      "matched_terms": ["battery", "bulging", "overheating"],
+      "zone": "body",
+      "label_hint": "manufacturing_defect",
+      "metadata": {"product_id": "P-014", "supplier_id": "S-03"}
+    },
+    {
+      "source_type": "review",
+      "source_id": "rev-00526",
+      "snippet": "The charger worked at first, then the pack expanded near the USB-C port.",
+      "relevance_score": 0.78,
+      "title": "Pack expanded near charging port",
+      "method": "hybrid",
+      "matched_terms": ["charger", "expanded", "USB-C"],
+      "zone": "body",
+      "label_hint": "quality_durability",
+      "metadata": {"product_id": "P-014", "supplier_id": "S-03"}
+    },
+    {
+      "source_type": "catalog",
+      "source_id": "cat-P014",
+      "snippet": "Portable 20,000 mAh power bank with lithium battery and fast charging support.",
+      "relevance_score": 0.54,
+      "title": "P-014 product listing",
+      "method": "hybrid",
+      "matched_terms": ["power bank", "battery", "charging"],
+      "zone": "title",
+      "label_hint": null,
+      "metadata": {"product_id": "P-014", "supplier_id": "S-03"}
+    }
+  ],
+  "by_method": {
+    "bm25": ["rev-00428", "sup-S03-072", "hist-RET-00018", "rev-00526", "cat-P014"],
+    "tfidf": ["rev-00428", "hist-RET-00018", "sup-S03-072", "cat-P014", "rev-00526"],
+    "dense": ["hist-RET-00018", "rev-00428", "rev-00526", "sup-S03-072", "cat-P014"],
+    "hybrid": ["rev-00428", "sup-S03-072", "hist-RET-00018", "rev-00526", "cat-P014"]
+  }
+}

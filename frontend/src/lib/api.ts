@@ -1,5 +1,6 @@
 import {
   DecisionOutput,
+  EvidenceOutput,
   LoginResponse,
   AuthUser,
   UsageResponse,
@@ -145,6 +146,25 @@ export const checkHealth = async (): Promise<{
   service: string;
 }> => {
   return apiFetch('/health');
+};
+
+export interface RetrieveEvidenceParams {
+  query: string;
+  top_k?: number;
+  method?: 'bm25' | 'tfidf' | 'dense' | 'hybrid';
+  filters?: Record<string, string | undefined>;
+}
+
+export const retrieveEvidence = async ({
+  query,
+  top_k = 5,
+  method = 'hybrid',
+  filters,
+}: RetrieveEvidenceParams): Promise<EvidenceOutput> => {
+  return apiFetch<EvidenceOutput>('/evidence/search', {
+    method: 'POST',
+    body: JSON.stringify({ query, top_k, method, filters }),
+  });
 };
 
 // ── Bulk ──────────────────────────────────────────────────────────────────────
