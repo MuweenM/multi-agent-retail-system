@@ -20,7 +20,7 @@ logger = get_logger("orchestrator")
 
 SYNTHESIZE_PROMPT_PATH = os.path.join(os.path.dirname(__file__), "prompts", "synthesize.md")
 
-async def run_orchestrator(return_text: str, tenant_id: str, order_id: Optional[str] = None) -> DecisionOutput:
+async def run_orchestrator(return_text: str, tenant_id: str, order_id: Optional[str] = None, is_bulk: bool = False, budget_remaining: int = 100) -> DecisionOutput:
     """
     v1 orchestrator: Explicit state machine with graceful degradation, reflection, and policy mapping.
     """
@@ -189,62 +189,7 @@ async def run_orchestrator(return_text: str, tenant_id: str, order_id: Optional[
         reasoning.append("Evidence support remained weak after reflection.")
 
     # ---------------------------------------------------------
-    # STEP 6: Synthesize
-    # ---------------------------------------------------------
-    reasoning.append("Synthesizing evidence via LLM...")
-    try:
-        if os.path.exists(SYNTHESIZE_PROMPT_PATH):
-            with open(SYNTHESIZE_PROMPT_PATH, "r") as f:
-                sys_prompt = f.read()
-        else:
-            sys_prompt = "You are a helpful assistant. Output JSON with { 'evidence_summary': '...', 'citations': [] }"
-            
-        evidence_snippets = "\n".join([f"[{item.source_id}] {item.snippet}" for item in (ev_output.evidence if ev_output else [])])
-        
-        prompt = sys_prompt.replace("{issue}", issue)
-        prompt = prompt.replace("{candidate_labels}", ", ".join(top_candidates))
-        prompt = prompt.replace("{evidence}", evidence_snippets)
-        
-        synth_result = None
-        for attempt in range(2):
-            try:
-                response = call_llm(prompt=prompt)
-                
-                # Cleanup markdown formatting blocks if any
-                if response.startswith("```json"):
-                    response = response.replace("```json", "", 1).strip()
-                if response.endswith("```"):
-                    response = response[:-3].strip()
-                    
-                synth_json = json.loads(response)
-                
-                valid_ids = {e.source_id for e in (ev_output.evidence if ev_output else [])}
-                cited_ids = synth_json.get("citations", [])
-                
-                if all(c in valid_ids for c in cited_ids):
-                    synth_result = synth_json
-                    break
-                else:
-                    reasoning.append(f"LLM hallucinated citations on attempt {attempt+1}. Retrying...")
-            except Exception as e:
-                logger.warning(f"Synthesis parsing failed: {e}")
-                pass
-                
-        if synth_result:
-            evidence_summary = synth_result.get("evidence_summary", "")
-            citations = synth_result.get("citations", [])
-            reasoning.append("Synthesis successful.")
-        else:
-            reasoning.append("LLM synthesis failed. Using deterministic fallback.")
-            evidence_summary = f"Based on '{issue}', root cause seems to be '{root_cause}'."
-            citations = []
-            
-    except Exception as e:
-        logger.error(f"Synthesis step failed completely: {e}")
-        evidence_summary = f"Based on '{issue}', root cause seems to be '{root_cause}'."
-
-    # ---------------------------------------------------------
-    # STEP 7: Policy Mapping
+    # STEP 6: Policy Mapping
     # ---------------------------------------------------------
     decision, req_hr, hr_reasons = apply_policy(
         intake_confidence=intake_confidence,
@@ -259,8 +204,80 @@ async def run_orchestrator(return_text: str, tenant_id: str, order_id: Optional[
         is_non_returnable=is_non_returnable
     )
     
-    recommendation = f"Decision: {decision}. Summary: {evidence_summary}"
     reasoning.append(f"Policy applied: {decision}. Human review: {req_hr}.")
+
+    # ---------------------------------------------------------
+    # STEP 7: Synthesize
+    # ---------------------------------------------------------
+    llm_synthesis_used = False
+    
+    # Cost control: Skip LLM synthesis if bulk and budget exceeded, 
+    # UNLESS it's an escalate decision or low confidence.
+    skip_llm = False
+    if is_bulk:
+        if decision != "escalate" and rc_confidence >= 0.5:
+            if budget_remaining <= 0:
+                skip_llm = True
+                reasoning.append("Bulk mode: LLM budget exceeded. Using deterministic template.")
+                
+    if skip_llm:
+        evidence_summary = f"Based on '{issue}', root cause seems to be '{root_cause}'."
+        citations = []
+    else:
+        reasoning.append("Synthesizing evidence via LLM...")
+        llm_synthesis_used = True
+        try:
+            if os.path.exists(SYNTHESIZE_PROMPT_PATH):
+                with open(SYNTHESIZE_PROMPT_PATH, "r") as f:
+                    sys_prompt = f.read()
+            else:
+                sys_prompt = "You are a helpful assistant. Output JSON with { 'evidence_summary': '...', 'citations': [] }"
+                
+            evidence_snippets = "\n".join([f"[{item.source_id}] {item.snippet}" for item in (ev_output.evidence if ev_output else [])])
+            
+            prompt = sys_prompt.replace("{issue}", issue)
+            prompt = prompt.replace("{candidate_labels}", ", ".join(top_candidates))
+            prompt = prompt.replace("{evidence}", evidence_snippets)
+            
+            synth_result = None
+            for attempt in range(2):
+                try:
+                    response = call_llm(prompt=prompt)
+                    
+                    if response.startswith("```json"):
+                        response = response.replace("```json", "", 1).strip()
+                    if response.endswith("```"):
+                        response = response[:-3].strip()
+                        
+                    synth_json = json.loads(response)
+                    
+                    valid_ids = {e.source_id for e in (ev_output.evidence if ev_output else [])}
+                    cited_ids = synth_json.get("citations", [])
+                    
+                    if all(c in valid_ids for c in cited_ids):
+                        synth_result = synth_json
+                        break
+                    else:
+                        reasoning.append(f"LLM hallucinated citations on attempt {attempt+1}. Retrying...")
+                except Exception as e:
+                    logger.warning(f"Synthesis parsing failed: {e}")
+                    pass
+                    
+            if synth_result:
+                evidence_summary = synth_result.get("evidence_summary", "")
+                citations = synth_result.get("citations", [])
+                reasoning.append("Synthesis successful.")
+            else:
+                reasoning.append("LLM synthesis failed. Using deterministic fallback.")
+                evidence_summary = f"Based on '{issue}', root cause seems to be '{root_cause}'."
+                citations = []
+                
+        except Exception as e:
+            logger.error(f"Synthesis step failed completely: {e}")
+            evidence_summary = f"Based on '{issue}', root cause seems to be '{root_cause}'."
+            citations = []
+
+    recommendation = f"Decision: {decision}. Summary: {evidence_summary}"
 
     return DecisionOutput(
         root_cause=root_cause,
