@@ -3,26 +3,26 @@
  * Conforming strictly to `shared/retail_common/schemas/` & `shared/retail_common/taxonomy.py`
  */
 
-export const CONTRACT_VERSION = "1.1";
+export const CONTRACT_VERSION = '1.1';
 
 // ── Taxonomy Reference ────────────────────────────────────────────────────────
 export type RootCause =
-  | "manufacturing_defect"
-  | "damaged_in_transit"
-  | "wrong_item_shipped"
-  | "size_fit_issue"
-  | "not_as_described"
-  | "quality_durability"
-  | "late_delivery"
-  | "change_of_mind"
-  | "policy_abuse_suspected"
-  | "unknown";
+  | 'manufacturing_defect'
+  | 'damaged_in_transit'
+  | 'wrong_item_shipped'
+  | 'size_fit_issue'
+  | 'not_as_described'
+  | 'quality_durability'
+  | 'late_delivery'
+  | 'change_of_mind'
+  | 'policy_abuse_suspected'
+  | 'unknown';
 
-export type Decision = "approve" | "reject" | "escalate" | "request_info";
+export type Decision = 'approve' | 'reject' | 'escalate' | 'request_info';
 
-export type Intent = "return" | "exchange" | "refund" | "complaint" | "unknown";
+export type Intent = 'return' | 'exchange' | 'refund' | 'complaint' | 'unknown';
 
-export type Sentiment = "positive" | "neutral" | "negative";
+export type Sentiment = 'positive' | 'neutral' | 'negative';
 
 export interface Entity {
   type: string;
@@ -145,7 +145,7 @@ export interface BulkJob {
   job_id: string;
   name?: string;
   created_at?: string;
-  status: "queued" | "running" | "done" | "failed";
+  status: 'queued' | 'running' | 'done' | 'failed';
   total: number;
   processed: number;
   failed: number;
@@ -153,7 +153,14 @@ export interface BulkJob {
 }
 
 export interface Finding {
-  kind: "root_cause" | "product" | "supplier" | "batch" | "cluster" | "spike" | string;
+  kind:
+    | 'root_cause'
+    | 'product'
+    | 'supplier'
+    | 'batch'
+    | 'cluster'
+    | 'spike'
+    | string;
   title: string;
   detail: string;
   return_count: number;
@@ -231,4 +238,66 @@ export interface ProductRootCauseReport {
   batches: BatchInvestigationItem[];
   headline: string;
   recommended_actions: string[];
+}
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+export type UserRole = 'viewer' | 'reviewer' | 'admin';
+
+export interface AuthUser {
+  sub: string;
+  tenant_id: string;
+  role: UserRole;
+}
+
+export interface LoginResponse {
+  access_token: string;
+  token_type: string;
+}
+
+// ── Usage / Metering ──────────────────────────────────────────────────────────
+export interface UsageResponse {
+  tenant_id: string;
+  month: string;
+  tier: string;
+  usage: {
+    return_processed: number;
+    bulk_row: number;
+    api_call: number;
+    llm_tokens: number;
+    total_returns: number;
+  };
+  plan_limits: {
+    included_returns: number;
+    included_api_calls: number;
+  };
+  estimated_invoice_lkr: number;
+}
+
+// ── Bulk Job API Response ─────────────────────────────────────────────────────
+export interface BulkJobStatus {
+  job_id: string;
+  status: 'queued' | 'processing' | 'completed' | 'failed';
+  total_rows: number;
+  processed_rows: number;
+  failed_rows: number;
+  summary?: {
+    total_processed: number;
+    failed: number;
+    executive_summary: string;
+  } | null;
+}
+
+export interface BulkResultRow {
+  return_id: string;
+  decision: string;
+  root_cause: string;
+  confidence: number;
+  recommendation: string;
+}
+
+export interface BulkResultsResponse {
+  job_id: string;
+  page: number;
+  size: number;
+  results: BulkResultRow[];
 }

@@ -148,4 +148,31 @@ async def health_check(request: Request) -> Response:
 
 
 if __name__ == "__main__":
-    server.run(transport="streamable-http")
+    import os
+    import uvicorn
+    from fastapi import FastAPI, Request
+    from fastapi.responses import JSONResponse
+    from contextlib import asynccontextmanager
+    from shared.retail_common.config import settings
+    
+    port = int(os.getenv("AGENT2_PORT", "8002"))
+    
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        _ = server.streamable_http_app()
+        async with server.session_manager.run():
+            yield
+            
+    app = FastAPI(title="Agent 2 Root Cause", lifespan=lifespan)
+    
+    @app.middleware("http")
+    async def verify_service_secret(request: Request, call_next):
+        if request.url.path.startswith("/"):
+            secret = request.headers.get("X-Service-Secret")
+            if secret != settings.service_secret:
+                return JSONResponse(status_code=403, content={"detail": "Invalid service secret"})
+        return await call_next(request)
+        
+    app.mount("/mcp", server.streamable_http_app())
+    
+    uvicorn.run(app, host="0.0.0.0", port=port)
