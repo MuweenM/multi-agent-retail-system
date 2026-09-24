@@ -216,7 +216,7 @@ async def process_bulk(
     content = await file.read()
     valid_rows, errors = load_and_validate_csv(content)
     
-    if errors:
+    if not valid_rows:
         return {"status": "validation_failed", "errors": [e.model_dump() for e in errors]}
         
     job_id = f"bulk-{uuid.uuid4().hex[:8]}"
@@ -224,7 +224,7 @@ async def process_bulk(
     # Run in background
     background_tasks.add_task(process_bulk_job, job_id, tenant_id, user_id, valid_rows)
     
-    return {"status": "accepted", "job_id": job_id, "rows": len(valid_rows)}
+    return {"status": "accepted", "job_id": job_id, "rows": len(valid_rows), "errors": [e.model_dump() for e in errors]}
 
 @app.get("/api/v1/bulk/{job_id}")
 async def get_bulk_status(

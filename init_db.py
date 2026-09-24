@@ -4,9 +4,9 @@ import sys
 # Setup environment to run from project root
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__))))
 
-from shared.retail_common.db import SessionLocal, engine
+from retail_common.db import SessionLocal, engine
 from sqlalchemy import text
-from shared.retail_common.security.auth import get_password_hash
+from retail_common.security.auth import get_password_hash
 
 def init_sqlite():
     db = SessionLocal()
@@ -51,6 +51,7 @@ def init_sqlite():
         CREATE TABLE IF NOT EXISTS bulk_jobs (
             job_id VARCHAR(50) PRIMARY KEY,
             tenant_id VARCHAR(50) NOT NULL,
+            user_id VARCHAR(50),
             status VARCHAR(20) DEFAULT 'queued',
             total_rows INTEGER DEFAULT 0,
             processed_rows INTEGER DEFAULT 0,

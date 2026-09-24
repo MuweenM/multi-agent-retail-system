@@ -38,7 +38,7 @@ mcp = FastMCP(
     "Agent1-Intake",
     host="0.0.0.0",
     port=8001,
-    streamable_http_path="/mcp",
+    streamable_http_path="/",
 )
 
 

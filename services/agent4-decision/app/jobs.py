@@ -6,6 +6,7 @@ from typing import List
 from retail_common.schemas.bulk import BulkRow
 from retail_common.db import SessionLocal
 from retail_common.logging_config import get_logger
+from retail_common.config import settings
 from sqlalchemy import text
 from app.orchestrator import run_orchestrator
 from retail_common.security.encryption import encrypt_text
@@ -130,7 +131,7 @@ async def process_bulk_job(job_id: str, tenant_id: str, user_id: str, rows: List
     
     # Run Agent 2 bulk patterns
     bulk_patterns = "Pattern analysis unavailable."
-    agent2_url = os.getenv("AGENT2_URL", "http://agent2-rootcause:8002/mcp")
+    agent2_url = settings.agent2_mcp_url
     try:
         b_res, _ = await call_agent(agent2_url, "analyze_bulk_patterns", {"job_id": job_id, "tenant_id": tenant_id}, "Agent2")
         if b_res and "executive_summary" in b_res:

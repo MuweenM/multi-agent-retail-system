@@ -30,9 +30,9 @@ class Settings(BaseSettings):
     AGENT2_PORT: int = 8002
     AGENT3_PORT: int = 8003
     AGENT4_PORT: int = 8004
-    agent1_mcp_url: str = "http://localhost:8001/mcp"
-    agent2_mcp_url: str = "http://localhost:8002/mcp"
-    agent3_mcp_url: str = "http://localhost:8003/mcp"
+    agent1_mcp_url: str = "http://localhost:8001/mcp/"
+    agent2_mcp_url: str = "http://localhost:8002/mcp/"
+    agent3_mcp_url: str = "http://localhost:8003/mcp/"
 
     # Security
     jwt_secret: str = "dev-secret"
