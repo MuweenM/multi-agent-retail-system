@@ -1,6 +1,8 @@
 #!/bin/bash
+set -a
+source .env
+set +a
 export PYTHONPATH=$(pwd)
-export DATABASE_URL="sqlite:///$(pwd)/retail.db"
 
 cd services/agent1-intake
 uvicorn app.server:app --port 8001 > ../../agent1.log 2>&1 &

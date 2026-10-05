@@ -49,6 +49,8 @@ async def generate_final_recommendation(return_text: str, tenant_id: str = "demo
 # 2. FastAPI Setup
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    from shared.retail_common.db import check_db_ready
+    check_db_ready()
     _ = mcp.streamable_http_app()
     async with mcp.session_manager.run():
         yield

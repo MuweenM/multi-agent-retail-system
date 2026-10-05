@@ -113,6 +113,8 @@ from retail_common.config import settings
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    from shared.retail_common.db import check_db_ready
+    check_db_ready()
     _ = mcp.streamable_http_app()
     async with mcp.session_manager.run():
         yield

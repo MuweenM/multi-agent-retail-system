@@ -44,3 +44,12 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def check_db_ready(database_url: str = None) -> bool:
+    from sqlalchemy import text
+    url = database_url or settings.database_url
+    check_engine = create_engine(url)
+    with check_engine.connect() as conn:
+        conn.execute(text("SELECT 1"))
+    return True

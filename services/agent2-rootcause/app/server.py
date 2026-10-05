@@ -154,6 +154,8 @@ from retail_common.config import settings
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    from shared.retail_common.db import check_db_ready
+    check_db_ready()
     _ = server.streamable_http_app()
     async with server.session_manager.run():
         yield

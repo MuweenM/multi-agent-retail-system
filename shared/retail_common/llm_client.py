@@ -25,15 +25,46 @@ def call_llm(
     Shared LLM call. Every agent should go through this function
     rather than instantiating its own client.
     """
-    if _client is None:
-        raise RuntimeError("LLM_API_KEY is not set. Copy .env.example to .env and fill it in.")
+    if settings.llm_provider == "gemini":
+        import requests
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{settings.llm_model}:generateContent"
+        headers = {
+            "Content-Type": "application/json",
+            "X-goog-api-key": settings.llm_api_key
+        }
+        
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {
+                "maxOutputTokens": max_tokens,
+                "temperature": temperature
+            }
+        }
+        
+        if system:
+            payload["systemInstruction"] = {
+                "parts": [{"text": system}]
+            }
+            
+        logger.info("Calling Gemini API (model=%s, prompt_len=%d)", settings.llm_model, len(prompt))
+        response = requests.post(url, headers=headers, json=payload)
+        response.raise_for_status()
+        data = response.json()
+        
+        try:
+            return data["candidates"][0]["content"]["parts"][0]["text"]
+        except (KeyError, IndexError):
+            return ""
+    else:
+        if _client is None:
+            raise RuntimeError("LLM_API_KEY is not set. Copy .env.example to .env and fill it in.")
 
-    logger.info("Calling LLM (model=%s, prompt_len=%d)", settings.llm_model, len(prompt))
-    response = _client.messages.create(
-        model=settings.llm_model,
-        max_tokens=max_tokens,
-        temperature=temperature,
-        system=system or "",
-        messages=[{"role": "user", "content": prompt}],
-    )
-    return "".join(block.text for block in response.content if block.type == "text")
+        logger.info("Calling LLM (model=%s, prompt_len=%d)", settings.llm_model, len(prompt))
+        response = _client.messages.create(
+            model=settings.llm_model,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            system=system or "",
+            messages=[{"role": "user", "content": prompt}],
+        )
+        return "".join(block.text for block in response.content if block.type == "text")
