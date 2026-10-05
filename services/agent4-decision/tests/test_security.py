@@ -88,3 +88,18 @@ def test_injection_text_escalated(mock_session, mock_run):
     data = response.json()
     assert data["decision"] == "escalate"
     assert "injection_suspected" in data["risk_flags"]
+
+
+def test_cross_tenant_access_404():
+    token = create_access_token({"sub": "u_reviewer", "tenant_id": "demo", "role": "reviewer"})
+    response = client.get("/api/v1/bulk/JOB-OTHER", headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 404
+
+def test_csv_formula_cell_neutralised():
+    from retail_common.bulk_io import sanitize_csv_cell
+    assert sanitize_csv_cell("=1+2") == "'=1+2"
+    assert sanitize_csv_cell("+SUM(A1)") == "'+SUM(A1)"
+    assert sanitize_csv_cell("-B2") == "'-B2"
+    assert sanitize_csv_cell("@cmd") == "'@cmd"
+    assert sanitize_csv_cell("Normal text") == "Normal text"
+

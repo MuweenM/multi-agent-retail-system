@@ -1,6 +1,31 @@
 # System Architecture
 
-TODO: paste your final architecture diagram here (image or draw.io export).
+## Architecture Diagram
+
+```mermaid
+graph TD
+    UI[Frontend Dashboard<br/>React / Vite / shadcn] -->|HTTP POST /api/v1/returns| A4[Agent 4: Decision & Orch]
+    
+    A4 -->|MCP Tool: extract_return_info| A1[Agent 1: Intake]
+    A4 -->|MCP Tool: analyze_root_cause| A2[Agent 2: Root Cause]
+    A4 -->|MCP Tool: retrieve_evidence| A3[Agent 3: Evidence/IR]
+    
+    A1 -->|FastAPI + spaCy/LLM Fallback| A1_Output[Structured Output + PII Redaction]
+    A2 -->|Calibrated LinearSVC| A2_Output[Root Cause Class + Confidence]
+    A3 -->|BM25 + TF-IDF + Semantic| A3_Output[Retrieved Evidence + Citations]
+    
+    A4 -->|Aggregates & LLM Orchestration| Final[Final Recommendation + Escalation Flags]
+    
+    Final --> UI
+    
+    subgraph Databases
+        Neon[(Neon Postgres Database)]
+        VectorDB[(Vector Store)]
+    end
+    
+    A4 --> Neon
+    A3 --> VectorDB
+```
 
 ## Pipeline (reference)
 ```
