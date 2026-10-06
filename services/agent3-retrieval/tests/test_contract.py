@@ -42,6 +42,14 @@ def test_retrieve_evidence_rejects_queries_longer_than_300_chars():
         retrieve_evidence(long_query)
 
 
+def test_retrieve_evidence_corrects_misspellings_and_expands_terms():
+    result = retrieve_evidence("battrry swlling on powerbank", top_k=3, tenant_id="demo")
+
+    assert "battery" in result.corrected_query.lower()
+    assert "swelling" in result.corrected_query.lower()
+    assert any(term in result.expanded_terms for term in ["battery", "swelling", "powerbank"])
+
+
 def test_reindex_corpus_returns_zero_counts():
     result = reindex_corpus(tenant_id="demo")
     assert result["tenant_id"] == "demo"
