@@ -29,7 +29,7 @@ server = FastMCP(
     name="agent3-retrieval",
     host="0.0.0.0",
     port=_agent3_port(),
-    streamable_http_path="/mcp",
+    streamable_http_path="/",
 )
 
 
@@ -158,5 +158,32 @@ async def health_check(request: Request) -> Response:
     return JSONResponse({"status": "ok", "service": "agent3-retrieval"})
 
 
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from contextlib import asynccontextmanager
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    from shared.retail_common.db import check_db_ready
+    check_db_ready()
+    _ = server.streamable_http_app()
+    async with server.session_manager.run():
+        yield
+        
+app = FastAPI(title="Agent 3 Retrieval", lifespan=lifespan)
+
+@app.middleware("http")
+async def verify_service_secret(request: Request, call_next):
+    if request.url.path.startswith("/"):
+        secret = request.headers.get("X-Service-Secret")
+        if secret != settings.service_secret:
+            return JSONResponse(status_code=403, content={"detail": "Invalid service secret"})
+    return await call_next(request)
+    
+app.mount("/mcp", server.streamable_http_app())
+
 if __name__ == "__main__":
-    server.run(transport="streamable-http", host="0.0.0.0", port=_agent3_port())
+    import uvicorn
+    port = _agent3_port()
+    uvicorn.run(app, host="0.0.0.0", port=port)

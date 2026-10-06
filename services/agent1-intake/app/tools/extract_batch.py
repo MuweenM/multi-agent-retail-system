@@ -7,9 +7,9 @@ from typing import Dict, Any, List
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 
-from shared.retail_common.schemas.bulk import BulkRow, RowError
-from shared.retail_common.schemas.intake import IntakeOutput
-from shared.retail_common.bulk_io import pseudonymize_customer
+from retail_common.schemas.bulk import BulkRow, RowError
+from retail_common.schemas.intake import IntakeOutput
+from retail_common.bulk_io import pseudonymize_customer
 from app.nlp.pipeline import process_intake_pipeline
 
 CONCURRENCY_LIMIT = 8

@@ -65,9 +65,10 @@ def load_returns(database_url: str | None = None, csv_path: Path = CSV_PATH) -> 
     """)
     engine = create_engine(database_url or get_database_url())
     with engine.begin() as connection:
+        params = []
         for row in rows:
             customer_hash = hashlib.sha256(row["customer_ref"].encode("utf-8")).hexdigest()
-            connection.execute(query, {
+            params.append({
                 "return_id": row["return_id"], "product_id": row["product_id"],
                 "supplier_id": row["supplier_id"], "batch_id": row["batch_id"],
                 "courier": row["courier"], "store_id": row["store_id"],
@@ -78,6 +79,7 @@ def load_returns(database_url: str | None = None, csv_path: Path = CSV_PATH) -> 
                 "purchase_date": row["purchase_date"], "return_date": row["return_date"],
                 "district": row["district"],
             })
+        connection.execute(query, params)
     print(f"Loaded {len(rows)} returns from {csv_path.name}")
     print("Class counts:", dict(Counter(row["root_cause_label"] for row in rows)))
 

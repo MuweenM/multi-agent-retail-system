@@ -59,6 +59,7 @@ def run_evaluation():
     pii_metrics = defaultdict(lambda: {"tp": 0, "fp": 0, "fn": 0})
     injection_tp = 0
     injection_total = 0
+    fallback_count = 0
 
     for item in gold_items:
         text = item["text"]
@@ -97,6 +98,9 @@ def run_evaluation():
             injection_total += 1
             if "injection_suspected" in res.flags:
                 injection_tp += 1
+
+        if "llm_fallback" in res.flags:
+            fallback_count += 1
 
     # Calculations
     total = len(gold_items)
@@ -156,6 +160,7 @@ Evaluation conducted on **{total} Gold Complaints** (140 standard return request
 *Report generated automatically by `eval/eval_intake.py` on {time.strftime('%Y-%m-%d %H:%M:%S')}*
 """
 
+    print(f"LLM fallback rate: {fallback_count}/{total} ({fallback_count/total:.1%})")
     print(md_report.encode("ascii", "replace").decode("ascii"))
 
     # Save to docs/evaluation.md

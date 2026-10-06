@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from shared.retail_common.taxonomy import ROOT_CAUSES
+from retail_common.taxonomy import ROOT_CAUSES
 
 
 SERVICE_ROOT = Path(__file__).resolve().parents[1]

@@ -30,13 +30,19 @@ class Settings(BaseSettings):
     AGENT2_PORT: int = 8002
     AGENT3_PORT: int = 8003
     AGENT4_PORT: int = 8004
-    agent1_mcp_url: str = "http://localhost:8001/mcp"
-    agent2_mcp_url: str = "http://localhost:8002/mcp"
-    agent3_mcp_url: str = "http://localhost:8003/mcp"
+    agent1_mcp_url: str = "http://localhost:8001/mcp/"
+    agent2_mcp_url: str = "http://localhost:8002/mcp/"
+    agent3_mcp_url: str = "http://localhost:8003/mcp/"
 
     # Security
     jwt_secret: str = "dev-secret"
     jwt_algorithm: str = "HS256"
+    service_secret: str = "demo-service-secret"
+    encryption_key: str = "TfOxgZfL1F_6hXmEIt8xM3F2A0rXN1CqF_XQG-yV6y4=" # Default Fernet key for demo
+
+    # System Policies & Thresholds
+    high_value_lkr: float = 100000.0
+    human_review_min_confidence: float = 0.75
 
     # Misc
     env: str = "local"

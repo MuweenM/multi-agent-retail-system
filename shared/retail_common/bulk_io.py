@@ -6,7 +6,7 @@ import hmac
 import io
 import os
 from typing import List, Tuple
-from shared.retail_common.schemas.bulk import BulkRow, RowError
+from retail_common.schemas.bulk import BulkRow, RowError
 
 MAX_ROWS = 5000
 MAX_TEXT_LEN = 2000

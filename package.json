@@ -1,0 +1,28 @@
+{
+  "name": "multi-agent-retail-system",
+  "version": "1.0.0",
+  "description": "<div align=\"center\"> IT 3041 | Information Retrieval and Web Analytics | Sector: Retail Technology </div>",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MuweenM/multi-agent-retail-system.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MuweenM/multi-agent-retail-system/issues"
+  },
+  "homepage": "https://github.com/MuweenM/multi-agent-retail-system#readme",
+  "devDependencies": {
+    "@neon/config": "^1.8.3",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
