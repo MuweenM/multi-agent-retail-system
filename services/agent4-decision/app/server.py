@@ -72,7 +72,11 @@ app.add_middleware(
 app.mount("/mcp", mcp.streamable_http_app())
 
 @app.get("/api/v1/health")
-async def health():
+async def health_v1():
+    return {"status": "ok", "service": "agent4-decision"}
+
+@app.get("/health")
+async def health_root():
     return {"status": "ok", "service": "agent4-decision"}
 
 

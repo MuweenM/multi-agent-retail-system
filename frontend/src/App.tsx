@@ -17,11 +17,14 @@ import {
   LogOut,
   AlertCircle,
   X,
+  Search,
 } from 'lucide-react';
 import { getCurrentUser, logout, onUpgradeNotice } from './lib/api';
 import type { AuthUser } from './types/contracts';
 
-type View = 'dashboard' | 'analytics' | 'submit' | 'bulk' | 'usage';
+import EvidenceSearchPage from './components/app/EvidenceSearchPage';
+
+type View = 'dashboard' | 'search' | 'analytics' | 'submit' | 'bulk' | 'usage';
 
 // ── Nav item config ───────────────────────────────────────────────────────────
 interface NavItem {
@@ -36,6 +39,12 @@ const NAV_ITEMS: NavItem[] = [
     id: 'dashboard',
     label: 'Dashboard',
     icon: <LayoutDashboard className="h-3.5 w-3.5" />,
+    roles: ['viewer', 'reviewer', 'admin'],
+  },
+  {
+    id: 'search',
+    label: 'Evidence Search',
+    icon: <Search className="h-3.5 w-3.5" />,
     roles: ['viewer', 'reviewer', 'admin'],
   },
   {
@@ -109,10 +118,14 @@ export default function App() {
 
   const renderPage = () => {
     switch (currentView) {
+      case 'search':
+        return <EvidenceSearchPage />;
       case 'analytics':
         return <AnalyticsPage />;
       case 'submit':
-        return <SubmitReturnPage />;
+        return (
+          <SubmitReturnPage onNavigate={(view) => setView(view as View)} />
+        );
       case 'bulk':
         return <BulkJobPage />;
       case 'usage':

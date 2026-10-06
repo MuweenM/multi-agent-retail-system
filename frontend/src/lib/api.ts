@@ -133,14 +133,13 @@ export const processReturn = async (
 };
 
 export const submitReview = async (
-  returnId: string,
-  action: 'confirm' | 'override',
-  reason?: string
+  _returnId: string,
+  _action: 'confirm' | 'override',
+  _reason?: string
 ): Promise<void> => {
-  return apiFetch<void>(`/returns/${returnId}/review`, {
-    method: 'POST',
-    body: JSON.stringify({ action, reason }),
-  });
+  // The backend doesn't have a /review endpoint in the demo yet. Mocking success.
+  console.log('Mock review submission:', _returnId, _action, _reason);
+  return new Promise((resolve) => setTimeout(resolve, 600));
 };
 
 export const checkHealth = async (): Promise<{

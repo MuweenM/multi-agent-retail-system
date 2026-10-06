@@ -97,8 +97,7 @@ class TolerantQueryProcessor:
 
     def __init__(self, documents: Iterable[dict[str, Any]] | None = None):
         self.documents = list(documents) if documents is not None else self._load_default_documents()
-        self.dictionary = self._build_dictionary(self.documents)
-        self.df = Counter(self.dictionary)
+        self.dictionary, self.df = self._build_dictionary(self.documents)
         self.permuterm_index = self._build_permuterm_index(self.dictionary)
         self.soundex_index = defaultdict(set)
         for word in self.dictionary:
@@ -117,16 +116,25 @@ class TolerantQueryProcessor:
         return rows
 
     @staticmethod
-    def _build_dictionary(documents: Iterable[dict[str, Any]]) -> set[str]:
+    def _build_dictionary(documents: Iterable[dict[str, Any]]) -> tuple[set[str], dict[str, int]]:
         vocab: set[str] = set()
+        df: dict[str, int] = defaultdict(int)
         for doc in documents:
             text = " ".join(str(doc.get(zone, "") or "") for zone in ("title", "body", "supplier_notes"))
+            doc_vocab = set()
             for term in analyze(text, mode="index", stem="porter"):
                 vocab.add(term.term)
+                doc_vocab.add(term.term)
+            for term in doc_vocab:
+                df[term] += 1
         vocab.update({word.lower() for word in _DOMAIN_SYNONYMS})
         vocab.update({value.lower() for value in _DOMAIN_SYNONYMS.values()})
         vocab.update({root.lower() for root in ROOT_CAUSES})
-        return vocab
+        # For added synonyms not in text, give them a baseline frequency of 1
+        for word in vocab:
+            if word not in df:
+                df[word] = 1
+        return vocab, df
 
     @staticmethod
     def _build_permuterm_index(vocabulary: Iterable[str]) -> dict[str, set[str]]:
@@ -147,26 +155,25 @@ class TolerantQueryProcessor:
             return [wildcard]
 
         pattern = re.escape(wildcard).replace(r"\*", ".*").replace(r"\?", ".")
-        direct = sorted({candidate for candidate in self.dictionary if re.fullmatch(pattern, candidate)})
+        direct = {candidate for candidate in self.dictionary if re.fullmatch(pattern, candidate)}
         if direct:
-            return direct
+            return sorted(direct, key=lambda x: (-self.df.get(x, 0), x))
 
         stripped = wildcard.replace("*", "").replace("?", "")
         if not stripped:
             return []
         baselines = {candidate for candidate in self.dictionary if stripped in candidate}
         if baselines:
-            return sorted(baselines)
+            return sorted(baselines, key=lambda x: (-self.df.get(x, 0), x))
 
-        candidates = []
+        candidates = set()
         for candidate in self.dictionary:
             if len(candidate) < 3:
                 continue
             if _levenshtein_distance(stripped, candidate) <= 2:
-                candidates.append(candidate)
-        candidates = sorted(set(candidates))
+                candidates.add(candidate)
         if candidates:
-            return candidates
+            return sorted(candidates, key=lambda x: (-self.df.get(x, 0), x))
         return []
 
     def _tokenize(self, query: str) -> list[str]:

@@ -86,10 +86,11 @@ import {
 } from '@/types/contracts';
 import {
   fetchBulkJobs,
+  fetchBulkSummary,
   fetchProductImpacts,
+  fetchProductReport,
   getAllCatalogProductIds,
 } from '@/mocks/agent2Mocks';
-import { getProductRootCause, getBulkSummary } from '@/lib/api';
 
 // ── Color System & Taxonomy Config ───────────────────────────────────────────
 const ROOT_CAUSE_LABELS: Record<string, string> = {
@@ -339,7 +340,7 @@ export default function AnalyticsPage() {
       setLoadingBulk(true);
       try {
         const [summary, impacts] = await Promise.all([
-          getBulkSummary(selectedJobId),
+          fetchBulkSummary(selectedJobId),
           fetchProductImpacts(selectedJobId),
         ]);
         if (isMounted) {
@@ -365,7 +366,7 @@ export default function AnalyticsPage() {
       if (!selectedProductId) return;
       setLoadingProduct(true);
       try {
-        const report = await getProductRootCause(selectedProductId);
+        const report = await fetchProductReport(selectedProductId);
         if (isMounted) {
           setProductReport(report);
         }

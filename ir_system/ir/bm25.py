@@ -48,6 +48,9 @@ class BM25Ranker:
 
     def __init__(self, documents: Iterable[dict[str, Any]] | None = None, *, source_path: str | None = None):
         self.index = InvertedIndex(documents, source_path=source_path) if documents is not None or source_path is not None else InvertedIndex([])
+        self._tokens_by_doc = {doc_id: self._doc_tokens(doc) for doc_id, doc in self.index.docs.items()}
+        self._length_by_doc = {doc_id: len(tokens) for doc_id, tokens in self._tokens_by_doc.items()}
+        self._average_length = sum(self._length_by_doc.values()) / max(1, len(self._length_by_doc))
 
     @staticmethod
     def _filter_documents(index: InvertedIndex, filters: dict[str, Any] | None) -> set[str]:
@@ -98,8 +101,8 @@ class BM25Ranker:
             return []
 
         N = len(self.index.docs)
-        doc_lengths = {doc_id: len(self._doc_tokens(doc)) for doc_id, doc in self.index.docs.items()}
-        avgdl = sum(doc_lengths.values()) / max(1, N)
+        doc_lengths = self._length_by_doc
+        avgdl = self._average_length
 
         idfs: dict[str, float] = {}
         for term in query_terms:
@@ -112,7 +115,7 @@ class BM25Ranker:
         term_matches: dict[str, set[str]] = {term: set() for term in query_terms}
         for doc_id in candidate_docs:
             doc = self.index.docs[doc_id]
-            doc_tokens = self._doc_tokens(doc)
+            doc_tokens = self._tokens_by_doc[doc_id]
             doc_freq = {}
             for token in doc_tokens:
                 doc_freq[token] = doc_freq.get(token, 0) + 1

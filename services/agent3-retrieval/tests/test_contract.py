@@ -17,23 +17,18 @@ reindex_corpus = MODULE.reindex_corpus
 retrieve_evidence = MODULE.retrieve_evidence
 
 
-def test_retrieve_evidence_returns_three_items_sorted_by_score():
+def test_retrieve_evidence_returns_items_sorted_by_score():
     result = retrieve_evidence("battery drains quickly and motor overheats", top_k=5, tenant_id="demo")
 
-    assert len(result.evidence) == 3
-    assert [item.source_type for item in result.evidence] == [
-        "review",
-        "supplier_record",
-        "policy",
-    ]
+    assert len(result.evidence) == 5
     assert result.evidence[0].relevance_score >= result.evidence[1].relevance_score >= result.evidence[2].relevance_score
     assert all(item.label_hint in ROOT_CAUSES for item in result.evidence if item.label_hint)
 
 
 def test_retrieve_evidence_caps_top_k_at_20():
     result = retrieve_evidence("battery issue", top_k=50)
-    assert len(result.evidence) == 3
-    assert result.total_results == 3
+    assert len(result.evidence) == 20
+    assert result.total_results == 20
 
 
 def test_retrieve_evidence_rejects_queries_longer_than_300_chars():

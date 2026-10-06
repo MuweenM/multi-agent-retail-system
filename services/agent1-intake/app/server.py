@@ -123,11 +123,15 @@ app = FastAPI(title="Agent 1 Intake", lifespan=lifespan)
 
 @app.middleware("http")
 async def verify_service_secret(request: Request, call_next):
-    if request.url.path.startswith("/"):
+    if request.url.path != "/health" and request.url.path.startswith("/"):
         secret = request.headers.get("X-Service-Secret")
         if secret != settings.service_secret:
             return JSONResponse(status_code=403, content={"detail": "Invalid service secret"})
     return await call_next(request)
+
+@app.get("/health")
+async def health():
+    return {"status": "ok", "service": "agent1-intake"}
     
 app.mount("/mcp", mcp.streamable_http_app())
 

@@ -11,8 +11,8 @@ from mcp.server.fastmcp import FastMCP
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
-from app.ir.hybrid import HybridRanker
-from app.ir.tolerant import process_query
+from ir_system.ir.hybrid import HybridRanker
+from ir_system.ir.tolerant import process_query
 from shared.retail_common.config import settings
 from shared.retail_common.schemas.evidence import EvidenceItem, EvidenceOutput
 from shared.retail_common.taxonomy import ROOT_CAUSES
@@ -175,11 +175,15 @@ app = FastAPI(title="Agent 3 Retrieval", lifespan=lifespan)
 
 @app.middleware("http")
 async def verify_service_secret(request: Request, call_next):
-    if request.url.path.startswith("/"):
+    if request.url.path != "/health" and request.url.path.startswith("/"):
         secret = request.headers.get("X-Service-Secret")
         if secret != settings.service_secret:
             return JSONResponse(status_code=403, content={"detail": "Invalid service secret"})
     return await call_next(request)
+
+@app.get("/health")
+async def health():
+    return {"status": "ok", "service": "agent3-retrieval"}
     
 app.mount("/mcp", server.streamable_http_app())
 

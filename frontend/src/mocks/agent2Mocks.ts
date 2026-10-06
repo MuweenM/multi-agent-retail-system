@@ -36,7 +36,11 @@ export const MOCK_BULK_JOBS: BulkJob[] = [
     processed: 3420,
     failed: 4,
     errors: [
-      { row: 142, field: 'order_value_lkr', reason: 'Invalid negative currency value' },
+      {
+        row: 142,
+        field: 'order_value_lkr',
+        reason: 'Invalid negative currency value',
+      },
       { row: 819, field: 'product_id', reason: 'Unregistered SKU format' },
       { row: 1204, field: 'text', reason: 'Empty customer feedback payload' },
       { row: 2901, field: 'purchase_date', reason: 'Date format unparseable' },
@@ -70,7 +74,8 @@ export const MOCK_BULK_SUMMARIES: Record<string, BulkSummary> = {
       {
         kind: 'spike',
         title: 'Manufacturing Defect Surge on Winter Waterproof Boots',
-        detail: 'Batch B-4029 from Colombo Footwear Ltd exhibited a 14.8% return rate, statistically significant (p < 0.001) due to sole delamination.',
+        detail:
+          'Batch B-4029 from Colombo Footwear Ltd exhibited a 14.8% return rate, statistically significant (p < 0.001) due to sole delamination.',
         return_count: 86,
         value_at_risk_lkr: 1462000,
         p_value: 0.0003,
@@ -81,7 +86,8 @@ export const MOCK_BULK_SUMMARIES: Record<string, BulkSummary> = {
       {
         kind: 'cluster',
         title: 'Zipper Jamming on Thermal Windbreaker Pro',
-        detail: 'Cluster #2 identified 42 instances of slider teeth decoupling on Autumn batches.',
+        detail:
+          'Cluster #2 identified 42 instances of slider teeth decoupling on Autumn batches.',
         return_count: 54,
         value_at_risk_lkr: 729000,
         p_value: 0.012,
@@ -92,7 +98,8 @@ export const MOCK_BULK_SUMMARIES: Record<string, BulkSummary> = {
       {
         kind: 'supplier',
         title: 'Kandy Electronics High Acoustic Distortion Rate',
-        detail: 'Supplier SUP-109 shows 3.2x higher return frequency compared to baseline electronic audio vendors.',
+        detail:
+          'Supplier SUP-109 shows 3.2x higher return frequency compared to baseline electronic audio vendors.',
         return_count: 38,
         value_at_risk_lkr: 988000,
         p_value: 0.004,
@@ -103,7 +110,8 @@ export const MOCK_BULK_SUMMARIES: Record<string, BulkSummary> = {
       {
         kind: 'spike',
         title: 'Motor Overheat In Blade Assembly',
-        detail: 'High-Speed Blender 1200W batch B-9011 triggered thermal shutdown complaints under normal load.',
+        detail:
+          'High-Speed Blender 1200W batch B-9011 triggered thermal shutdown complaints under normal load.',
         return_count: 31,
         value_at_risk_lkr: 682000,
         p_value: 0.021,
@@ -116,7 +124,13 @@ export const MOCK_BULK_SUMMARIES: Record<string, BulkSummary> = {
       {
         cluster_id: 1,
         size: 94,
-        top_terms: ['sole', 'stitching', 'delamination', 'waterproof', 'peeling'],
+        top_terms: [
+          'sole',
+          'stitching',
+          'delamination',
+          'waterproof',
+          'peeling',
+        ],
         dominant_root_cause: 'manufacturing_defect',
         growth_vs_prev: 0.38,
       },
@@ -144,7 +158,13 @@ export const MOCK_BULK_SUMMARIES: Record<string, BulkSummary> = {
       {
         cluster_id: 5,
         size: 36,
-        top_terms: ['cracked', 'box damaged', 'bubble wrap', 'corner', 'courier'],
+        top_terms: [
+          'cracked',
+          'box damaged',
+          'bubble wrap',
+          'corner',
+          'courier',
+        ],
         dominant_root_cause: 'damaged_in_transit',
         growth_vs_prev: -0.12,
       },
@@ -176,7 +196,8 @@ export const MOCK_BULK_SUMMARIES: Record<string, BulkSummary> = {
       {
         kind: 'spike',
         title: 'Size Mismatch Surge Across Apparel Flash Sale',
-        detail: 'Customer reports indicate European sizing was mistakenly mapped to Asian sizing in catalog SKUs.',
+        detail:
+          'Customer reports indicate European sizing was mistakenly mapped to Asian sizing in catalog SKUs.',
         return_count: 110,
         value_at_risk_lkr: 880000,
         p_value: 0.002,
@@ -188,7 +209,12 @@ export const MOCK_BULK_SUMMARIES: Record<string, BulkSummary> = {
       {
         cluster_id: 1,
         size: 120,
-        top_terms: ['runs small', 'chest tight', 'sleeve length', 'chart wrong'],
+        top_terms: [
+          'runs small',
+          'chest tight',
+          'sleeve length',
+          'chart wrong',
+        ],
         dominant_root_cause: 'size_fit_issue',
         growth_vs_prev: 0.44,
       },
@@ -227,7 +253,8 @@ export const MOCK_BULK_SUMMARIES: Record<string, BulkSummary> = {
       {
         kind: 'supplier',
         title: 'Quarterly Audit: High RMA in Electronics Category',
-        detail: 'Aggregate audio & kitchen electronics showed 8.4% return rate across Q3.',
+        detail:
+          'Aggregate audio & kitchen electronics showed 8.4% return rate across Q3.',
         return_count: 240,
         value_at_risk_lkr: 5280000,
         p_value: 0.0001,
@@ -342,18 +369,67 @@ export const MOCK_PRODUCT_REPORTS: Record<string, ProductRootCauseReport> = {
       change_of_mind: 1,
     },
     weekly_trend: [
-      { week: '2026-W33', counts: { manufacturing_defect: 4, size_fit_issue: 3, quality_durability: 1 }, total: 8 },
-      { week: '2026-W34', counts: { manufacturing_defect: 6, size_fit_issue: 2, quality_durability: 1 }, total: 9 },
-      { week: '2026-W35', counts: { manufacturing_defect: 8, size_fit_issue: 4, quality_durability: 2 }, total: 14 },
-      { week: '2026-W36', counts: { manufacturing_defect: 15, size_fit_issue: 3, quality_durability: 1 }, total: 19 },
-      { week: '2026-W37', counts: { manufacturing_defect: 21, size_fit_issue: 2, quality_durability: 2 }, total: 25 },
-      { week: '2026-W38', counts: { manufacturing_defect: 4, size_fit_issue: 2, quality_durability: 0 }, total: 6 },
+      {
+        week: '2026-W33',
+        counts: {
+          manufacturing_defect: 4,
+          size_fit_issue: 3,
+          quality_durability: 1,
+        },
+        total: 8,
+      },
+      {
+        week: '2026-W34',
+        counts: {
+          manufacturing_defect: 6,
+          size_fit_issue: 2,
+          quality_durability: 1,
+        },
+        total: 9,
+      },
+      {
+        week: '2026-W35',
+        counts: {
+          manufacturing_defect: 8,
+          size_fit_issue: 4,
+          quality_durability: 2,
+        },
+        total: 14,
+      },
+      {
+        week: '2026-W36',
+        counts: {
+          manufacturing_defect: 15,
+          size_fit_issue: 3,
+          quality_durability: 1,
+        },
+        total: 19,
+      },
+      {
+        week: '2026-W37',
+        counts: {
+          manufacturing_defect: 21,
+          size_fit_issue: 2,
+          quality_durability: 2,
+        },
+        total: 25,
+      },
+      {
+        week: '2026-W38',
+        counts: {
+          manufacturing_defect: 4,
+          size_fit_issue: 2,
+          quality_durability: 0,
+        },
+        total: 6,
+      },
     ],
     suppliers: [
       {
         kind: 'supplier',
         title: 'Colombo Footwear Ltd (SUP-701)',
-        detail: 'Sole delamination concentrated heavily in Batch B-4029. Fisher p-value < 0.001 indicates systemic vulcanization defect.',
+        detail:
+          'Sole delamination concentrated heavily in Batch B-4029. Fisher p-value < 0.001 indicates systemic vulcanization defect.',
         return_count: 64,
         value_at_risk_lkr: 1088000,
         p_value: 0.0003,
@@ -381,7 +457,8 @@ export const MOCK_PRODUCT_REPORTS: Record<string, ProductRootCauseReport> = {
         p_value: 0.0001,
         is_suspicious: true,
         primary_cause: 'Sole Delamination / Glue Failure',
-        notes: 'High concentration of sole detachment reports after 2-3 days of rainy weather use.',
+        notes:
+          'High concentration of sole detachment reports after 2-3 days of rainy weather use.',
       },
       {
         batch_id: 'B-4015',
@@ -410,7 +487,8 @@ export const MOCK_PRODUCT_REPORTS: Record<string, ProductRootCauseReport> = {
         notes: 'Slight instep sizing constraint noted.',
       },
     ],
-    headline: 'Critical manufacturing adhesive breakdown identified in Batch B-4029 from Colombo Footwear Ltd.',
+    headline:
+      'Critical manufacturing adhesive breakdown identified in Batch B-4029 from Colombo Footwear Ltd.',
     recommended_actions: [
       'Quarantine remaining 142 unsold units in warehouse from Batch B-4029 immediately.',
       'Trigger automated warranty claim of LKR 884,000 against supplier SUP-701 (Colombo Footwear Ltd).',
@@ -435,18 +513,67 @@ export const MOCK_PRODUCT_REPORTS: Record<string, ProductRootCauseReport> = {
       change_of_mind: 1,
     },
     weekly_trend: [
-      { week: '2026-W33', counts: { quality_durability: 3, size_fit_issue: 2, manufacturing_defect: 1 }, total: 6 },
-      { week: '2026-W34', counts: { quality_durability: 4, size_fit_issue: 3, manufacturing_defect: 1 }, total: 8 },
-      { week: '2026-W35', counts: { quality_durability: 7, size_fit_issue: 2, manufacturing_defect: 1 }, total: 10 },
-      { week: '2026-W36', counts: { quality_durability: 9, size_fit_issue: 3, manufacturing_defect: 2 }, total: 14 },
-      { week: '2026-W37', counts: { quality_durability: 5, size_fit_issue: 3, manufacturing_defect: 2 }, total: 10 },
-      { week: '2026-W38', counts: { quality_durability: 1, size_fit_issue: 1, manufacturing_defect: 0 }, total: 2 },
+      {
+        week: '2026-W33',
+        counts: {
+          quality_durability: 3,
+          size_fit_issue: 2,
+          manufacturing_defect: 1,
+        },
+        total: 6,
+      },
+      {
+        week: '2026-W34',
+        counts: {
+          quality_durability: 4,
+          size_fit_issue: 3,
+          manufacturing_defect: 1,
+        },
+        total: 8,
+      },
+      {
+        week: '2026-W35',
+        counts: {
+          quality_durability: 7,
+          size_fit_issue: 2,
+          manufacturing_defect: 1,
+        },
+        total: 10,
+      },
+      {
+        week: '2026-W36',
+        counts: {
+          quality_durability: 9,
+          size_fit_issue: 3,
+          manufacturing_defect: 2,
+        },
+        total: 14,
+      },
+      {
+        week: '2026-W37',
+        counts: {
+          quality_durability: 5,
+          size_fit_issue: 3,
+          manufacturing_defect: 2,
+        },
+        total: 10,
+      },
+      {
+        week: '2026-W38',
+        counts: {
+          quality_durability: 1,
+          size_fit_issue: 1,
+          manufacturing_defect: 0,
+        },
+        total: 2,
+      },
     ],
     suppliers: [
       {
         kind: 'supplier',
         title: 'Apex Garments International (SUP-420)',
-        detail: 'Zipper slider tooth breakage concentrated in batch B-3891 using alternative sub-tier zip vendor.',
+        detail:
+          'Zipper slider tooth breakage concentrated in batch B-3891 using alternative sub-tier zip vendor.',
         return_count: 42,
         value_at_risk_lkr: 567000,
         p_value: 0.009,
@@ -503,7 +630,8 @@ export const MOCK_PRODUCT_REPORTS: Record<string, ProductRootCauseReport> = {
         notes: 'Clean baseline metrics.',
       },
     ],
-    headline: 'Substandard zipper component failure identified in Batch B-3891 from Apex Garments.',
+    headline:
+      'Substandard zipper component failure identified in Batch B-3891 from Apex Garments.',
     recommended_actions: [
       'Require SUP-420 to switch exclusively to YKK-certified zipper assemblies.',
       'Offer free zipper puller replacement kits for customers reporting minor catch issues.',
@@ -527,18 +655,43 @@ export const MOCK_PRODUCT_REPORTS: Record<string, ProductRootCauseReport> = {
       change_of_mind: 1,
     },
     weekly_trend: [
-      { week: '2026-W33', counts: { manufacturing_defect: 2, quality_durability: 1 }, total: 3 },
-      { week: '2026-W34', counts: { manufacturing_defect: 3, quality_durability: 1 }, total: 4 },
-      { week: '2026-W35', counts: { manufacturing_defect: 5, quality_durability: 2 }, total: 7 },
-      { week: '2026-W36', counts: { manufacturing_defect: 8, quality_durability: 1 }, total: 9 },
-      { week: '2026-W37', counts: { manufacturing_defect: 4, quality_durability: 2 }, total: 6 },
-      { week: '2026-W38', counts: { manufacturing_defect: 1, quality_durability: 0 }, total: 1 },
+      {
+        week: '2026-W33',
+        counts: { manufacturing_defect: 2, quality_durability: 1 },
+        total: 3,
+      },
+      {
+        week: '2026-W34',
+        counts: { manufacturing_defect: 3, quality_durability: 1 },
+        total: 4,
+      },
+      {
+        week: '2026-W35',
+        counts: { manufacturing_defect: 5, quality_durability: 2 },
+        total: 7,
+      },
+      {
+        week: '2026-W36',
+        counts: { manufacturing_defect: 8, quality_durability: 1 },
+        total: 9,
+      },
+      {
+        week: '2026-W37',
+        counts: { manufacturing_defect: 4, quality_durability: 2 },
+        total: 6,
+      },
+      {
+        week: '2026-W38',
+        counts: { manufacturing_defect: 1, quality_durability: 0 },
+        total: 1,
+      },
     ],
     suppliers: [
       {
         kind: 'supplier',
         title: 'Kandy Electronics (SUP-109)',
-        detail: 'Left acoustic driver coil failure in Batch B-5102. High p-value significance (p = 0.003).',
+        detail:
+          'Left acoustic driver coil failure in Batch B-5102. High p-value significance (p = 0.003).',
         return_count: 31,
         value_at_risk_lkr: 806000,
         p_value: 0.003,
@@ -573,7 +726,8 @@ export const MOCK_PRODUCT_REPORTS: Record<string, ProductRootCauseReport> = {
         notes: 'Resolved via firmware v1.4 update push.',
       },
     ],
-    headline: 'Acoustic driver coil failure in Batch B-5102 confirmed with p = 0.002.',
+    headline:
+      'Acoustic driver coil failure in Batch B-5102 confirmed with p = 0.002.',
     recommended_actions: [
       'Halt shipment of remaining 60 units in batch B-5102 pending acoustic bench testing.',
       'Deploy firmware update v1.4.2 to recalibrate active noise cancellation resonance frequency.',
@@ -597,18 +751,43 @@ export const MOCK_PRODUCT_REPORTS: Record<string, ProductRootCauseReport> = {
       change_of_mind: 1,
     },
     weekly_trend: [
-      { week: '2026-W33', counts: { manufacturing_defect: 2, quality_durability: 1 }, total: 3 },
-      { week: '2026-W34', counts: { manufacturing_defect: 2, quality_durability: 1 }, total: 3 },
-      { week: '2026-W35', counts: { manufacturing_defect: 4, quality_durability: 1 }, total: 5 },
-      { week: '2026-W36', counts: { manufacturing_defect: 6, quality_durability: 2 }, total: 8 },
-      { week: '2026-W37', counts: { manufacturing_defect: 3, quality_durability: 1 }, total: 4 },
-      { week: '2026-W38', counts: { manufacturing_defect: 1, quality_durability: 0 }, total: 1 },
+      {
+        week: '2026-W33',
+        counts: { manufacturing_defect: 2, quality_durability: 1 },
+        total: 3,
+      },
+      {
+        week: '2026-W34',
+        counts: { manufacturing_defect: 2, quality_durability: 1 },
+        total: 3,
+      },
+      {
+        week: '2026-W35',
+        counts: { manufacturing_defect: 4, quality_durability: 1 },
+        total: 5,
+      },
+      {
+        week: '2026-W36',
+        counts: { manufacturing_defect: 6, quality_durability: 2 },
+        total: 8,
+      },
+      {
+        week: '2026-W37',
+        counts: { manufacturing_defect: 3, quality_durability: 1 },
+        total: 4,
+      },
+      {
+        week: '2026-W38',
+        counts: { manufacturing_defect: 1, quality_durability: 0 },
+        total: 1,
+      },
     ],
     suppliers: [
       {
         kind: 'supplier',
         title: 'Precision Appliances Ltd (SUP-312)',
-        detail: 'Thermal fuse trip under continuous 3-minute smoothie cycle in Batch B-9011.',
+        detail:
+          'Thermal fuse trip under continuous 3-minute smoothie cycle in Batch B-9011.',
         return_count: 24,
         value_at_risk_lkr: 528000,
         p_value: 0.018,
@@ -643,7 +822,8 @@ export const MOCK_PRODUCT_REPORTS: Record<string, ProductRootCauseReport> = {
         notes: 'Acceptable operational variance.',
       },
     ],
-    headline: 'Thermal sensor calibration defect in Batch B-9011 causing premature motor cutoff.',
+    headline:
+      'Thermal sensor calibration defect in Batch B-9011 causing premature motor cutoff.',
     recommended_actions: [
       'Issue customer manual addendum clarifying recommended pulse cycle durations.',
       'Require supplier SUP-312 to recalibrate thermal fuse cutoff threshold to 85°C.',
@@ -659,26 +839,66 @@ export async function fetchBulkJobs(): Promise<BulkJob[]> {
   return MOCK_BULK_JOBS;
 }
 
-export async function fetchBulkSummary(jobId: string): Promise<BulkSummary | null> {
+export async function fetchBulkSummary(
+  jobId: string
+): Promise<BulkSummary | null> {
   await new Promise((resolve) => setTimeout(resolve, 100));
-  return MOCK_BULK_SUMMARIES[jobId] || MOCK_BULK_SUMMARIES['JOB-2026-09-A2'] || null;
+  return (
+    MOCK_BULK_SUMMARIES[jobId] || MOCK_BULK_SUMMARIES['JOB-2026-09-A2'] || null
+  );
 }
 
-export async function fetchProductImpacts(jobId: string): Promise<ProductImpactItem[]> {
+export async function fetchProductImpacts(
+  jobId: string
+): Promise<ProductImpactItem[]> {
   await new Promise((resolve) => setTimeout(resolve, 90));
-  return MOCK_PRODUCT_IMPACTS[jobId] || MOCK_PRODUCT_IMPACTS['JOB-2026-09-A2'] || [];
+  return (
+    MOCK_PRODUCT_IMPACTS[jobId] || MOCK_PRODUCT_IMPACTS['JOB-2026-09-A2'] || []
+  );
 }
 
-export async function fetchProductReport(productId: string): Promise<ProductRootCauseReport | null> {
+export async function fetchProductReport(
+  productId: string
+): Promise<ProductRootCauseReport | null> {
   await new Promise((resolve) => setTimeout(resolve, 110));
-  return MOCK_PRODUCT_REPORTS[productId] || MOCK_PRODUCT_REPORTS['PROD-WM-BOOTS-01'] || null;
+  return (
+    MOCK_PRODUCT_REPORTS[productId] ||
+    MOCK_PRODUCT_REPORTS['PROD-WM-BOOTS-01'] ||
+    null
+  );
 }
 
-export function getAllCatalogProductIds(): Array<{ id: string; name: string; category: string }> {
+export function getAllCatalogProductIds(): Array<{
+  id: string;
+  name: string;
+  category: string;
+}> {
   return [
-    { id: 'PROD-WM-BOOTS-01', name: 'Winter Waterproof Boots', category: 'Footwear' },
-    { id: 'PROD-AP-JACKET-04', name: 'Thermal Windbreaker Pro', category: 'Apparel' },
-    { id: 'PROD-EL-HEADPHONES-02', name: 'Wireless ANC Headphones Pro', category: 'Electronics' },
-    { id: 'PROD-HM-BLENDER-09', name: 'High-Speed Blender 1200W', category: 'Home & Kitchen' },
+    {
+      id: 'PROD-WM-BOOTS-01',
+      name: 'Winter Waterproof Boots',
+      category: 'Footwear',
+    },
+    {
+      id: 'P-014',
+      name: 'VoltGear 20000mAh Power Bank',
+      category: 'Electronics',
+    },
+    { id: 'P-027', name: 'Thermal Active Jacket', category: 'Apparel' },
+    {
+      id: 'PROD-AP-JACKET-04',
+      name: 'Thermal Windbreaker Pro',
+      category: 'Apparel',
+    },
+    {
+      id: 'PROD-EL-HEADPHONES-02',
+      name: 'Wireless ANC Headphones Pro',
+      category: 'Electronics',
+    },
+    {
+      id: 'PROD-HM-BLENDER-09',
+      name: 'High-Speed Blender 1200W',
+      category: 'Home & Kitchen',
+    },
   ];
 }

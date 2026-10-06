@@ -50,6 +50,7 @@ services:
     volumes:
       - ./shared:/shared
       - ./services/agent3-retrieval:/app
+      - ./ir_system:/ir_system
       - vector_store:/data/chroma_db
 
     healthcheck:

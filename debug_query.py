@@ -1,5 +1,5 @@
-from app.ir.tolerant import process_query
-from app.ir.hybrid import HybridRanker
+from ir_system.ir.tolerant import process_query
+from ir_system.ir.hybrid import HybridRanker
 import json
 from pathlib import Path
 
