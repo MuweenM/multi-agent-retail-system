@@ -6,6 +6,8 @@ import {
   UsageResponse,
   BulkJobStatus,
   BulkResultsResponse,
+  ProductRootCauseReport,
+  BulkSummary,
 } from '../types/contracts';
 
 // Assuming Vite environment variable for API base URL
@@ -148,24 +150,21 @@ export const checkHealth = async (): Promise<{
   return apiFetch('/health');
 };
 
-export interface RetrieveEvidenceParams {
-  query: string;
-  top_k?: number;
-  method?: 'bm25' | 'tfidf' | 'dense' | 'hybrid';
-  filters?: Record<string, string | undefined>;
+export async function getProductRootCause(productId: string, windowDays = 90) {
+  return apiFetch<ProductRootCauseReport>(
+    `/products/${productId}/root-cause?window_days=${windowDays}`
+  );
 }
 
-export const retrieveEvidence = async ({
-  query,
-  top_k = 5,
-  method = 'hybrid',
-  filters,
-}: RetrieveEvidenceParams): Promise<EvidenceOutput> => {
-  return apiFetch<EvidenceOutput>('/evidence/search', {
-    method: 'POST',
-    body: JSON.stringify({ query, top_k, method, filters }),
-  });
-};
+export async function searchEvidence(
+  query: string,
+  method: string,
+  sourceTypes?: string[]
+) {
+  const params = new URLSearchParams({ query, method });
+  sourceTypes?.forEach((t) => params.append('source_types', t));
+  return apiFetch<EvidenceOutput>(`/evidence/search?${params.toString()}`);
+}
 
 // ── Bulk ──────────────────────────────────────────────────────────────────────
 export const uploadBulk = async (
@@ -179,6 +178,10 @@ export const uploadBulk = async (
 export const getBulkStatus = async (jobId: string): Promise<BulkJobStatus> => {
   return apiFetch<BulkJobStatus>(`/bulk/${jobId}`);
 };
+
+export async function getBulkSummary(jobId: string) {
+  return apiFetch<BulkSummary>(`/bulk/${jobId}/summary`);
+}
 
 export const getBulkResults = async (
   jobId: string,

@@ -290,7 +290,7 @@ async def run_orchestrator(return_text: str, tenant_id: str, order_id: Optional[
         citations=citations,
         reasoning_steps=reasoning,
         human_review_reasons=hr_reasons,
-        risk_flags=risk_flags,
+        risk_flags=risk_flags + flags,
         agent_trace=trace,
         evidence_support=evidence_support
     )

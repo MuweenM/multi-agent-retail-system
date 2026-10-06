@@ -44,6 +44,9 @@ async def _process_single_row(
             # if we wanted to. To keep it simple, we let orchestrator check the shared budget object, 
             # but since orchestrator is stateless per request, passing the mutable list works!
             
+            # Artificial 4s delay spacing for demo Gemini 429 rate limits
+            await asyncio.sleep(4.0)
+            
             if "Synthesizing evidence via LLM..." in result.reasoning_steps:
                 llm_calls_made[0] += 1
                 
@@ -117,7 +120,8 @@ async def process_bulk_job(job_id: str, tenant_id: str, user_id: str, rows: List
         db.close()
         return
         
-    semaphore = asyncio.Semaphore(8)
+    # Hard throttle for LLM rate limits per demo requirements
+    semaphore = asyncio.Semaphore(1)
     llm_calls_made = [0]
     
     tasks = []

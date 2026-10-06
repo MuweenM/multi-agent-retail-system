@@ -86,11 +86,10 @@ import {
 } from '@/types/contracts';
 import {
   fetchBulkJobs,
-  fetchBulkSummary,
   fetchProductImpacts,
-  fetchProductReport,
   getAllCatalogProductIds,
 } from '@/mocks/agent2Mocks';
+import { getProductRootCause, getBulkSummary } from '@/lib/api';
 
 // ── Color System & Taxonomy Config ───────────────────────────────────────────
 const ROOT_CAUSE_LABELS: Record<string, string> = {
@@ -164,13 +163,19 @@ function CustomChartTooltip({
 
   return (
     <div className="rounded-xl border border-neutral-200 bg-white/95 p-3 shadow-lg backdrop-blur-md">
-      <div className="mb-1.5 text-xs font-semibold text-neutral-900">{label}</div>
+      <div className="mb-1.5 text-xs font-semibold text-neutral-900">
+        {label}
+      </div>
       <div className="space-y-1">
         {payload.map((item, idx) => {
           const itemVal = Number(item.value) || 0;
-          const pct = total && total > 0 ? ((itemVal / total) * 100).toFixed(1) : null;
+          const pct =
+            total && total > 0 ? ((itemVal / total) * 100).toFixed(1) : null;
           return (
-            <div key={idx} className="flex items-center justify-between gap-4 text-xs">
+            <div
+              key={idx}
+              className="flex items-center justify-between gap-4 text-xs"
+            >
               <div className="flex items-center gap-1.5">
                 <span
                   className="size-2.5 rounded-full"
@@ -222,7 +227,9 @@ function MetricCard({
       <CardContent className="p-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
-            <span className="text-xs font-medium text-neutral-500">{title}</span>
+            <span className="text-xs font-medium text-neutral-500">
+              {title}
+            </span>
             <UiTooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -235,7 +242,9 @@ function MetricCard({
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="top" className="max-w-xs text-xs">
-                <p className="font-medium text-neutral-100">Formula / Calculation</p>
+                <p className="font-medium text-neutral-100">
+                  Formula / Calculation
+                </p>
                 <p className="text-neutral-300">{calculationExplanation}</p>
               </TooltipContent>
             </UiTooltip>
@@ -250,7 +259,10 @@ function MetricCard({
             {value}
           </span>
           {badgeText && (
-            <Badge variant="outline" className="rounded-full font-mono text-[11px]">
+            <Badge
+              variant="outline"
+              className="rounded-full font-mono text-[11px]"
+            >
               {badgeText}
             </Badge>
           )}
@@ -271,7 +283,9 @@ function MetricCard({
               }`}
             >
               {trendDirection === 'up' && <ArrowUpRight className="size-3" />}
-              {trendDirection === 'down' && <ArrowDownRight className="size-3" />}
+              {trendDirection === 'down' && (
+                <ArrowDownRight className="size-3" />
+              )}
               <span>{trend}</span>
             </div>
           )}
@@ -292,10 +306,14 @@ export default function AnalyticsPage() {
 
   // Tab 2 Product Investigation State
   const catalogProducts = getAllCatalogProductIds();
-  const [selectedProductId, setSelectedProductId] = useState<string>('PROD-WM-BOOTS-01');
-  const [productReport, setProductReport] = useState<ProductRootCauseReport | null>(null);
+  const [selectedProductId, setSelectedProductId] =
+    useState<string>('PROD-WM-BOOTS-01');
+  const [productReport, setProductReport] =
+    useState<ProductRootCauseReport | null>(null);
   const [loadingProduct, setLoadingProduct] = useState<boolean>(true);
-  const [completedActions, setCompletedActions] = useState<Record<string, boolean>>({});
+  const [completedActions, setCompletedActions] = useState<
+    Record<string, boolean>
+  >({});
 
   // Load bulk jobs list on mount
   useEffect(() => {
@@ -321,7 +339,7 @@ export default function AnalyticsPage() {
       setLoadingBulk(true);
       try {
         const [summary, impacts] = await Promise.all([
-          fetchBulkSummary(selectedJobId),
+          getBulkSummary(selectedJobId),
           fetchProductImpacts(selectedJobId),
         ]);
         if (isMounted) {
@@ -347,7 +365,7 @@ export default function AnalyticsPage() {
       if (!selectedProductId) return;
       setLoadingProduct(true);
       try {
-        const report = await fetchProductReport(selectedProductId);
+        const report = await getProductRootCause(selectedProductId);
         if (isMounted) {
           setProductReport(report);
         }
@@ -367,7 +385,7 @@ export default function AnalyticsPage() {
     if (activeTab === 'bulk-run') {
       setLoadingBulk(true);
       const [summary, impacts] = await Promise.all([
-        fetchBulkSummary(selectedJobId),
+        getBulkSummary(selectedJobId),
         fetchProductImpacts(selectedJobId),
       ]);
       setBulkSummary(summary);
@@ -375,7 +393,7 @@ export default function AnalyticsPage() {
       setLoadingBulk(false);
     } else {
       setLoadingProduct(true);
-      const report = await fetchProductReport(selectedProductId);
+      const report = await getProductRootCause(selectedProductId);
       setProductReport(report);
       setLoadingProduct(false);
     }
@@ -384,7 +402,8 @@ export default function AnalyticsPage() {
   const toggleActionCompleted = (actionIdx: number) => {
     setCompletedActions((prev) => ({
       ...prev,
-      [`${selectedProductId}-${actionIdx}`]: !prev[`${selectedProductId}-${actionIdx}`],
+      [`${selectedProductId}-${actionIdx}`]:
+        !prev[`${selectedProductId}-${actionIdx}`],
     }));
   };
 
@@ -436,7 +455,8 @@ export default function AnalyticsPage() {
                   </Badge>
                 </div>
                 <p className="text-xs text-neutral-500">
-                  Automated taxonomy clustering, Fisher's exact anomaly detection & supplier risk
+                  Automated taxonomy clustering, Fisher's exact anomaly
+                  detection & supplier risk
                 </p>
               </div>
             </div>
@@ -469,7 +489,11 @@ export default function AnalyticsPage() {
 
         {/* ── Main Workspace ──────────────────────────────────────────────── */}
         <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="space-y-6"
+          >
             {/* Top Navigation Tabs Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <TabsList className="h-10 rounded-full border border-neutral-200 bg-neutral-100 p-1">
@@ -492,8 +516,13 @@ export default function AnalyticsPage() {
               {/* Contextual Selector in Top Bar */}
               {activeTab === 'bulk-run' ? (
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-neutral-500">Active Job:</span>
-                  <Select value={selectedJobId} onValueChange={setSelectedJobId}>
+                  <span className="text-xs font-medium text-neutral-500">
+                    Active Job:
+                  </span>
+                  <Select
+                    value={selectedJobId}
+                    onValueChange={setSelectedJobId}
+                  >
                     <SelectTrigger className="h-9 w-[260px] rounded-full border-neutral-200 bg-white font-mono text-xs">
                       <SelectValue placeholder="Select Ingestion Job" />
                     </SelectTrigger>
@@ -508,15 +537,21 @@ export default function AnalyticsPage() {
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-neutral-500">Target Product:</span>
-                  <Select value={selectedProductId} onValueChange={setSelectedProductId}>
+                  <span className="text-xs font-medium text-neutral-500">
+                    Target Product:
+                  </span>
+                  <Select
+                    value={selectedProductId}
+                    onValueChange={setSelectedProductId}
+                  >
                     <SelectTrigger className="h-9 w-[300px] rounded-full border-neutral-200 bg-white font-mono text-xs">
                       <SelectValue placeholder="Select Product" />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-neutral-200 text-xs">
                       {catalogProducts.map((p) => (
                         <SelectItem key={p.id} value={p.id}>
-                          <span className="font-mono font-medium">{p.id}</span> — {p.name}
+                          <span className="font-mono font-medium">{p.id}</span>{' '}
+                          — {p.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -533,7 +568,8 @@ export default function AnalyticsPage() {
                 <div className="flex h-96 flex-col items-center justify-center gap-3">
                   <Spinner className="size-8 text-neutral-900" />
                   <p className="text-xs text-neutral-500">
-                    Aggregating bulk returns and computing root-cause taxonomy clusters...
+                    Aggregating bulk returns and computing root-cause taxonomy
+                    clusters...
                   </p>
                 </div>
               ) : !bulkSummary ? (
@@ -544,7 +580,8 @@ export default function AnalyticsPage() {
                   <EmptyHeader>
                     <EmptyTitle>No Bulk Run Data Available</EmptyTitle>
                     <EmptyDescription>
-                      Select an active bulk ingestion job from the dropdown above.
+                      Select an active bulk ingestion job from the dropdown
+                      above.
                     </EmptyDescription>
                   </EmptyHeader>
                 </Empty>
@@ -560,7 +597,9 @@ export default function AnalyticsPage() {
                         <span className="text-xs font-semibold text-neutral-800">
                           {currentJob?.name || 'Bulk Ingestion Run'}
                         </span>
-                        <span className="font-mono text-xs text-neutral-400">•</span>
+                        <span className="font-mono text-xs text-neutral-400">
+                          •
+                        </span>
                         <span className="font-mono text-xs text-neutral-500">
                           Processed at {currentJob?.created_at || 'Recent'}
                         </span>
@@ -572,11 +611,15 @@ export default function AnalyticsPage() {
 
                     <div className="flex items-center gap-2">
                       <div className="flex flex-col items-end border-l border-neutral-200 pl-4">
-                        <span className="text-[11px] text-neutral-400">Total Ingested</span>
+                        <span className="text-[11px] text-neutral-400">
+                          Total Ingested
+                        </span>
                         <span className="font-mono text-lg font-bold text-neutral-950">
                           {bulkSummary.total.toLocaleString()}
                         </span>
-                        <span className="text-[10px] text-neutral-400">rows evaluated</span>
+                        <span className="text-[10px] text-neutral-400">
+                          rows evaluated
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -640,8 +683,8 @@ export default function AnalyticsPage() {
                               Root-Cause Taxonomy Distribution
                             </CardTitle>
                             <CardDescription className="text-xs">
-                              Frequency count of return tickets categorized across the standard
-                              retail taxonomy
+                              Frequency count of return tickets categorized
+                              across the standard retail taxonomy
                             </CardDescription>
                           </div>
                           <UiTooltip>
@@ -654,9 +697,10 @@ export default function AnalyticsPage() {
                               </Badge>
                             </TooltipTrigger>
                             <TooltipContent className="max-w-xs text-xs">
-                              Category share is calculated by dividing each label's return count
-                              by the total {bulkSummary.total.toLocaleString()} returns in this
-                              job.
+                              Category share is calculated by dividing each
+                              label's return count by the total{' '}
+                              {bulkSummary.total.toLocaleString()} returns in
+                              this job.
                             </TooltipContent>
                           </UiTooltip>
                         </div>
@@ -666,7 +710,12 @@ export default function AnalyticsPage() {
                           <ResponsiveContainer width="100%" height="100%">
                             <BarChart
                               data={rootCauseChartData}
-                              margin={{ top: 10, right: 10, left: -20, bottom: 20 }}
+                              margin={{
+                                top: 10,
+                                right: 10,
+                                left: -20,
+                                bottom: 20,
+                              }}
                             >
                               <CartesianGrid
                                 strokeDasharray="3 3"
@@ -684,12 +733,17 @@ export default function AnalyticsPage() {
                               <YAxis tick={{ fontSize: 11, fill: '#737373' }} />
                               <RechartsTooltip
                                 content={
-                                  <CustomChartTooltip total={bulkSummary.total} />
+                                  <CustomChartTooltip
+                                    total={bulkSummary.total}
+                                  />
                                 }
                               />
                               <Bar dataKey="count" radius={[6, 6, 0, 0]}>
                                 {rootCauseChartData.map((entry, index) => (
-                                  <Cell key={`cell-${index}`} fill={entry.fill} />
+                                  <Cell
+                                    key={`cell-${index}`}
+                                    fill={entry.fill}
+                                  />
                                 ))}
                               </Bar>
                             </BarChart>
@@ -698,7 +752,8 @@ export default function AnalyticsPage() {
 
                         <div className="mt-2 flex items-center justify-between border-t border-neutral-100 pt-2 text-[11px] text-neutral-500">
                           <span>
-                            Total classified categories: {rootCauseChartData.length}
+                            Total classified categories:{' '}
+                            {rootCauseChartData.length}
                           </span>
                           <span className="font-mono text-[10px]">
                             Deterministic rules + ML Fallback
@@ -735,12 +790,17 @@ export default function AnalyticsPage() {
                                 dataKey="value"
                               >
                                 {decisionChartData.map((entry, index) => (
-                                  <Cell key={`dec-cell-${index}`} fill={entry.color} />
+                                  <Cell
+                                    key={`dec-cell-${index}`}
+                                    fill={entry.color}
+                                  />
                                 ))}
                               </Pie>
                               <RechartsTooltip
                                 content={
-                                  <CustomChartTooltip total={bulkSummary.total} />
+                                  <CustomChartTooltip
+                                    total={bulkSummary.total}
+                                  />
                                 }
                               />
                             </PieChart>
@@ -751,7 +811,9 @@ export default function AnalyticsPage() {
                           {decisionChartData.map((d) => {
                             const pct =
                               bulkSummary.total > 0
-                                ? ((d.value / bulkSummary.total) * 100).toFixed(1)
+                                ? ((d.value / bulkSummary.total) * 100).toFixed(
+                                    1
+                                  )
                                 : '0';
                             return (
                               <div
@@ -778,8 +840,8 @@ export default function AnalyticsPage() {
                           })}
                         </div>
                         <div className="mt-3 text-[10px] text-neutral-400">
-                          Caption: Decision share = Decision count ÷ Total bulk returns (
-                          {bulkSummary.total.toLocaleString()})
+                          Caption: Decision share = Decision count ÷ Total bulk
+                          returns ({bulkSummary.total.toLocaleString()})
                         </div>
                       </CardContent>
                     </Card>
@@ -794,7 +856,8 @@ export default function AnalyticsPage() {
                             Top Products by Return Impact
                           </CardTitle>
                           <CardDescription className="text-xs">
-                            Ranked by monetary exposure to identify the highest friction inventory
+                            Ranked by monetary exposure to identify the highest
+                            friction inventory
                           </CardDescription>
                         </div>
                         <Badge
@@ -870,14 +933,17 @@ export default function AnalyticsPage() {
                                     {ROOT_CAUSE_LABELS[prod.top_root_cause] ||
                                       prod.top_root_cause}
                                     <span className="ml-1 font-mono text-neutral-400">
-                                      ({formatPercent(prod.top_root_cause_share)})
+                                      (
+                                      {formatPercent(prod.top_root_cause_share)}
+                                      )
                                     </span>
                                   </Badge>
                                 </TableCell>
                                 <TableCell className="text-center">
                                   {prod.is_emerging_spike ? (
                                     <Badge className="rounded-full bg-neutral-900 text-[10px] text-white hover:bg-black">
-                                      <Zap className="mr-1 size-3" /> Emerging Spike
+                                      <Zap className="mr-1 size-3" /> Emerging
+                                      Spike
                                     </Badge>
                                   ) : (
                                     <Badge
@@ -898,7 +964,8 @@ export default function AnalyticsPage() {
                                       setActiveTab('product-investigation');
                                     }}
                                   >
-                                    Investigate <ChevronRight className="ml-1 size-3" />
+                                    Investigate{' '}
+                                    <ChevronRight className="ml-1 size-3" />
                                   </Button>
                                 </TableCell>
                               </TableRow>
@@ -907,8 +974,9 @@ export default function AnalyticsPage() {
                         </Table>
                       </div>
                       <div className="mt-2 text-[10px] text-neutral-400">
-                        Caption: Value at Risk = Return Count × Average Order Value (AOV).
-                        Calculated exposure reflects gross return claim volume.
+                        Caption: Value at Risk = Return Count × Average Order
+                        Value (AOV). Calculated exposure reflects gross return
+                        claim volume.
                       </div>
                     </CardContent>
                   </Card>
@@ -924,7 +992,8 @@ export default function AnalyticsPage() {
                               Issue NLP Clusters & Top Keywords
                             </CardTitle>
                             <CardDescription className="text-xs">
-                              Unsupervised semantic grouping of unstructured customer complaints
+                              Unsupervised semantic grouping of unstructured
+                              customer complaints
                             </CardDescription>
                           </div>
                           <Badge
@@ -952,8 +1021,9 @@ export default function AnalyticsPage() {
                                     #{cluster.cluster_id}
                                   </span>
                                   <span className="text-xs font-semibold text-neutral-900">
-                                    {ROOT_CAUSE_LABELS[cluster.dominant_root_cause] ||
-                                      cluster.dominant_root_cause}
+                                    {ROOT_CAUSE_LABELS[
+                                      cluster.dominant_root_cause
+                                    ] || cluster.dominant_root_cause}
                                   </span>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -974,7 +1044,10 @@ export default function AnalyticsPage() {
                                         }`}
                                       >
                                         {cluster.growth_vs_prev > 0 ? '+' : ''}
-                                        {(cluster.growth_vs_prev * 100).toFixed(0)}% growth
+                                        {(cluster.growth_vs_prev * 100).toFixed(
+                                          0
+                                        )}
+                                        % growth
                                       </Badge>
                                     )}
                                 </div>
@@ -997,9 +1070,9 @@ export default function AnalyticsPage() {
                           );
                         })}
                         <div className="pt-1 text-[10px] text-neutral-400">
-                          Caption: Cluster share = Cluster count ÷ Total returns (
-                          {bulkSummary.total.toLocaleString()}). Growth vs previous period =
-                          (Current - Prior) ÷ Prior.
+                          Caption: Cluster share = Cluster count ÷ Total returns
+                          ({bulkSummary.total.toLocaleString()}). Growth vs
+                          previous period = (Current - Prior) ÷ Prior.
                         </div>
                       </CardContent>
                     </Card>
@@ -1013,7 +1086,8 @@ export default function AnalyticsPage() {
                               Statistical Anomalies & Emerging Spikes
                             </CardTitle>
                             <CardDescription className="text-xs">
-                              Automated alerts based on Fisher's exact test (p &lt; 0.05)
+                              Automated alerts based on Fisher's exact test (p
+                              &lt; 0.05)
                             </CardDescription>
                           </div>
                           <Badge
@@ -1040,7 +1114,9 @@ export default function AnalyticsPage() {
                                     {finding.title}
                                   </span>
                                 </div>
-                                <p className="text-xs text-neutral-600">{finding.detail}</p>
+                                <p className="text-xs text-neutral-600">
+                                  {finding.detail}
+                                </p>
                               </div>
                               <div className="text-right">
                                 <div className="font-mono text-xs font-bold text-neutral-950">
@@ -1057,31 +1133,37 @@ export default function AnalyticsPage() {
                                 {finding.supplier_id && (
                                   <span>Supplier: {finding.supplier_id}</span>
                                 )}
-                                {finding.batch_id && <span>Batch: {finding.batch_id}</span>}
+                                {finding.batch_id && (
+                                  <span>Batch: {finding.batch_id}</span>
+                                )}
                               </div>
-                              {finding.p_value !== undefined && finding.p_value !== null && (
-                                <UiTooltip>
-                                  <TooltipTrigger asChild>
-                                    <Badge
-                                      variant="outline"
-                                      className="cursor-help rounded-full border-neutral-900 bg-neutral-50 font-mono text-[10px] text-neutral-900"
-                                    >
-                                      Fisher p = {finding.p_value.toFixed(4)}
-                                    </Badge>
-                                  </TooltipTrigger>
-                                  <TooltipContent className="max-w-xs text-xs">
-                                    Fisher's exact test p-value: Probability that the observed defect
-                                    concentration occurred by random chance. Values &lt; 0.05
-                                    indicate statistically significant defect clustering.
-                                  </TooltipContent>
-                                </UiTooltip>
-                              )}
+                              {finding.p_value !== undefined &&
+                                finding.p_value !== null && (
+                                  <UiTooltip>
+                                    <TooltipTrigger asChild>
+                                      <Badge
+                                        variant="outline"
+                                        className="cursor-help rounded-full border-neutral-900 bg-neutral-50 font-mono text-[10px] text-neutral-900"
+                                      >
+                                        Fisher p = {finding.p_value.toFixed(4)}
+                                      </Badge>
+                                    </TooltipTrigger>
+                                    <TooltipContent className="max-w-xs text-xs">
+                                      Fisher's exact test p-value: Probability
+                                      that the observed defect concentration
+                                      occurred by random chance. Values &lt;
+                                      0.05 indicate statistically significant
+                                      defect clustering.
+                                    </TooltipContent>
+                                  </UiTooltip>
+                                )}
                             </div>
                           </div>
                         ))}
                         <div className="pt-1 text-[10px] text-neutral-400">
-                          Caption: Fisher's exact test measures statistical significance of defect
-                          clustering against baseline catalog return variance.
+                          Caption: Fisher's exact test measures statistical
+                          significance of defect clustering against baseline
+                          catalog return variance.
                         </div>
                       </CardContent>
                     </Card>
@@ -1093,12 +1175,16 @@ export default function AnalyticsPage() {
             {/* ══════════════════════════════════════════════════════════════════
                 TAB 2: PRODUCT INVESTIGATION DEEP DIVE
                ══════════════════════════════════════════════════════════════════ */}
-            <TabsContent value="product-investigation" className="space-y-6 outline-none">
+            <TabsContent
+              value="product-investigation"
+              className="space-y-6 outline-none"
+            >
               {loadingProduct ? (
                 <div className="flex h-96 flex-col items-center justify-center gap-3">
                   <Spinner className="size-8 text-neutral-900" />
                   <p className="text-xs text-neutral-500">
-                    Retrieving product history, weekly defect trends & batch supplier manifests...
+                    Retrieving product history, weekly defect trends & batch
+                    supplier manifests...
                   </p>
                 </div>
               ) : !productReport ? (
@@ -1107,9 +1193,12 @@ export default function AnalyticsPage() {
                     <Search className="size-10 text-neutral-400" />
                   </EmptyMedia>
                   <EmptyHeader>
-                    <EmptyTitle>No Product Investigation Record Found</EmptyTitle>
+                    <EmptyTitle>
+                      No Product Investigation Record Found
+                    </EmptyTitle>
                     <EmptyDescription>
-                      Select a product from the top selector to inspect root causes.
+                      Select a product from the top selector to inspect root
+                      causes.
                     </EmptyDescription>
                   </EmptyHeader>
                 </Empty>
@@ -1131,14 +1220,18 @@ export default function AnalyticsPage() {
                         </span>
                       </div>
                       <p className="max-w-3xl text-xs leading-relaxed text-neutral-700">
-                        <strong className="font-semibold text-neutral-900">Diagnosis: </strong>
+                        <strong className="font-semibold text-neutral-900">
+                          Diagnosis:{' '}
+                        </strong>
                         {productReport.headline}
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-4 border-t border-neutral-200 pt-3 lg:border-t-0 lg:border-l lg:pl-6 lg:pt-0">
+                    <div className="flex items-center gap-4 border-t border-neutral-200 pt-3 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
                       <div className="text-right">
-                        <span className="text-[11px] text-neutral-400">Evaluation Window</span>
+                        <span className="text-[11px] text-neutral-400">
+                          Evaluation Window
+                        </span>
                         <div className="font-mono text-sm font-bold text-neutral-900">
                           {productReport.window_days} Days
                         </div>
@@ -1147,11 +1240,15 @@ export default function AnalyticsPage() {
                         </span>
                       </div>
                       <div className="text-right">
-                        <span className="text-[11px] text-neutral-400">Avg Unit Value</span>
+                        <span className="text-[11px] text-neutral-400">
+                          Avg Unit Value
+                        </span>
                         <div className="font-mono text-sm font-bold text-neutral-900">
                           {formatLKR(productReport.avg_order_value_lkr)}
                         </div>
-                        <span className="text-[10px] text-neutral-400">Gross AOV</span>
+                        <span className="text-[10px] text-neutral-400">
+                          Gross AOV
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -1177,14 +1274,17 @@ export default function AnalyticsPage() {
                           : 'Within normal limits'
                       }
                       trendDirection={
-                        productReport.overall_return_rate > 0.08 ? 'up' : 'neutral'
+                        productReport.overall_return_rate > 0.08
+                          ? 'up'
+                          : 'neutral'
                       }
                     />
 
                     <MetricCard
                       title="Product Value at Risk"
                       value={formatLKR(
-                        productReport.total_returns * productReport.avg_order_value_lkr
+                        productReport.total_returns *
+                          productReport.avg_order_value_lkr
                       )}
                       calculationExplanation="Product Impact = Total Returns × Average Order Value"
                       icon={<ShieldAlert className="size-4" />}
@@ -1194,7 +1294,8 @@ export default function AnalyticsPage() {
                     <MetricCard
                       title="Anomalous Batches"
                       value={`${
-                        productReport.batches.filter((b) => b.is_suspicious).length
+                        productReport.batches.filter((b) => b.is_suspicious)
+                          .length
                       } Flagged`}
                       calculationExplanation="Batches with Fisher's exact test p < 0.05 and defect rate > 10%"
                       icon={<AlertCircle className="size-4" />}
@@ -1211,7 +1312,8 @@ export default function AnalyticsPage() {
                           Root Cause Label Breakdown
                         </CardTitle>
                         <CardDescription className="text-xs">
-                          Proportional cause distribution for {productReport.product_name}
+                          Proportional cause distribution for{' '}
+                          {productReport.product_name}
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
@@ -1235,7 +1337,8 @@ export default function AnalyticsPage() {
                                       className="size-2 rounded-full"
                                       style={{
                                         backgroundColor:
-                                          ROOT_CAUSE_COLORS[item.cause] || '#737373',
+                                          ROOT_CAUSE_COLORS[item.cause] ||
+                                          '#737373',
                                       }}
                                     />
                                     <span className="font-medium text-neutral-800">
@@ -1259,8 +1362,9 @@ export default function AnalyticsPage() {
                             ))}
                         </div>
                         <div className="border-t border-neutral-100 pt-2 text-[10px] text-neutral-400">
-                          Caption: Label distribution share = Specific Cause Count ÷ Total
-                          Product Returns ({productReport.total_returns}).
+                          Caption: Label distribution share = Specific Cause
+                          Count ÷ Total Product Returns (
+                          {productReport.total_returns}).
                         </div>
                       </CardContent>
                     </Card>
@@ -1274,7 +1378,8 @@ export default function AnalyticsPage() {
                               6-Week Return Trajectory
                             </CardTitle>
                             <CardDescription className="text-xs">
-                              Weekly return incidence tracking defect emergence over time
+                              Weekly return incidence tracking defect emergence
+                              over time
                             </CardDescription>
                           </div>
                           <Badge
@@ -1290,7 +1395,12 @@ export default function AnalyticsPage() {
                           <ResponsiveContainer width="100%" height="100%">
                             <LineChart
                               data={productReport.weekly_trend}
-                              margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                              margin={{
+                                top: 10,
+                                right: 10,
+                                left: -20,
+                                bottom: 0,
+                              }}
                             >
                               <CartesianGrid
                                 strokeDasharray="3 3"
@@ -1304,7 +1414,11 @@ export default function AnalyticsPage() {
                               <YAxis tick={{ fontSize: 11, fill: '#737373' }} />
                               <RechartsTooltip
                                 content={({ active, payload, label }) => {
-                                  if (!active || !payload || payload.length === 0)
+                                  if (
+                                    !active ||
+                                    !payload ||
+                                    payload.length === 0
+                                  )
                                     return null;
                                   return (
                                     <div className="rounded-xl border border-neutral-200 bg-white/95 p-3 shadow-md backdrop-blur-md">
@@ -1362,8 +1476,9 @@ export default function AnalyticsPage() {
                           </ResponsiveContainer>
                         </div>
                         <div className="mt-2 text-[10px] text-neutral-400">
-                          Caption: Weekly trend plots aggregate return tickets per ISO calendar
-                          week. Spike in W36-W37 corresponds to Batch B-4029 release.
+                          Caption: Weekly trend plots aggregate return tickets
+                          per ISO calendar week. Spike in W36-W37 corresponds to
+                          Batch B-4029 release.
                         </div>
                       </CardContent>
                     </Card>
@@ -1378,7 +1493,8 @@ export default function AnalyticsPage() {
                             Supplier Attribution & Statistical Significance
                           </CardTitle>
                           <CardDescription className="text-xs">
-                            Defect concentration by vendor with Fisher's exact test p-values
+                            Defect concentration by vendor with Fisher's exact
+                            test p-values
                           </CardDescription>
                         </div>
                         <UiTooltip>
@@ -1391,9 +1507,9 @@ export default function AnalyticsPage() {
                             </Badge>
                           </TooltipTrigger>
                           <TooltipContent className="max-w-xs text-xs">
-                            Fisher's exact test evaluates whether the proportion of defective
-                            returns from this supplier exceeds the baseline factory average at
-                            p &lt; 0.05.
+                            Fisher's exact test evaluates whether the proportion
+                            of defective returns from this supplier exceeds the
+                            baseline factory average at p &lt; 0.05.
                           </TooltipContent>
                         </UiTooltip>
                       </div>
@@ -1425,14 +1541,17 @@ export default function AnalyticsPage() {
                           </TableHeader>
                           <TableBody>
                             {productReport.suppliers.map((sup, sIdx) => {
-                              const isSig = sup.p_value !== null && sup.p_value !== undefined && sup.p_value < 0.05;
+                              const isSig =
+                                sup.p_value !== null &&
+                                sup.p_value !== undefined &&
+                                sup.p_value < 0.05;
                               return (
                                 <TableRow
                                   key={sIdx}
                                   className="border-neutral-100 transition-colors hover:bg-neutral-50/70"
                                 >
                                   <TableCell className="py-3">
-                                    <div className="font-semibold text-neutral-950 text-xs">
+                                    <div className="text-xs font-semibold text-neutral-950">
                                       {sup.title}
                                     </div>
                                     <div className="font-mono text-[11px] text-neutral-400">
@@ -1449,7 +1568,8 @@ export default function AnalyticsPage() {
                                     {formatLKR(sup.value_at_risk_lkr)}
                                   </TableCell>
                                   <TableCell className="text-center">
-                                    {sup.p_value !== undefined && sup.p_value !== null ? (
+                                    {sup.p_value !== undefined &&
+                                    sup.p_value !== null ? (
                                       <Badge
                                         variant="outline"
                                         className={`rounded-full font-mono text-[11px] ${
@@ -1469,7 +1589,8 @@ export default function AnalyticsPage() {
                                   <TableCell className="text-right">
                                     {isSig ? (
                                       <Badge className="rounded-full bg-neutral-900 text-[10px] text-white hover:bg-black">
-                                        <AlertTriangle className="mr-1 size-3" /> Critical Focus
+                                        <AlertTriangle className="mr-1 size-3" />{' '}
+                                        Critical Focus
                                       </Badge>
                                     ) : (
                                       <Badge
@@ -1487,9 +1608,10 @@ export default function AnalyticsPage() {
                         </Table>
                       </div>
                       <div className="mt-2 text-[10px] text-neutral-400">
-                        Caption: Fisher's exact test p-value measures probability that defect
-                        rate differential across suppliers is due to random variation. Values &lt;
-                        0.05 reject the null hypothesis of uniform quality.
+                        Caption: Fisher's exact test p-value measures
+                        probability that defect rate differential across
+                        suppliers is due to random variation. Values &lt; 0.05
+                        reject the null hypothesis of uniform quality.
                       </div>
                     </CardContent>
                   </Card>
@@ -1503,7 +1625,8 @@ export default function AnalyticsPage() {
                             Batch Manifest & Anomaly Quarantine Table
                           </CardTitle>
                           <CardDescription className="text-xs">
-                            Lot-level defect analysis with automatic suspicious batch tagging
+                            Lot-level defect analysis with automatic suspicious
+                            batch tagging
                           </CardDescription>
                         </div>
                         <Badge
@@ -1597,7 +1720,7 @@ export default function AnalyticsPage() {
                                   <div className="font-medium text-neutral-800">
                                     {batch.primary_cause}
                                   </div>
-                                  <div className="text-[11px] text-neutral-400 truncate">
+                                  <div className="truncate text-[11px] text-neutral-400">
                                     {batch.notes}
                                   </div>
                                 </TableCell>
@@ -1621,9 +1744,9 @@ export default function AnalyticsPage() {
                         </Table>
                       </div>
                       <div className="mt-2 text-[10px] text-neutral-400">
-                        Caption: Defect Rate = Units Returned ÷ Units Shipped. Suspicious
-                        batches are highlighted where p &lt; 0.05 indicates non-random defect
-                        concentration.
+                        Caption: Defect Rate = Units Returned ÷ Units Shipped.
+                        Suspicious batches are highlighted where p &lt; 0.05
+                        indicates non-random defect concentration.
                       </div>
                     </CardContent>
                   </Card>
@@ -1641,7 +1764,8 @@ export default function AnalyticsPage() {
                               Recommended Corrective Actions
                             </CardTitle>
                             <CardDescription className="text-xs">
-                              Automated mitigation workflows generated by Agent 2 Root-Cause Engine
+                              Automated mitigation workflows generated by Agent
+                              2 Root-Cause Engine
                             </CardDescription>
                           </div>
                         </div>
@@ -1649,63 +1773,68 @@ export default function AnalyticsPage() {
                           variant="outline"
                           className="rounded-full border-neutral-200 bg-white font-mono text-[11px]"
                         >
-                          {productReport.recommended_actions.length} Action Items
+                          {productReport.recommended_actions.length} Action
+                          Items
                         </Badge>
                       </div>
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                        {productReport.recommended_actions.map((action, aIdx) => {
-                          const isDone = completedActions[`${selectedProductId}-${aIdx}`];
-                          return (
-                            <div
-                              key={aIdx}
-                              className={`flex items-start justify-between gap-3 rounded-xl border p-3.5 transition-all ${
-                                isDone
-                                  ? 'border-neutral-200 bg-neutral-100/70 text-neutral-400'
-                                  : 'border-neutral-200 bg-white shadow-xs hover:border-neutral-300'
-                              }`}
-                            >
-                              <div className="flex items-start gap-2.5">
-                                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-neutral-900 font-mono text-[10px] font-bold text-white">
-                                  {aIdx + 1}
-                                </span>
-                                <p
-                                  className={`text-xs leading-relaxed ${
-                                    isDone
-                                      ? 'line-through text-neutral-400'
-                                      : 'text-neutral-800 font-medium'
-                                  }`}
-                                >
-                                  {action}
-                                </p>
-                              </div>
-
-                              <Button
-                                variant={isDone ? 'outline' : 'secondary'}
-                                size="sm"
-                                className={`h-7 shrink-0 rounded-full px-2.5 text-[11px] ${
+                        {productReport.recommended_actions.map(
+                          (action, aIdx) => {
+                            const isDone =
+                              completedActions[`${selectedProductId}-${aIdx}`];
+                            return (
+                              <div
+                                key={aIdx}
+                                className={`flex items-start justify-between gap-3 rounded-xl border p-3.5 transition-all ${
                                   isDone
-                                    ? 'border-neutral-200 text-neutral-500'
-                                    : 'bg-black text-white hover:bg-neutral-800'
+                                    ? 'border-neutral-200 bg-neutral-100/70 text-neutral-400'
+                                    : 'shadow-xs border-neutral-200 bg-white hover:border-neutral-300'
                                 }`}
-                                onClick={() => toggleActionCompleted(aIdx)}
                               >
-                                {isDone ? (
-                                  <>
-                                    <Check className="mr-1 size-3" /> Done
-                                  </>
-                                ) : (
-                                  'Execute'
-                                )}
-                              </Button>
-                            </div>
-                          );
-                        })}
+                                <div className="flex items-start gap-2.5">
+                                  <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-neutral-900 font-mono text-[10px] font-bold text-white">
+                                    {aIdx + 1}
+                                  </span>
+                                  <p
+                                    className={`text-xs leading-relaxed ${
+                                      isDone
+                                        ? 'text-neutral-400 line-through'
+                                        : 'font-medium text-neutral-800'
+                                    }`}
+                                  >
+                                    {action}
+                                  </p>
+                                </div>
+
+                                <Button
+                                  variant={isDone ? 'outline' : 'secondary'}
+                                  size="sm"
+                                  className={`h-7 shrink-0 rounded-full px-2.5 text-[11px] ${
+                                    isDone
+                                      ? 'border-neutral-200 text-neutral-500'
+                                      : 'bg-black text-white hover:bg-neutral-800'
+                                  }`}
+                                  onClick={() => toggleActionCompleted(aIdx)}
+                                >
+                                  {isDone ? (
+                                    <>
+                                      <Check className="mr-1 size-3" /> Done
+                                    </>
+                                  ) : (
+                                    'Execute'
+                                  )}
+                                </Button>
+                              </div>
+                            );
+                          }
+                        )}
                       </div>
                       <div className="mt-3 text-[10px] text-neutral-400">
-                        Caption: Recommended actions are synthesized from root cause taxonomy
-                        clustering, vendor defect share, and batch quarantine criteria.
+                        Caption: Recommended actions are synthesized from root
+                        cause taxonomy clustering, vendor defect share, and
+                        batch quarantine criteria.
                       </div>
                     </CardContent>
                   </Card>

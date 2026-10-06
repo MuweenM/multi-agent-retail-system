@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.
 
 from contextlib import asynccontextmanager
 from typing import Optional, Dict, Any
-from fastapi import FastAPI, Depends, HTTPException, Request, UploadFile, File, BackgroundTasks
+from fastapi import FastAPI, Depends, HTTPException, Request, UploadFile, File, BackgroundTasks, Query
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -31,6 +31,8 @@ from datetime import datetime
 
 from .orchestrator import run_orchestrator
 from .jobs import process_bulk_job
+from .mcp_clients import call_agent
+from retail_common.config import settings
 
 logger = get_logger("server")
 
@@ -314,6 +316,67 @@ async def export_bulk_csv(
         )
     finally:
         db.close()
+
+# --- New Analytics & Evidence Routes ---
+
+@app.get("/api/v1/bulk/{job_id}/summary")
+@track_usage(event_type="api_call")
+async def get_bulk_summary(
+    job_id: str,
+    user: Dict[str, Any] = Depends(RequireRole(["viewer", "reviewer", "admin"])),
+):
+    result, step = await call_agent(
+        settings.agent2_mcp_url,
+        "analyze_bulk_patterns",
+        {"job_id": job_id, "tenant_id": user["tenant_id"]},
+        "Agent2"
+    )
+    if not step.ok:
+        raise HTTPException(status_code=502, detail="root-cause agent unavailable")
+    return result
+
+@app.get("/api/v1/products/{product_id}/root-cause")
+@track_usage(event_type="api_call")
+async def get_product_root_cause(
+    product_id: str,
+    window_days: int = 90,
+    user: Dict[str, Any] = Depends(RequireRole(["viewer", "reviewer", "admin"])),
+):
+    result, step = await call_agent(
+        settings.agent2_mcp_url,
+        "analyze_product_root_cause",
+        {"product_id": product_id, "window_days": window_days, "tenant_id": user["tenant_id"]},
+        "Agent2"
+    )
+    if not step.ok:
+        raise HTTPException(status_code=502, detail="root-cause agent unavailable")
+    return result
+
+
+@app.get("/api/v1/evidence/search")
+@track_usage(event_type="api_call")
+async def search_evidence(
+    query: str,
+    top_k: int = 5,
+    method: str = "hybrid",
+    source_types: list[str] | None = Query(default=None),
+    user: Dict[str, Any] = Depends(RequireRole(["viewer", "reviewer", "admin"])),
+):
+    result, step = await call_agent(
+        settings.agent3_mcp_url,
+        "retrieve_evidence",
+        {
+            "query": query,
+            "top_k": top_k,
+            "method": method,
+            "source_types": source_types,
+            "tenant_id": user["tenant_id"],
+        },
+        "Agent3"
+    )
+    if not step.ok:
+        raise HTTPException(status_code=502, detail="retrieval agent unavailable")
+    return result
 
 if __name__ == "__main__":
     import uvicorn
