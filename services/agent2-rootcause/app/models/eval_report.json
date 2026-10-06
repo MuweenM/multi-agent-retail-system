@@ -391,10 +391,10 @@
       "confidence": 0.9557,
       "top_explanatory_terms": [
         "work properly",
-        "will not",
-        "will",
-        "properly",
-        "has manufacturing"
+        "problem will",
+        "has",
+        "has manufacturing",
+        "manufacturing"
       ]
     },
     {
@@ -410,9 +410,9 @@
       "top_explanatory_terms": [
         "fit",
         "size",
+        "so need",
         "so",
-        "right",
-        "need another"
+        "another size"
       ]
     },
     {
@@ -427,9 +427,9 @@
       "confidence": 0.9496,
       "top_explanatory_terms": [
         "what advertised",
+        "not match",
+        "advertised online",
         "what",
-        "online",
-        "item does",
         "match"
       ]
     },
@@ -444,11 +444,11 @@
       "gold_label": "late_delivery",
       "confidence": 0.9475,
       "top_explanatory_terms": [
-        "what advertised",
-        "match what",
-        "not match",
+        "match",
         "online",
-        "what"
+        "advertised online",
+        "item does",
+        "match what"
       ]
     },
     {
@@ -463,10 +463,10 @@
       "confidence": 0.9465,
       "top_explanatory_terms": [
         "work properly",
-        "will not",
-        "will",
-        "manufacturing",
-        "not work"
+        "properly",
+        "has",
+        "has manufacturing",
+        "manufacturing"
       ]
     },
     {
@@ -480,9 +480,9 @@
       "gold_label": "change_of_mind",
       "confidence": 0.9414,
       "top_explanatory_terms": [
+        "too tight",
         "tight me",
         "tight",
-        "too tight",
         "me",
         "size"
       ]
@@ -499,8 +499,8 @@
       "confidence": 0.9389,
       "top_explanatory_terms": [
         "work properly",
+        "manufacturing problem",
         "will not",
-        "problem",
         "will",
         "properly"
       ]
@@ -518,9 +518,9 @@
       "top_explanatory_terms": [
         "wrong",
         "wrong product",
-        "product fulfilled",
+        "fulfilled",
         "fulfilled order",
-        "fulfilled"
+        "product fulfilled"
       ]
     },
     {
@@ -534,10 +534,10 @@
       "gold_label": "unknown",
       "confidence": 0.9376,
       "top_explanatory_terms": [
-        "package",
         "package dented",
-        "broken arrival",
+        "package",
         "dented",
+        "broken arrival",
         "broken"
       ]
     },
@@ -553,8 +553,8 @@
       "confidence": 0.9363,
       "top_explanatory_terms": [
         "product description",
-        "description",
         "differs",
+        "description",
         "differs product",
         "product"
       ]
@@ -572,8 +572,8 @@
       "top_explanatory_terms": [
         "late",
         "too late",
-        "courier delivered",
         "delivered",
+        "courier delivered",
         "too"
       ]
     },
@@ -590,9 +590,9 @@
       "top_explanatory_terms": [
         "damaged",
         "arrived damaged",
+        "box",
         "box crushed",
-        "crushed",
-        "box"
+        "crushed"
       ]
     },
     {
@@ -606,8 +606,8 @@
       "gold_label": "change_of_mind",
       "confidence": 0.9354,
       "top_explanatory_terms": [
-        "repeat",
         "repeat return",
+        "repeat",
         "return",
         "shirt repeat",
         "cotton"
@@ -625,10 +625,10 @@
       "confidence": 0.9339,
       "top_explanatory_terms": [
         "there clear",
-        "clear defect",
+        "arrived faulty",
         "clear",
-        "faulty",
-        "arrived faulty"
+        "clear defect",
+        "faulty"
       ]
     },
     {
@@ -644,9 +644,9 @@
       "top_explanatory_terms": [
         "want",
         "want return",
+        "changed mind",
         "mind about",
-        "mind",
-        "changed"
+        "mind"
       ]
     },
     {
@@ -661,8 +661,8 @@
       "confidence": 0.9336,
       "top_explanatory_terms": [
         "product description",
-        "description",
         "differs",
+        "description",
         "differs product",
         "product"
       ]
@@ -680,8 +680,8 @@
       "top_explanatory_terms": [
         "small does",
         "not fit",
-        "runs small",
         "small",
+        "runs small",
         "runs"
       ]
     },
@@ -697,10 +697,10 @@
       "confidence": 0.9325,
       "top_explanatory_terms": [
         "use",
-        "up after",
-        "up",
-        "hold",
-        "hold up"
+        "normal use",
+        "after normal",
+        "did",
+        "did not"
       ]
     },
     {
@@ -716,9 +716,9 @@
       "top_explanatory_terms": [
         "working after",
         "working",
-        "stopped",
-        "stopped working",
-        "days"
+        "after few",
+        "days",
+        "stopped working"
       ]
     },
     {
@@ -732,11 +732,11 @@
       "gold_label": "policy_abuse_suspected",
       "confidence": 0.9319,
       "top_explanatory_terms": [
-        "prefer",
         "prefer different",
-        "fine prefer",
+        "prefer",
         "option",
-        "different option"
+        "fine prefer",
+        "fine"
       ]
     }
   ],

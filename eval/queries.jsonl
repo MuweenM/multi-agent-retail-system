@@ -1,0 +1,40 @@
+{"query_id":"Q01","category":"exact","text":"battery swelling","expected_product_ids":["P-014"]}
+{"query_id":"Q02","category":"exact","text":"P-014 battery swelling","expected_product_ids":["P-014"]}
+{"query_id":"Q03","category":"exact","text":"battery pack swelled after charging","expected_product_ids":["P-014"]}
+{"query_id":"Q04","category":"exact","text":"power bank battery swelling","expected_product_ids":["P-014"]}
+{"query_id":"Q05","category":"exact","text":"battery swelling in QA batch","expected_product_ids":["P-014"]}
+{"query_id":"Q06","category":"exact","text":"runs small","expected_product_ids":["P-027"]}
+{"query_id":"Q07","category":"exact","text":"size runs small","expected_product_ids":["P-027"]}
+{"query_id":"Q08","category":"exact","text":"fit issue running small","expected_product_ids":["P-027"]}
+{"query_id":"Q09","category":"exact","text":"apparel runs small","expected_product_ids":["P-027"]}
+{"query_id":"Q10","category":"exact","text":"too small and uncomfortable","expected_product_ids":["P-027"]}
+{"query_id":"Q11","category":"misspelled","text":"battrry swlling","expected_product_ids":["P-014"]}
+{"query_id":"Q12","category":"misspelled","text":"pwoer bank battrry swlling","expected_product_ids":["P-014"]}
+{"query_id":"Q13","category":"misspelled","text":"rns smal","expected_product_ids":["P-027"]}
+{"query_id":"Q14","category":"misspelled","text":"siz fit issyu","expected_product_ids":["P-027"]}
+{"query_id":"Q15","category":"misspelled","text":"damg in transit","expected_product_ids":["P-014","P-027"]}
+{"query_id":"Q16","category":"misspelled","text":"crushd pakage","expected_product_ids":["P-014","P-027"]}
+{"query_id":"Q17","category":"misspelled","text":"gr8 batt life","expected_product_ids":["P-009"]}
+{"query_id":"Q18","category":"misspelled","text":"nois canceling defect","expected_product_ids":["P-009"]}
+{"query_id":"Q19","category":"misspelled","text":"battrry defct","expected_product_ids":["P-014"]}
+{"query_id":"Q20","category":"misspelled","text":"swLLling after charege","expected_product_ids":["P-014"]}
+{"query_id":"Q21","category":"natural","text":"the phone got hot and the battery bulged after charging","expected_product_ids":["P-014"]}
+{"query_id":"Q22","category":"natural","text":"the shirt fit is tight and smaller than expected","expected_product_ids":["P-027"]}
+{"query_id":"Q23","category":"natural","text":"the package arrived crushed and the screen was cracked","expected_product_ids":["P-014","P-027"]}
+{"query_id":"Q24","category":"natural","text":"I bought earbuds expecting noise cancelling but the listing was wrong","expected_product_ids":["P-009"]}
+{"query_id":"Q25","category":"natural","text":"the device overheated and the battery swelled during charging","expected_product_ids":["P-014"]}
+{"query_id":"Q26","category":"natural","text":"the apparel is tighter than the size chart and uncomfortable","expected_product_ids":["P-027"]}
+{"query_id":"Q27","category":"natural","text":"the package was dented and the item arrived damaged","expected_product_ids":["P-014","P-027"]}
+{"query_id":"Q28","category":"natural","text":"the case feels wrong because the battery swollen after a charge cycle","expected_product_ids":["P-014"]}
+{"query_id":"Q29","category":"natural","text":"I wanted a quiet headset, not the listing claims noise cancelling","expected_product_ids":["P-009"]}
+{"query_id":"Q30","category":"natural","text":"the battery life was great but the product never matched the listing","expected_product_ids":["P-009"]}
+{"query_id":"Q31","category":"boolean","text":"battery AND swelling","expected_product_ids":["P-014"]}
+{"query_id":"Q32","category":"boolean","text":"battery /2 swelling","expected_product_ids":["P-014"]}
+{"query_id":"Q33","category":"boolean","text":"runs small OR fit issue","expected_product_ids":["P-027"]}
+{"query_id":"Q34","category":"boolean","text":"battery AND NOT great","expected_product_ids":["P-014"]}
+{"query_id":"Q35","category":"boolean","text":"great battery life AND NOT defect","expected_product_ids":["P-009"]}
+{"query_id":"Q36","category":"boolean","text":"battery OR small","expected_product_ids":["P-014","P-027"]}
+{"query_id":"Q37","category":"boolean","text":"\"battery swelling\" AND \"P-014\"","expected_product_ids":["P-014"]}
+{"query_id":"Q38","category":"boolean","text":"\"runs small\" OR \"size issue\"","expected_product_ids":["P-027"]}
+{"query_id":"Q39","category":"boolean","text":"damaged AND transit","expected_product_ids":["P-014","P-027"]}
+{"query_id":"Q40","category":"boolean","text":"noise cancelling AND NOT great battery life","expected_product_ids":["P-009"]}

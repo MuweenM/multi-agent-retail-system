@@ -1,8 +1,8 @@
-from shared.retail_common.schemas.intake import Entity, IntakeOutput
-from shared.retail_common.schemas.rootcause import RootCauseCandidate, RootCauseOutput
-from shared.retail_common.schemas.evidence import EvidenceItem, EvidenceOutput
-from shared.retail_common.schemas.decision import AgentStep, DecisionOutput
-from shared.retail_common.schemas.bulk import (
+from retail_common.schemas.intake import Entity, IntakeOutput
+from retail_common.schemas.rootcause import RootCauseCandidate, RootCauseOutput
+from retail_common.schemas.evidence import EvidenceItem, EvidenceOutput
+from retail_common.schemas.decision import AgentStep, DecisionOutput
+from retail_common.schemas.bulk import (
     BulkJob,
     BulkRow,
     BulkSummary,

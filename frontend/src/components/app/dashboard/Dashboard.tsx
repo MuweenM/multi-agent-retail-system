@@ -20,7 +20,6 @@ import {
   Package,
   Brain,
   Search,
-  Bell,
   RefreshCw,
   ShieldAlert,
   Cpu,
@@ -355,139 +354,6 @@ export default function Dashboard() {
   return (
     <TooltipProvider delayDuration={150}>
       <div className="min-h-screen bg-white font-sans text-neutral-900 antialiased selection:bg-neutral-900 selection:text-white">
-        {/* ── Top Navigation Bar (Paper-white canvas, hairline border) ── */}
-        <header className="sticky top-0 z-40 w-full border-b border-neutral-200 bg-white/95 backdrop-blur-sm">
-          <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-            {/* Left: Brand Identity */}
-            <div className="flex items-center gap-6">
-              <a href="#/" className="group flex items-center gap-2.5">
-                <div className="flex h-6 w-6 items-center justify-center rounded-md bg-black text-xs font-bold tracking-tight text-white">
-                  R
-                </div>
-                <span className="text-sm font-semibold tracking-tight text-neutral-950">
-                  ReturnIQ
-                </span>
-                <Badge
-                  variant="outline"
-                  className="rounded-full border-neutral-200 bg-neutral-100 px-2 py-0 font-mono text-[10px] text-neutral-600"
-                >
-                  v2.1
-                </Badge>
-              </a>
-
-              <Separator
-                orientation="vertical"
-                className="hidden h-4 bg-neutral-200 sm:block"
-              />
-
-              {/* View Pill Tabs in Header using shadcn Button */}
-              <nav className="hidden items-center gap-1 md:flex">
-                {[
-                  { id: 'overview', label: 'Overview', icon: BarChart2 },
-                  { id: 'returns', label: 'Returns Queue', icon: Package },
-                  { id: 'rootcause', label: 'Root Cause', icon: Brain },
-                  { id: 'agents', label: 'Agent Health', icon: Cpu },
-                ].map((item) => {
-                  const Icon = item.icon;
-                  const isActive = activeTab === item.id;
-                  return (
-                    <Button
-                      key={item.id}
-                      variant={isActive ? 'default' : 'ghost'}
-                      size="sm"
-                      onClick={() => setActiveTab(item.id)}
-                      className={`h-8 rounded-full px-3 text-xs font-medium shadow-none transition-all ${
-                        isActive
-                          ? 'bg-black text-white hover:bg-neutral-900'
-                          : 'text-neutral-600 hover:bg-neutral-100 hover:text-black'
-                      }`}
-                    >
-                      <Icon className="mr-1.5 h-3.5 w-3.5" />
-                      {item.label}
-                    </Button>
-                  );
-                })}
-              </nav>
-            </div>
-
-            {/* Center / Right: Search & Actions */}
-            <div className="flex items-center gap-3">
-              {/* Search Pill (design.md: search-pill with shadcn Input & Kbd) */}
-              <div className="relative hidden items-center lg:flex">
-                <Search className="pointer-events-none absolute left-3 z-10 h-3.5 w-3.5 text-neutral-400" />
-                <Input
-                  type="text"
-                  placeholder="Search models, returns, batch IDs..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="hover:bg-neutral-150 h-8 w-64 rounded-full border-transparent bg-neutral-100 pl-8 pr-12 text-xs text-neutral-900 shadow-none transition-all focus:border-neutral-900 focus:bg-white md:w-80"
-                />
-                <Kbd className="pointer-events-none absolute right-2.5 text-[10px]">
-                  ⌘K
-                </Kbd>
-              </div>
-
-              {/* Refresh Button with shadcn Button and Spinner */}
-              <UiTooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleSync}
-                    className="h-8 w-8 rounded-full text-neutral-500 hover:text-black"
-                  >
-                    {isSyncing ? (
-                      <Spinner className="h-3.5 w-3.5 text-neutral-900" />
-                    ) : (
-                      <RefreshCw className="h-3.5 w-3.5" />
-                    )}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent className="rounded-full font-mono text-xs">
-                  Sync agent stream
-                </TooltipContent>
-              </UiTooltip>
-
-              {/* Notifications */}
-              <UiTooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="relative h-8 w-8 rounded-full text-neutral-500 hover:text-black"
-                  >
-                    <Bell className="h-3.5 w-3.5" />
-                    <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-rose-500" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent className="rounded-full font-mono text-xs">
-                  1 Degraded Agent Alert
-                </TooltipContent>
-              </UiTooltip>
-
-              {/* Pure Black Primary CTA (design.md: button-primary) */}
-              <Button
-                size="sm"
-                className="h-8 rounded-full bg-black px-4 text-xs font-medium text-white shadow-none hover:bg-neutral-800"
-                onClick={() => {
-                  setActiveTab('returns');
-                  setSearchQuery('');
-                }}
-              >
-                + Ingest Return
-              </Button>
-
-              {/* User Profile using shadcn Avatar, AvatarFallback, AvatarBadge */}
-              <Avatar size="sm" className="border border-neutral-200">
-                <AvatarFallback className="bg-neutral-100 font-mono text-[11px] font-semibold text-neutral-900">
-                  LK
-                </AvatarFallback>
-                <AvatarBadge className="bg-emerald-500" />
-              </Avatar>
-            </div>
-          </div>
-        </header>
-
         {/* ── Page Main Wrap ── */}
         <main className="mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
           {/* ── Hero / Header Area (design.md minimal documentation style) ── */}
@@ -531,6 +397,85 @@ export default function Dashboard() {
                   )}
                 </Button>
               </div>
+            </div>
+          </div>
+
+          {/* ── Dashboard Toolbar ── */}
+          <div className="flex flex-col items-center justify-between gap-4 border-b border-neutral-200 pb-4 sm:flex-row">
+            {/* View Pill Tabs */}
+            <nav className="no-scrollbar flex w-full items-center gap-1 overflow-x-auto">
+              {[
+                { id: 'overview', label: 'Overview', icon: BarChart2 },
+                { id: 'returns', label: 'Returns Queue', icon: Package },
+                { id: 'rootcause', label: 'Root Cause', icon: Brain },
+                { id: 'agents', label: 'Agent Health', icon: Cpu },
+              ].map((item) => {
+                const Icon = item.icon;
+                const isActive = activeTab === item.id;
+                return (
+                  <Button
+                    key={item.id}
+                    variant={isActive ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setActiveTab(item.id)}
+                    className={`h-8 rounded-full px-3 text-xs font-medium shadow-none transition-all ${
+                      isActive
+                        ? 'bg-black text-white hover:bg-neutral-900'
+                        : 'text-neutral-600 hover:bg-neutral-100 hover:text-black'
+                    }`}
+                  >
+                    <Icon className="mr-1.5 h-3.5 w-3.5" />
+                    {item.label}
+                  </Button>
+                );
+              })}
+            </nav>
+
+            <div className="flex w-full shrink-0 items-center gap-3 sm:w-auto">
+              <div className="relative flex items-center">
+                <Search className="pointer-events-none absolute left-3 z-10 h-3.5 w-3.5 text-neutral-400" />
+                <Input
+                  type="text"
+                  placeholder="Search models, returns, batch IDs..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="hover:bg-neutral-150 h-8 w-48 rounded-full border-transparent bg-neutral-100 pl-8 pr-12 text-xs text-neutral-900 shadow-none transition-all focus:border-neutral-900 focus:bg-white md:w-80 lg:w-64"
+                />
+                <Kbd className="pointer-events-none absolute right-2.5 text-[10px]">
+                  ⌘K
+                </Kbd>
+              </div>
+
+              <UiTooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleSync}
+                    className="h-8 w-8 rounded-full text-neutral-500 hover:text-black"
+                  >
+                    {isSyncing ? (
+                      <Spinner className="h-3.5 w-3.5 text-neutral-900" />
+                    ) : (
+                      <RefreshCw className="h-3.5 w-3.5" />
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent className="rounded-full font-mono text-xs">
+                  Sync agent stream
+                </TooltipContent>
+              </UiTooltip>
+
+              <Button
+                size="sm"
+                className="h-8 rounded-full bg-black px-4 text-xs font-medium text-white shadow-none hover:bg-neutral-800"
+                onClick={() => {
+                  setActiveTab('returns');
+                  setSearchQuery('');
+                }}
+              >
+                + Ingest Return
+              </Button>
             </div>
           </div>
 

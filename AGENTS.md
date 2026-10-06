@@ -9,6 +9,7 @@ When writing frontend code under `frontend/`:
    - **Empty States**: Use `<Empty>` primitives from `@/components/ui/empty` when lists or search queries return 0 items.
    - **Loading States**: Use `<Spinner>` from `@/components/ui/spinner`.
    - **Containers**: Use `<Card>`, `<CardHeader>`, `<CardTitle>`, `<CardDescription>`, `<CardContent>` from `@/components/ui/card`.
+     - *Note on Card Padding*: The `CardContent` component in this project may strip horizontal padding by default based on the Tailwind v4 `--card-spacing` config. Always apply explicit padding (e.g., `<CardContent className="p-6">`) when building forms or forms content to prevent elements from bleeding into the card edges.
    - **Tabs**: Use `<Tabs>`, `<TabsList>`, `<TabsTrigger>`, `<TabsContent>` from `@/components/ui/tabs`.
 2. **Design Language (`design.md`)**:
    - Paper-white canvas (`bg-white`, `#ffffff`), hairline borders (`border-neutral-200`), subtle gray secondary backgrounds (`bg-neutral-50`/`bg-neutral-100`).
