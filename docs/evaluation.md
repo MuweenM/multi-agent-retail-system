@@ -221,3 +221,51 @@ Evaluation conducted on **150 Gold Complaints** (140 standard return requests + 
 | **Deterministic Rule Fallback** | 88.5% | 0.820 | 1.8 ms | 100% Redacted clean_text |
 
 *Report generated automatically by `eval/eval_intake.py` on 2026-09-22 22:09:39*
+
+---
+
+# Evaluation Plan
+
+## Agent 3 (Retrieval)
+
+- Query set: 40 queries covering exact phrases, misspellings, vague natural-language requests, and boolean/wildcard patterns.
+- Relevance labels were assigned from the pooled top-20 results of every method; agreement across independent labels was measured with Cohen's kappa = 0.697.
+
+### Core retrieval metrics
+
+| Method | Precision@5 | Recall@10 | F1@10 | MAP | Mean latency (ms) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Boolean | 0.267 | 0.044 | 0.075 | 0.087 | 125.0 |
+| TF-IDF cosine | 0.805 | 0.231 | 0.322 | 0.408 | 1112.1 |
+| BM25 | 0.805 | 0.231 | 0.322 | 0.411 | 19.9 |
+| Dense | 0.641 | 0.177 | 0.267 | 0.354 | 40.7 |
+| Hybrid | 0.733 | 0.209 | 0.316 | 0.344 | 63.8 |
+
+### Ablations
+
+| Configuration | F1@10 | MAP |
+| --- | ---: | ---: |
+| BM25 only (no dense component) | 0.322 | 0.411 |
+| Dense only (no lexical component) | 0.267 | 0.354 |
+| Hybrid reciprocal-rank fusion | 0.316 | 0.344 |
+
+### Dense vs BM25 wins
+
+#### Dense stronger than BM25
+
+- Q23: the package arrived crushed and the screen was cracked — dense handles the paraphrased or misspelled wording better than exact-token BM25.
+- Q20: swLLling after charege — dense handles the paraphrased or misspelled wording better than exact-token BM25.
+- Q16: crushd pakage — dense handles the paraphrased or misspelled wording better than exact-token BM25.
+- Q19: battrry defct — dense handles the paraphrased or misspelled wording better than exact-token BM25.
+- Q12: pwoer bank battrry swlling — dense handles the paraphrased or misspelled wording better than exact-token BM25.
+
+#### BM25 stronger than Dense
+
+- Q18: nois canceling defect — BM25 wins because the query contains strong token overlap with the evidence text and product defect terms.
+- Q24: I bought earbuds expecting noise cancelling but the listing was wrong — BM25 wins because the query contains strong token overlap with the evidence text and product defect terms.
+- Q26: the apparel is tighter than the size chart and uncomfortable — BM25 wins because the query contains strong token overlap with the evidence text and product defect terms.
+- Q29: I wanted a quiet headset, not the listing claims noise cancelling — BM25 wins because the query contains strong token overlap with the evidence text and product defect terms.
+- Q09: apparel runs small — BM25 wins because the query contains strong token overlap with the evidence text and product defect terms.
+
+![Agent 3 retrieval performance](../eval/agent3_retrieval_metrics.png)
+
