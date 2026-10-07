@@ -4,7 +4,10 @@ import argparse
 import json
 from pathlib import Path
 
-from ir_system.ir.inverted_index import InvertedIndex
+try:
+    from .inverted_index import InvertedIndex
+except (ImportError, ValueError):
+    from app.ir.inverted_index import InvertedIndex
 
 
 def build_parser() -> argparse.ArgumentParser:

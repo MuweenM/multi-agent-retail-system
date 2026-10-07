@@ -18,14 +18,17 @@ except Exception:  # pragma: no cover - fallback when plotting deps are unavaila
     plt = None
 
 ROOT = Path(__file__).resolve().parents[1]
+AGENT3_DIR = ROOT / "services" / "agent3-retrieval"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+if str(AGENT3_DIR) not in sys.path:
+    sys.path.insert(0, str(AGENT3_DIR))
 
-from ir_system.ir.bm25 import BM25Ranker
-from ir_system.ir.dense import DenseRanker
-from ir_system.ir.hybrid import HybridRanker
-from ir_system.ir.inverted_index import InvertedIndex
-from ir_system.ir.tfidf_ranker import TFIDFRanker
+from app.ir.bm25 import BM25Ranker
+from app.ir.dense import DenseRanker
+from app.ir.hybrid import HybridRanker
+from app.ir.inverted_index import InvertedIndex
+from app.ir.tfidf_ranker import TFIDFRanker
 from shared.retail_common.text.analyzer import analyze
 
 QUERY_PATH = ROOT / "eval" / "queries.jsonl"

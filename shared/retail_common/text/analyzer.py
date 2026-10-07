@@ -62,6 +62,7 @@ def _stem_word(term: str, stem: str) -> str:
                 return lemma.lower()
         except Exception:
             pass
+        return term
     raise ValueError(f"Unsupported stem mode: {stem!r}")
 
 

@@ -11,8 +11,12 @@ from mcp.server.fastmcp import FastMCP
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
-from ir_system.ir.hybrid import HybridRanker
-from ir_system.ir.tolerant import process_query
+try:
+    from app.ir.hybrid import HybridRanker
+    from app.ir.tolerant import process_query
+except ImportError:
+    from ir.hybrid import HybridRanker
+    from ir.tolerant import process_query
 from shared.retail_common.config import settings
 from shared.retail_common.schemas.evidence import EvidenceItem, EvidenceOutput
 from shared.retail_common.taxonomy import ROOT_CAUSES
