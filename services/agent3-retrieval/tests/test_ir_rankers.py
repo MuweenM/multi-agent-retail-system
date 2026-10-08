@@ -1,9 +1,18 @@
 import math
+import sys
+from pathlib import Path
 
 import pytest
 
-from ir_system.ir.bm25 import BM25Ranker
-from ir_system.ir.tfidf_ranker import TFIDFRanker
+SERVICE_ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]
+if str(SERVICE_ROOT) not in sys.path:
+    sys.path.insert(0, str(SERVICE_ROOT))
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from app.ir.bm25 import BM25Ranker
+from app.ir.tfidf_ranker import TFIDFRanker
 
 
 @pytest.fixture

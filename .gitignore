@@ -37,3 +37,5 @@ chroma_db/
 
 
 .neon
+*.log
+*.db

@@ -5,7 +5,10 @@ import math
 from dataclasses import dataclass, field
 from typing import Any, Iterable
 
-from ir_system.ir.inverted_index import InvertedIndex
+try:
+    from .inverted_index import InvertedIndex
+except (ImportError, ValueError):
+    from app.ir.inverted_index import InvertedIndex
 from shared.retail_common.schemas.evidence import EvidenceItem
 from shared.retail_common.text.analyzer import analyze
 

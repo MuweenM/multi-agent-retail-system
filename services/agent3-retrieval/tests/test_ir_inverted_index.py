@@ -4,11 +4,14 @@ import random
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+SERVICE_ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]
+if str(SERVICE_ROOT) not in sys.path:
+    sys.path.insert(0, str(SERVICE_ROOT))
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from ir_system.ir.inverted_index import InvertedIndex
+from app.ir.inverted_index import InvertedIndex
 
 
 def _make_corpus() -> list[dict[str, str]]:
