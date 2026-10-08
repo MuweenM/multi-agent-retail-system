@@ -63,6 +63,17 @@ def _matches_filters(doc: dict, filters: dict | None) -> bool:
     return True
 
 
+_cached_ranker = None
+_cached_docs = None
+
+def _get_ranker():
+    global _cached_ranker, _cached_docs
+    if _cached_ranker is None:
+        _cached_docs = _load_corpus_documents()
+        _cached_ranker = HybridRanker(_cached_docs)
+    return _cached_ranker, _cached_docs
+
+
 @server.tool()
 def retrieve_evidence(
     query: str,
@@ -88,9 +99,8 @@ def retrieve_evidence(
         raise ValueError("top_k must be an integer")
     cap = min(max(top_k, 1), 20)
 
-    docs = _load_corpus_documents()
+    ranker, docs = _get_ranker()
     processed = process_query(normalized_query, filters=filters)
-    ranker = HybridRanker(docs)
     base_query = processed["corrected_query"] or normalized_query
     hits = ranker.rank(base_query, top_k=cap, filters=filters)
     if not hits:
@@ -146,10 +156,12 @@ def reindex_corpus(tenant_id: str = "demo") -> dict:
     """Admin-only corpus reindexing stub that keeps the contract stable while loading the corpus for warm-up."""
     if not tenant_id or not isinstance(tenant_id, str):
         raise ValueError("tenant_id must be a non-empty string")
-    _ = _load_corpus_documents()
+    global _cached_ranker, _cached_docs
+    _cached_docs = _load_corpus_documents()
+    _cached_ranker = HybridRanker(_cached_docs)
     return {
         "tenant_id": tenant_id,
-        "documents_indexed": 0,
+        "documents_indexed": len(_cached_docs),
         "documents_updated": 0,
         "documents_deleted": 0,
         "errors": 0,
