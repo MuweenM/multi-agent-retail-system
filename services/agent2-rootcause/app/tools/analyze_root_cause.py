@@ -45,7 +45,7 @@ _PRODUCTS_CSV = _PROJECT_ROOT / "data" / "catalog" / "products.csv"
 _PROMPT_PATH = _SERVICE_ROOT / "app" / "prompts" / "fallback_label.md"
 
 # ── Thresholds ───────────────────────────────────────────────────────────────
-_FALLBACK_TOP_PROB: float = 0.55
+_FALLBACK_TOP_PROB: float = 0.70
 _FALLBACK_GAP: float = 0.10
 
 # ── Catalog cache ────────────────────────────────────────────────────────────

@@ -162,13 +162,13 @@ function MethodRail({
 }) {
   return (
     <Card className="h-fit rounded-lg border border-neutral-200 bg-white shadow-none">
-      <CardHeader className="border-b border-neutral-200 pb-4">
+      <CardHeader className="border-b border-neutral-200 px-5 pb-4 pt-5">
         <CardTitle className="text-sm">Method comparison</CardTitle>
         <CardDescription className="text-xs">
           Top five for the same query
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-5 pt-5">
+      <CardContent className="space-y-5 p-5">
         {(Object.keys(METHOD_LABELS) as Method[]).map((method) => {
           const results = methodResults[method];
           return (
@@ -413,7 +413,7 @@ export default function EvidenceSearchPage() {
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
           <Card className="rounded-lg border border-neutral-200 bg-white shadow-none">
-            <CardHeader className="border-b border-neutral-200 pb-4">
+            <CardHeader className="border-b border-neutral-200 px-5 pb-4 pt-5">
               <CardTitle className="text-sm">Retrieved evidence</CardTitle>
               <CardDescription className="text-xs">
                 Ranked by {METHOD_LABELS[method]}

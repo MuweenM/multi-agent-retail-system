@@ -112,6 +112,13 @@ export const logout = (): void => {
   window.location.hash = '#/login';
 };
 
+// ── Demo State Sync ───────────────────────────────────────────────────────────
+export const DEMO_STATE = {
+  newReturnsCount: 0,
+  overridesCount: 0,
+  confirmsCount: 0,
+};
+
 // ── Returns ───────────────────────────────────────────────────────────────────
 export interface ProcessReturnParams {
   text: string;
@@ -122,6 +129,7 @@ export interface ProcessReturnParams {
 export const processReturn = async (
   params: ProcessReturnParams
 ): Promise<DecisionOutput> => {
+  DEMO_STATE.newReturnsCount += 1;
   return apiFetch<DecisionOutput>('/returns', {
     method: 'POST',
     body: JSON.stringify({
@@ -138,6 +146,8 @@ export const submitReview = async (
   _reason?: string
 ): Promise<void> => {
   // The backend doesn't have a /review endpoint in the demo yet. Mocking success.
+  if (_action === 'override') DEMO_STATE.overridesCount += 1;
+  else DEMO_STATE.confirmsCount += 1;
   console.log('Mock review submission:', _returnId, _action, _reason);
   return new Promise((resolve) => setTimeout(resolve, 600));
 };

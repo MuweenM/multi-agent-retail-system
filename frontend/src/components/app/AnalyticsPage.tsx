@@ -497,7 +497,7 @@ export default function AnalyticsPage() {
           >
             {/* Top Navigation Tabs Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <TabsList className="h-10 rounded-full border border-neutral-200 bg-neutral-100 p-1">
+              <TabsList className="h-10 gap-2 rounded-full border border-neutral-200 bg-neutral-100 p-1">
                 <TabsTrigger
                   value="bulk-run"
                   className="rounded-full px-5 text-xs font-medium data-[state=active]:bg-black data-[state=active]:text-white"
@@ -548,11 +548,15 @@ export default function AnalyticsPage() {
                     <SelectTrigger className="h-9 w-[300px] rounded-full border-neutral-200 bg-white font-mono text-xs">
                       <SelectValue placeholder="Select Product" />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl border-neutral-200 text-xs">
+                    <SelectContent className="w-[300px] rounded-xl border-neutral-200 text-xs">
                       {catalogProducts.map((p) => (
                         <SelectItem key={p.id} value={p.id}>
-                          <span className="font-mono font-medium">{p.id}</span>{' '}
-                          — {p.name}
+                          <div className="w-[260px] truncate text-left">
+                            <span className="font-mono font-medium">
+                              {p.id}
+                            </span>{' '}
+                            — {p.name}
+                          </div>
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -677,7 +681,7 @@ export default function AnalyticsPage() {
                   <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
                     {/* Root-Cause Bar Chart (8 cols) */}
                     <Card className="border-neutral-200 lg:col-span-8">
-                      <CardHeader className="pb-2">
+                      <CardHeader className="px-5 pb-2 pt-5">
                         <div className="flex items-center justify-between">
                           <div>
                             <CardTitle className="text-sm font-semibold">
@@ -706,7 +710,7 @@ export default function AnalyticsPage() {
                           </UiTooltip>
                         </div>
                       </CardHeader>
-                      <CardContent>
+                      <CardContent className="px-5 pb-5">
                         <div className="h-72 w-full pt-4">
                           <ResponsiveContainer width="100%" height="100%">
                             <BarChart
@@ -765,7 +769,7 @@ export default function AnalyticsPage() {
 
                     {/* Decisions Chart (4 cols) */}
                     <Card className="border-neutral-200 lg:col-span-4">
-                      <CardHeader className="pb-2">
+                      <CardHeader className="px-5 pb-2 pt-5">
                         <div className="flex items-center justify-between">
                           <div>
                             <CardTitle className="text-sm font-semibold">
@@ -777,7 +781,7 @@ export default function AnalyticsPage() {
                           </div>
                         </div>
                       </CardHeader>
-                      <CardContent>
+                      <CardContent className="px-5 pb-5">
                         <div className="h-52 w-full">
                           <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
@@ -850,7 +854,7 @@ export default function AnalyticsPage() {
 
                   {/* ── Top Products By Impact Table ──────────────────────────── */}
                   <Card className="border-neutral-200">
-                    <CardHeader className="pb-3">
+                    <CardHeader className="px-5 pb-3 pt-5">
                       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                           <CardTitle className="text-sm font-semibold">
@@ -869,7 +873,7 @@ export default function AnalyticsPage() {
                         </Badge>
                       </div>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="px-5 pb-5">
                       <div className="overflow-x-auto">
                         <Table>
                           <TableHeader>
@@ -986,7 +990,7 @@ export default function AnalyticsPage() {
                   <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                     {/* Clusters with Top Terms */}
                     <Card className="border-neutral-200">
-                      <CardHeader className="pb-3">
+                      <CardHeader className="px-5 pb-3 pt-5">
                         <div className="flex items-center justify-between">
                           <div>
                             <CardTitle className="text-sm font-semibold">
@@ -1005,7 +1009,7 @@ export default function AnalyticsPage() {
                           </Badge>
                         </div>
                       </CardHeader>
-                      <CardContent className="space-y-3">
+                      <CardContent className="space-y-3 px-5 pb-5">
                         {bulkSummary.clusters.map((cluster) => {
                           const share =
                             bulkSummary.total > 0
@@ -1080,7 +1084,7 @@ export default function AnalyticsPage() {
 
                     {/* Emerging Issues & Statistical Anomalies */}
                     <Card className="border-neutral-200">
-                      <CardHeader className="pb-3">
+                      <CardHeader className="px-5 pb-3 pt-5">
                         <div className="flex items-center justify-between">
                           <div>
                             <CardTitle className="text-sm font-semibold">
@@ -1099,7 +1103,7 @@ export default function AnalyticsPage() {
                           </Badge>
                         </div>
                       </CardHeader>
-                      <CardContent className="space-y-3">
+                      <CardContent className="space-y-3 px-5 pb-5">
                         {bulkSummary.findings.map((finding, fIdx) => (
                           <div
                             key={fIdx}
@@ -1308,7 +1312,7 @@ export default function AnalyticsPage() {
                   <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
                     {/* Label Distribution Breakdown (5 cols) */}
                     <Card className="border-neutral-200 lg:col-span-5">
-                      <CardHeader className="pb-2">
+                      <CardHeader className="px-5 pb-2 pt-5">
                         <CardTitle className="text-sm font-semibold">
                           Root Cause Label Breakdown
                         </CardTitle>
@@ -1317,7 +1321,7 @@ export default function AnalyticsPage() {
                           {productReport.product_name}
                         </CardDescription>
                       </CardHeader>
-                      <CardContent className="space-y-4">
+                      <CardContent className="space-y-4 px-5 pb-5">
                         <div className="space-y-3">
                           {Object.entries(productReport.label_distribution)
                             .map(([cause, count]) => ({
@@ -1372,7 +1376,7 @@ export default function AnalyticsPage() {
 
                     {/* Weekly Trend Multi-Line Chart (7 cols) */}
                     <Card className="border-neutral-200 lg:col-span-7">
-                      <CardHeader className="pb-2">
+                      <CardHeader className="px-5 pb-2 pt-5">
                         <div className="flex items-center justify-between">
                           <div>
                             <CardTitle className="text-sm font-semibold">
@@ -1391,7 +1395,7 @@ export default function AnalyticsPage() {
                           </Badge>
                         </div>
                       </CardHeader>
-                      <CardContent>
+                      <CardContent className="px-5 pb-5">
                         <div className="h-64 w-full pt-2">
                           <ResponsiveContainer width="100%" height="100%">
                             <LineChart
@@ -1487,7 +1491,7 @@ export default function AnalyticsPage() {
 
                   {/* ── Supplier Concentration Table & p-value Analysis ────────── */}
                   <Card className="border-neutral-200">
-                    <CardHeader className="pb-3">
+                    <CardHeader className="px-5 pb-3 pt-5">
                       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                           <CardTitle className="text-sm font-semibold">
@@ -1515,7 +1519,7 @@ export default function AnalyticsPage() {
                         </UiTooltip>
                       </div>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="px-5 pb-5">
                       <div className="overflow-x-auto">
                         <Table>
                           <TableHeader>
@@ -1619,7 +1623,7 @@ export default function AnalyticsPage() {
 
                   {/* ── Granular Batch Table with Suspicious-Batch Highlighting ─ */}
                   <Card className="border-neutral-200">
-                    <CardHeader className="pb-3">
+                    <CardHeader className="px-5 pb-3 pt-5">
                       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                           <CardTitle className="text-sm font-semibold">
@@ -1638,7 +1642,7 @@ export default function AnalyticsPage() {
                         </Badge>
                       </div>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="px-5 pb-5">
                       <div className="overflow-x-auto">
                         <Table>
                           <TableHeader>
@@ -1754,7 +1758,7 @@ export default function AnalyticsPage() {
 
                   {/* ── Recommended Actions Section ───────────────────────────── */}
                   <Card className="border-neutral-200 bg-neutral-50/50">
-                    <CardHeader className="pb-3">
+                    <CardHeader className="px-5 pb-3 pt-5">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <div className="flex size-7 items-center justify-center rounded-full bg-black text-white">
@@ -1779,7 +1783,7 @@ export default function AnalyticsPage() {
                         </Badge>
                       </div>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="px-5 pb-5">
                       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                         {productReport.recommended_actions.map(
                           (action, aIdx) => {
