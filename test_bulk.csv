@@ -1,0 +1,4 @@
+return_id,text,order_id,product_id,customer_ref,order_value_lkr
+R-1001,The winter boots arrived but the sole fell off after 1 day.,ORD-111,P-050,CUST-001,4500
+R-1002,Ordered a phone case and it is too small for my iPhone 14.,ORD-112,P-001,CUST-002,1200
+R-1003,The blender motor blew up and started smoking.,ORD-113,P-031,CUST-003,15000
