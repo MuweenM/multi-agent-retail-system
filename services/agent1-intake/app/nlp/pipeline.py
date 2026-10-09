@@ -144,12 +144,26 @@ def process_intake_pipeline(
     if best_product_score >= 0.35:
         resolved_product_id = best_product_id
         resolved_product_name = best_product_name
-    elif llm_extracted and llm_extracted.get("product_id") in [pid for pid, _, _ in matched_products]:
+    elif (
+        llm_extracted 
+        and float(llm_extracted.get("self_confidence", 0.0)) >= 0.70
+        and llm_extracted.get("product_id") in [pid for pid, _, _ in matched_products]
+    ):
         resolved_product_id = llm_extracted.get("product_id")
         resolved_product_name = llm_extracted.get("product")
     else:
         llm_prod = llm_extracted.get("product") if llm_extracted else None
-        if llm_prod and str(llm_prod).lower() != "unknown":
+        llm_conf = float(llm_extracted.get("self_confidence", 0.0)) if llm_extracted else 0.0
+        
+        candidate_names = [name.lower() for _, name, _ in matched_products]
+        is_novel_product = llm_prod and str(llm_prod).lower() not in candidate_names
+
+        # Anti-Hallucination: Ensure the LLM didn't just invent a product not mentioned in the text
+        llm_prod_words = set(re.findall(r'\b\w{3,}\b', str(llm_prod).lower())) if llm_prod else set()
+        text_words = set(re.findall(r'\b\w{3,}\b', corrected_text.lower()))
+        has_overlap = bool(llm_prod_words & text_words)
+
+        if is_novel_product and str(llm_prod).lower() != "unknown" and llm_conf >= 0.70 and has_overlap:
             import csv
             import uuid
             from pathlib import Path
