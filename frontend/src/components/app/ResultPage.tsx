@@ -76,9 +76,11 @@ function DecisionBadge({ decision }: { decision: string }) {
 function ReviewPanel({
   returnId,
   userRole,
+  onNavigate,
 }: {
   returnId: string;
   userRole: string;
+  onNavigate?: (view: string) => void;
 }) {
   const [submitting, setSubmitting] = useState(false);
   const [overrideReason, setOverrideReason] = useState('');
@@ -91,7 +93,8 @@ function ReviewPanel({
     setSubmitting(true);
     try {
       await submitReview(returnId, 'confirm');
-      setDone('Decision confirmed.');
+      setDone('Decision confirmed. Redirecting...');
+      if (onNavigate) setTimeout(() => onNavigate('submit'), 1500);
     } catch {
       setDone('Error submitting review.');
     } finally {
@@ -104,7 +107,8 @@ function ReviewPanel({
     setSubmitting(true);
     try {
       await submitReview(returnId, 'override', overrideReason);
-      setDone('Decision overridden.');
+      setDone('Decision overridden. Redirecting...');
+      if (onNavigate) setTimeout(() => onNavigate('submit'), 1500);
     } catch {
       setDone('Error submitting override.');
     } finally {
@@ -185,7 +189,8 @@ interface DecisionCardProps {
 export function DecisionCard({
   result,
   userRole = 'viewer',
-}: DecisionCardProps) {
+  onNavigate,
+}: DecisionCardProps & { onNavigate?: (view: string) => void }) {
   const [traceOpen, setTraceOpen] = useState(false);
   const confidencePct = Math.round(result.confidence * 100);
 
@@ -391,7 +396,11 @@ export function DecisionCard({
             )}
           </CardHeader>
           <CardContent className="p-5 pt-0">
-            <ReviewPanel returnId={result.return_id} userRole={userRole} />
+            <ReviewPanel
+              returnId={result.return_id}
+              userRole={userRole}
+              onNavigate={onNavigate}
+            />
           </CardContent>
         </Card>
       )}
@@ -401,6 +410,7 @@ export function DecisionCard({
 
 // ── ResultPage ────────────────────────────────────────────────────────────────
 interface ResultPageProps {
+  onNavigate?: (view: string) => void;
   result: DecisionOutput;
   userRole?: string;
   onBack?: () => void;
@@ -410,6 +420,7 @@ export default function ResultPage({
   result,
   userRole = 'viewer',
   onBack,
+  onNavigate,
 }: ResultPageProps) {
   return (
     <div className="mx-auto max-w-3xl space-y-4 px-4 py-8">
@@ -429,7 +440,11 @@ export default function ResultPage({
           Return Analysis Result
         </h1>
       </div>
-      <DecisionCard result={result} userRole={userRole} />
+      <DecisionCard
+        result={result}
+        userRole={userRole}
+        onNavigate={onNavigate}
+      />
     </div>
   );
 }

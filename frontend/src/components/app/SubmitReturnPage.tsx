@@ -214,6 +214,16 @@ export const SubmitReturnPage: React.FC<SubmitReturnPageProps> = ({
         result={singleOutput}
         userRole="admin"
         onBack={() => setSingleOutput(null)}
+        onNavigate={(view) => {
+          if (view === 'submit') {
+            setSingleOutput(null);
+            setSingleText('');
+            setOrderId('');
+            setVisibleSteps([]);
+          } else if (onNavigate) {
+            onNavigate(view);
+          }
+        }}
       />
     );
   }

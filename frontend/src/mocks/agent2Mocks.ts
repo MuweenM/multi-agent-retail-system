@@ -1,3 +1,4 @@
+import { DEMO_STATE, getProductRootCause, getBulkSummary } from '../lib/api';
 import {
   BulkJob,
   BulkSummary,
@@ -842,10 +843,35 @@ export async function fetchBulkJobs(): Promise<BulkJob[]> {
 export async function fetchBulkSummary(
   jobId: string
 ): Promise<BulkSummary | null> {
-  await new Promise((resolve) => setTimeout(resolve, 100));
-  return (
-    MOCK_BULK_SUMMARIES[jobId] || MOCK_BULK_SUMMARIES['JOB-2026-09-A2'] || null
+  const mock = JSON.parse(
+    JSON.stringify(
+      MOCK_BULK_SUMMARIES[jobId] || MOCK_BULK_SUMMARIES['JOB-2026-09-A2']
+    )
   );
+  try {
+    const real = await getBulkSummary(jobId);
+    if (real && real.total > 0) {
+      mock.total += real.total;
+      mock.needs_review += real.needs_review;
+    }
+  } catch (e) {
+    console.error('Bulk api error:', e);
+  }
+
+  if (DEMO_STATE.newReturnsCount > 0) {
+    mock.total += DEMO_STATE.newReturnsCount;
+    mock.by_root_cause['manufacturing_defect'] =
+      (mock.by_root_cause['manufacturing_defect'] || 0) +
+      DEMO_STATE.newReturnsCount;
+  }
+  if (DEMO_STATE.overridesCount > 0 || DEMO_STATE.confirmsCount > 0) {
+    const dec = DEMO_STATE.overridesCount + DEMO_STATE.confirmsCount;
+    mock.needs_review = Math.max(0, mock.needs_review - dec);
+    mock.decisions['approve'] += DEMO_STATE.confirmsCount;
+    mock.decisions['reject'] += DEMO_STATE.overridesCount;
+  }
+  await new Promise((resolve) => setTimeout(resolve, 800));
+  return mock;
 }
 
 export async function fetchProductImpacts(
@@ -860,12 +886,40 @@ export async function fetchProductImpacts(
 export async function fetchProductReport(
   productId: string
 ): Promise<ProductRootCauseReport | null> {
-  await new Promise((resolve) => setTimeout(resolve, 110));
-  return (
-    MOCK_PRODUCT_REPORTS[productId] ||
-    MOCK_PRODUCT_REPORTS['PROD-WM-BOOTS-01'] ||
-    null
+  const mock = JSON.parse(
+    JSON.stringify(
+      MOCK_PRODUCT_REPORTS[productId] ||
+        MOCK_PRODUCT_REPORTS['PROD-WM-BOOTS-01']
+    )
   );
+  try {
+    const real = await getProductRootCause(productId);
+    if (real && real.total_returns > 0) {
+      mock.total_returns += real.total_returns;
+    }
+  } catch (e) {
+    console.error('Product api error:', e);
+  }
+
+  if (DEMO_STATE.newReturnsCount > 0) {
+    mock.total_returns += DEMO_STATE.newReturnsCount;
+    mock.label_distribution['manufacturing_defect'] =
+      (mock.label_distribution['manufacturing_defect'] || 0) +
+      DEMO_STATE.newReturnsCount;
+    mock.headline = 'Live Data Synced! ' + mock.headline;
+    if (mock.weekly_trend && mock.weekly_trend.length > 0) {
+      mock.weekly_trend[mock.weekly_trend.length - 1].total +=
+        DEMO_STATE.newReturnsCount;
+      mock.weekly_trend[mock.weekly_trend.length - 1].counts[
+        'manufacturing_defect'
+      ] =
+        (mock.weekly_trend[mock.weekly_trend.length - 1].counts[
+          'manufacturing_defect'
+        ] || 0) + DEMO_STATE.newReturnsCount;
+    }
+  }
+  await new Promise((resolve) => setTimeout(resolve, 800));
+  return mock;
 }
 
 export function getAllCatalogProductIds(): Array<{

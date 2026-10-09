@@ -6,7 +6,8 @@ import re
 from typing import Dict, Any, Optional
 
 # Optional Google Gemini / OpenAI integration
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+# Optional Google Gemini / OpenAI integration
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("LLM_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
@@ -26,8 +27,9 @@ def call_llm(
             from google import genai
             client = genai.Client(api_key=GEMINI_API_KEY)
             full_content = f"{system_prompt}\n\n{prompt}" if system_prompt else prompt
+            model_name = os.getenv("LLM_MODEL") or "gemini-flash-latest"
             response = client.models.generate_content(
-                model="gemini-2.5-flash",
+                model=model_name,
                 contents=full_content,
             )
             return response.text

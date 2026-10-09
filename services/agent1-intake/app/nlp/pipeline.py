@@ -96,10 +96,9 @@ def process_intake_pipeline(
     # 4. Normalize
     normalized = normalize_text(working_text)
 
-    # 5. Spell Correction
-    corrected_text, spell_changes = spell_corrector.correct_text(normalized)
-    if spell_changes:
-        flags.append("spelling_corrected")
+    # 5. Spell Correction (Disabled due to Jaccard hallucination)
+    corrected_text = normalized
+    spell_changes = []
 
     # 6. Product Matching
     matched_products = product_matcher.match(corrected_text, top_k=3)
@@ -141,9 +140,36 @@ def process_intake_pipeline(
     if not llm_extracted or not isinstance(llm_extracted, dict):
         flags.append("llm_fallback")
 
-    # Product resolution
-    resolved_product_id = best_product_id if best_product_score >= 0.35 else (llm_extracted.get("product_id") if llm_extracted else best_product_id)
-    resolved_product_name = best_product_name if best_product_score >= 0.35 else (llm_extracted.get("product") if llm_extracted else best_product_name)
+    # Product resolution (Strict Catalog Enforcement to prevent LLM Hallucination)
+    if best_product_score >= 0.35:
+        resolved_product_id = best_product_id
+        resolved_product_name = best_product_name
+    elif llm_extracted and llm_extracted.get("product_id") in [pid for pid, _, _ in matched_products]:
+        resolved_product_id = llm_extracted.get("product_id")
+        resolved_product_name = llm_extracted.get("product")
+    else:
+        llm_prod = llm_extracted.get("product") if llm_extracted else None
+        if llm_prod and str(llm_prod).lower() != "unknown":
+            import csv
+            import uuid
+            from pathlib import Path
+            new_id = f"P-DYN-{uuid.uuid4().hex[:6].upper()}"
+            products_csv = Path(__file__).parents[4] / "data" / "catalog" / "products.csv"
+            try:
+                with open(products_csv, "a", newline="", encoding="utf-8") as fh:
+                    writer = csv.writer(fh)
+                    writer.writerow([new_id, llm_prod, "auto_injected", "SUP-999", "0.00"])
+                resolved_product_id = new_id
+                resolved_product_name = llm_prod
+                flags.append("dynamically_injected")
+            except Exception:
+                resolved_product_id = None
+                resolved_product_name = "Unknown Product (Not in Catalog)"
+                flags.append("out_of_catalog")
+        else:
+            resolved_product_id = None
+            resolved_product_name = "Unknown Product (Not in Catalog)"
+            flags.append("out_of_catalog")
 
     # Issue extraction
     sentences = re.split(r"[.!?]\s+", corrected_text)
@@ -169,7 +195,7 @@ def process_intake_pipeline(
         product=resolved_product_name,
         product_id=resolved_product_id,
         product_match_score=best_product_score,
-        issue=issue_sentence[:100].strip(),
+        issue=issue_sentence[:500].strip(),
         intent=final_intent,
         sentiment=final_sentiment,
         confidence=confidence,
