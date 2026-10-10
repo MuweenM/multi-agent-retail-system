@@ -140,6 +140,14 @@ def process_intake_pipeline(
     if not llm_extracted or not isinstance(llm_extracted, dict):
         flags.append("llm_fallback")
 
+    # Anti-Hallucination: Ensure the LLM didn't just invent a product not mentioned in the text
+    llm_prod_name = llm_extracted.get("product") if llm_extracted else None
+    has_overlap = False
+    if llm_prod_name:
+        llm_prod_words = set(re.findall(r'\b\w{3,}\b', str(llm_prod_name).lower()))
+        text_words = set(re.findall(r'\b\w{3,}\b', corrected_text.lower()))
+        has_overlap = bool(llm_prod_words & text_words)
+
     # Product resolution (Strict Catalog Enforcement to prevent LLM Hallucination)
     if best_product_score >= 0.35:
         resolved_product_id = best_product_id
@@ -148,6 +156,7 @@ def process_intake_pipeline(
         llm_extracted 
         and float(llm_extracted.get("self_confidence", 0.0)) >= 0.70
         and llm_extracted.get("product_id") in [pid for pid, _, _ in matched_products]
+        and has_overlap
     ):
         resolved_product_id = llm_extracted.get("product_id")
         resolved_product_name = llm_extracted.get("product")
@@ -157,11 +166,6 @@ def process_intake_pipeline(
         
         candidate_names = [name.lower() for _, name, _ in matched_products]
         is_novel_product = llm_prod and str(llm_prod).lower() not in candidate_names
-
-        # Anti-Hallucination: Ensure the LLM didn't just invent a product not mentioned in the text
-        llm_prod_words = set(re.findall(r'\b\w{3,}\b', str(llm_prod).lower())) if llm_prod else set()
-        text_words = set(re.findall(r'\b\w{3,}\b', corrected_text.lower()))
-        has_overlap = bool(llm_prod_words & text_words)
 
         if is_novel_product and str(llm_prod).lower() != "unknown" and llm_conf >= 0.70 and has_overlap:
             import csv
